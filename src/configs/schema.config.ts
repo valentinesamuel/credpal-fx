@@ -28,6 +28,9 @@ export default {
       .default(DEFAULT_NODE_ENV),
     IS_DEVELOPMENT: Joi.boolean().default(IS_DEVELOPMENT_DEFAULT),
 
+    // jwt
+    AUTH_SECRET: Joi.string().required(),
+
     // Encryption
     ENCRYPTION_KEY: Joi.string().required(),
     ENCRYPTION_IV_LENGTH: Joi.number().required(),

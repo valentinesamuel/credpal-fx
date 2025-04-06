@@ -11,6 +11,9 @@ export default registerAs("common", () => ({
   tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY,
   isDevelopment: process.env.NODE_ENV === NODE_ENVIRONMENTS["development"],
   swaggerApiRoot: process.env.SWAGGER_API_ROOT,
+  jwt: {
+    authSecret: process.env.AUTH_SECRET,
+  },
   redis: {
     port: process.env.REDIS_PORT,
     password: process.env.REDIS_PASSWORD,
