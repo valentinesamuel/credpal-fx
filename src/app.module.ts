@@ -1,3 +1,4 @@
+import "./shared/observability/tracing";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -7,6 +8,7 @@ import cacheConfig from "@config/cache.config";
 import schemaConfig from "@config/schema.config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Broker } from "@broker/broker";
+import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 
 @Module({
   imports: [
@@ -18,6 +20,9 @@ import { Broker } from "@broker/broker";
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
         configService.get("typeorm"),
+    }),
+    PrometheusModule.register({
+      path: "/metrics",
     }),
   ],
   controllers: [AppController],

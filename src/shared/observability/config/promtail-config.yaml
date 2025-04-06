@@ -12,4 +12,4 @@ scrape_configs:
           - localhost
         labels:
           job: nestjs
-          __path__: /var/log/nest/*.log
+          __path__: /var/nestjs-logs/*.log
