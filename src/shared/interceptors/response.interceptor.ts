@@ -75,6 +75,8 @@ export class ResponseInterceptor<T>
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
 
+    console.log(res);
+
     if (request.url !== "/metrics") {
       this.logger.info("Request successful", {
         statusCode,
@@ -85,6 +87,7 @@ export class ResponseInterceptor<T>
         duration: Date.now() - startTime,
       });
     }
+
     return {
       statusCode,
       success: true,
