@@ -6,6 +6,7 @@ export default registerAs("common", () => ({
   port: process.env.APP_PORT || 3000,
   appName: process.env.APP_NAME,
   appHostName: process.env.APP_HOSTNAME,
+  corsWhitelist: process.env.CORS_WHITELIST,
   nodeEnv: process.env.NODE_ENV,
   tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY,
   isDevelopment: process.env.NODE_ENV === NODE_ENVIRONMENTS["development"],

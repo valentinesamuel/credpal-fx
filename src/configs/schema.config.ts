@@ -21,6 +21,7 @@ export default {
     PORT: Joi.number().default(DEFAULT_APP_PORT),
     APP_NAME: Joi.string().required(),
     APP_HOSTNAME: Joi.string().required(),
+    CORS_WHITELIST: Joi.string().required(),
     APP_AUTH_NAME: Joi.string().required(),
     NODE_ENV: Joi.string()
       .valid(...NODE_ENVIRONMENTS)

@@ -13,7 +13,7 @@ const PRODUCT_VERSION = "1.0.0";
 function setUpCORS(app, configService: ConfigService) {
   // Determine the allowed origins
   const whitelist = configService
-    .get<string>("CORS_WHITELIST")
+    .get<string>("common.corsWhitelist")
     .split(",")
     .map((pattern) => new RegExp(pattern));
 
@@ -35,7 +35,6 @@ function setUpCORS(app, configService: ConfigService) {
       "Authorization",
       "Cache-control",
     ],
-    credentials: true,
   };
 
   app.enableCors(options);
@@ -76,6 +75,6 @@ async function bootstrap() {
 }
 
 bootstrap().catch((error) => {
-  Logger.error("Unhandled startup error", { error });
+  Logger.error("Unhandled startup error", error);
   process.exit(1);
 });
