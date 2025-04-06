@@ -7,6 +7,7 @@ import { AppLogger } from "@shared/observability/logger";
 import { Logger } from "@nestjs/common";
 import { ResponseInterceptor } from "@shared/interceptors/response.interceptor";
 import { setupTelemetry } from "@shared/observability/tracing";
+import { TraceInterceptor } from "@shared/interceptors/trace.interceptor";
 
 const PRODUCT_NAME = "Credpal FX";
 const PRODUCT_TAG = "Credpal FX";
@@ -68,7 +69,7 @@ async function bootstrap() {
 
   setUpCORS(app, configService);
 
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalInterceptors(new ResponseInterceptor(), new TraceInterceptor());
 
   buildAPIDocumentation(app, configService);
 

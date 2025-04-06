@@ -17,6 +17,15 @@ help:
 	@echo "  make healthcheck           - Check service health status"
 
 ### Core Commands ###
+dev:
+	@echo "ℹ️  Starting application in dev mode..."
+	@npm run start:dev
+
+debug:
+	@echo "ℹ️ Start application in debug mode"	
+	@npm run start:debug
+
+	
 up:
 	@docker compose --env-file $(ENV_FILE) up -d $(if $(filter-out all,$(SERVICE)),$(SERVICE)) >/dev/null 2>&1
 	@echo "✓ Successfully started $(if $(filter-out all,$(SERVICE)),$(SERVICE),all services)"

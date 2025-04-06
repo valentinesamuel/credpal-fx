@@ -33,6 +33,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=https://storage.googleapis.com/integration-artifacts/grafana-exploretraces-app/grafana-exploretraces-app-latest.zip;grafana-traces-app
     restart: unless-stopped
     networks:
       - monitoring
@@ -96,7 +97,7 @@ services:
       - ./monitoring/otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
       - ./nestjs-logs:/nestjs-logs:ro
     ports:
-      - "4316:4317"  # OTLP gRPC receiver
+      - "4316:4318"  # OTLP gRPC receiver
       - "8888:8888"  # metrics endpoint
       - "8889:8889"  # health check extension
     restart: unless-stopped

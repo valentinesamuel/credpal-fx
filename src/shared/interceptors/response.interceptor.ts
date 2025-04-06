@@ -75,8 +75,6 @@ export class ResponseInterceptor<T>
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
 
-    console.log(res);
-
     if (request.url !== "/metrics") {
       this.logger.info("Request successful", {
         statusCode,

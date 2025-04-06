@@ -10,17 +10,23 @@ export class AppController {
 
   @Get()
   getHello() {
-    const users = [
-      { id: 1, name: "John" },
-      { id: 2, name: "Jane" },
-    ];
-    const span = trace.getSpan(context.active());
-    const getUsersSpan = this.tracer.startSpan("get_users_span", {
-      links: span ? [{ context: span.spanContext() }] : [],
+    const span = this.tracer.startSpan("getHello", {
+      attributes: {
+        "service.name": "nestjs-app",
+        endpoint: "/getHello",
+        "custom.attribute": "test-value",
+      },
     });
-    context.with(trace.setSpan(context.active(), getUsersSpan), () => {
-      getUsersSpan.end();
-    });
-    return users;
+
+    try {
+      this.logger.log("Processing getHello request");
+      const users = [
+        { id: 1, name: "John" },
+        { id: 2, name: "Jane" },
+      ];
+      return users;
+    } finally {
+      span.end(); // Always end the span
+    }
   }
 }

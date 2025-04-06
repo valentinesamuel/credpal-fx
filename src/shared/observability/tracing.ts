@@ -1,8 +1,8 @@
 import { NodeSDK, resources } from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
@@ -31,7 +31,8 @@ export function setupTelemetry() {
   const sdk = new NodeSDK({
     resource: resource,
     traceExporter: new OTLPTraceExporter({
-      url: "http://localhost:4316/v1/traces",
+      url: "http://localhost:4316/v1/traces", // Correct - this maps to 4318 in container
+      headers: {},
     }),
     metricReader: new PeriodicExportingMetricReader({
       exporter: new OTLPMetricExporter({
