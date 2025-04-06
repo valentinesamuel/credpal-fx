@@ -1,4 +1,41 @@
 services:
+  # grafana:
+  #   image: grafana/grafana:10.1.2
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana
+
+  # loki:
+  #   image: grafana/loki:2.9.0
+  #   ports:
+  #     - "3100:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
+    
+  # promtail:
+  #   image: grafana/promtail:2.9.0
+  #   volumes:
+  #     - ./src/shared/observability/config/promtail-config.yaml:/etc/promtail/config.yaml
+  #     - ./nestjs-logs:/var/log/nest
+  #   command: -config.file=/etc/promtail/config.yaml
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./src/shared/observability/config/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  # tempo:
+  #   image: grafana/tempo:2.3.1
+  #   ports:
+  #     - "3200:3200"
+  #   command: ["-config.file=/etc/tempo.yaml"]
+  #   volumes:
+  #     - ./src/shared/observability/config/tempo.yaml:/etc/tempo.yaml
+
   postgres:
     image: postgres:latest
     container_name: credpalfx_postgres
@@ -40,3 +77,5 @@ volumes:
     driver: local
   credpalfx_redis_data:
     driver: local
+  # grafana-storage:
+  #   driver: local

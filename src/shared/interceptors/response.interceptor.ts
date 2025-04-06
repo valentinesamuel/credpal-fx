@@ -11,6 +11,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { Response, Request } from "express";
 import { ValidationError } from "class-validator";
+import { AppLogger } from "@shared/observability/logger";
 
 export type TResponse<T> = {
   statusCode: number;
@@ -51,6 +52,7 @@ function extractValidationErrors(
 export class ResponseInterceptor<T>
   implements NestInterceptor<T, TResponse<T>>
 {
+  private readonly logger = new AppLogger(ResponseInterceptor.name);
   constructor() {}
 
   intercept(
@@ -73,14 +75,14 @@ export class ResponseInterceptor<T>
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
 
-    // this.axiomLogger.log({
-    //   statusCode,
-    //   success: true,
-    //   message: "Request successful",
-    //   path: `${request.protocol}://${request.get("host")}${request.url}`,
-    //   method: request.method,
-    //   duration: Date.now() - startTime,
-    // });
+    this.logger.info("Request successful", {
+      statusCode,
+      success: true,
+      message: "Request successful",
+      path: `${request.protocol}://${request.get("host")}${request.url}`,
+      method: request.method,
+      duration: Date.now() - startTime,
+    });
 
     return {
       statusCode,
@@ -118,18 +120,18 @@ export class ResponseInterceptor<T>
           exceptionResponse["message"],
         );
 
-        // this.axiomLogger.error({
-        //   statusCode: status,
-        //   success: false,
-        //   message: "Bad Request",
-        //   error: responseMsr,
-        //   errorStack: exception.stack,
-        //   errorName: exception.name,
-        //   errorDetails: exception,
-        //   url: `${request.protocol}://${request.get("host")}${request.url}`,
-        //   method: request.method,
-        //   duration: Date.now() - startTime,
-        // });
+        this.logger.error("Bad Request", "", {
+          statusCode: status,
+          success: false,
+          message: "Bad Request",
+          error: responseMsr,
+          errorStack: exception.stack,
+          errorName: exception.name,
+          errorDetails: exception,
+          url: `${request.protocol}://${request.get("host")}${request.url}`,
+          method: request.method,
+          duration: Date.now() - startTime,
+        });
 
         return response.status(status).json({
           statusCode: status,
@@ -143,18 +145,18 @@ export class ResponseInterceptor<T>
     }
 
     // Fallback for non-validation errors
-    // this.axiomLogger.error({
-    //   statusCode: status,
-    //   success: false,
-    //   message: message ?? "Request failed",
-    //   error: exception,
-    //   errorStack: exception.stack,
-    //   errorName: exception.name,
-    //   errorDetails: exception,
-    //   url: `${request.protocol}://${request.get("host")}${request.url}`,
-    //   method: request.method,
-    //   duration: Date.now() - startTime,
-    // });
+    this.logger.error("Request failed", "", {
+      statusCode: status,
+      success: false,
+      message: message ?? "Request failed",
+      error: exception,
+      errorStack: exception.stack,
+      errorName: exception.name,
+      errorDetails: exception,
+      url: `${request.protocol}://${request.get("host")}${request.url}`,
+      method: request.method,
+      duration: Date.now() - startTime,
+    });
 
     return response.status(status).json({
       statusCode: status,

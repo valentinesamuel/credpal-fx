@@ -1,8 +1,9 @@
-import { Controller, Get, Logger } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
+import { AppLogger } from "@shared/observability/logger";
 
 @Controller()
 export class AppController {
-  private readonly logger = new Logger(AppController.name);
+  private readonly logger = new AppLogger(AppController.name);
   constructor() {}
 
   @Get()

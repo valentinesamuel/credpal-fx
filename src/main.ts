@@ -1,9 +1,10 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
-import { Logger } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { AppLogger } from "@shared/observability/logger";
+import { Logger } from "@nestjs/common";
 import { ResponseInterceptor } from "@shared/interceptors/response.interceptor";
 
 const PRODUCT_NAME = "Credpal FX";
@@ -58,8 +59,10 @@ function buildAPIDocumentation(app, configService: ConfigService) {
 }
 
 async function bootstrap() {
+  const logger = new AppLogger("Bootstrap");
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
+  logger.setFileLogging(configService.get("common.logging.enableFileLogging"));
 
   setUpCORS(app, configService);
 
@@ -69,12 +72,21 @@ async function bootstrap() {
 
   await app.listen(configService.get("common.port"));
 
-  Logger.log(
+  logger.log(
     `${PRODUCT_NAME} running on port ${configService.get("common.port")}: visit http://localhost:${configService.get("common.port")}/${configService.get("common.swaggerApiRoot")}`,
   );
 }
 
-bootstrap().catch((error) => {
-  Logger.error("Unhandled startup error", error);
+bootstrap().catch((err) => {
+  const logger = new AppLogger("Bootstrap");
+  logger.log(err);
+  logger.error({
+    message: "Unhandled startup error",
+    error: err,
+    errorType: "startup_error",
+    errorStack: err.stack,
+    errorName: err.name,
+    errorDetails: err["errors"],
+  });
   process.exit(1);
 });
