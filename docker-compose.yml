@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: credpalfx_postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_DB=${DATABASE_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      - credpalfx_postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - credpalfx_default
+
+  redis:
+    image: redis:latest
+    container_name: credpalfx_redis
+    env_file:
+      - .env
+    ports:
+      - 6379:6379
+    volumes:
+      - credpalfx_redis_data:/data
+    restart: unless-stopped
+    networks:
+      - credpalfx_default
+
+networks:
+  credpalfx_default:
+    driver: bridge
+    name: credpalfx_default
+
+volumes:
+  credpalfx_postgres_data:
+    driver: local
+  credpalfx_redis_data:
+    driver: local
