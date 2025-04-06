@@ -2,7 +2,7 @@ import * as Joi from "joi";
 
 const NODE_ENVIRONMENTS: string[] = ["local", "development", "production"];
 const DEFAULT_NODE_ENV: string = NODE_ENVIRONMENTS[0];
-const DEFAULT_APP_PORT: number = 3001;
+const DEFAULT_APP_PORT: number = 3005;
 const DEFAULT_DATABASE_PORT: number = 5432;
 const DEFAULT_REDIS_PORT: number = 6379;
 const IS_DEVELOPMENT_DEFAULT: boolean = false;
@@ -49,6 +49,9 @@ export default {
     DATABASE_RETRY_ATTEMPTS: Joi.number().default(
       DEFAULT_DATABASE_RETRY_ATTEMPTS,
     ),
+
+    // logging
+    ENABLE_FILE_LOGGING: Joi.boolean().required(),
 
     // swagger
     SWAGGER_API_ROOT: Joi.string().required(),

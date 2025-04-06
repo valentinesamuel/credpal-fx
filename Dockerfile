@@ -59,6 +59,6 @@ COPY . .
 
 RUN npm run build && npm run migration:run
 
-EXPOSE 3001
+EXPOSE 3005
 
 ENTRYPOINT ["sh", "-c", "npm run preStart && npm run start"]

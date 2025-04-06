@@ -1,10 +1,11 @@
+import * as dotenv from "dotenv";
 import { Injectable, LoggerService } from "@nestjs/common";
 import { createLogger, transports, format, Logger } from "winston";
 import * as fs from "fs";
 import * as winston from "winston";
-import { ConfigService } from "@nestjs/config";
 
-const ENABLE_FILE_LOGGING = process.env.ENABLE_FILE_LOGGING || "FALSE";
+dotenv.config();
+const ENABLE_FILE_LOGGING = process.env.ENABLE_FILE_LOGGING;
 
 @Injectable()
 export class AppLogger implements LoggerService {
@@ -14,7 +15,7 @@ export class AppLogger implements LoggerService {
   private logFilePath = "nestjs-logs/app.log";
 
   constructor(private readonly namespace: string = "") {
-    this.fileLoggingEnabled = ENABLE_FILE_LOGGING;
+    this.fileLoggingEnabled = "TRUE";
     this.setupLogger();
   }
 

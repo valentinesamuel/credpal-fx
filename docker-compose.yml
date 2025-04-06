@@ -1,40 +1,111 @@
 services:
-  # grafana:
-  #   image: grafana/grafana:10.1.2
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #   volumes:
-  #     - grafana-storage:/var/lib/grafana
 
-  # loki:
-  #   image: grafana/loki:2.9.0
-  #   ports:
-  #     - "3100:3100"
-  #   command: -config.file=/etc/loki/local-config.yaml
-    
-  # promtail:
-  #   image: grafana/promtail:2.9.0
-  #   volumes:
-  #     - ./src/shared/observability/config/promtail-config.yaml:/etc/promtail/config.yaml
-  #     - ./nestjs-logs:/var/log/nest
-  #   command: -config.file=/etc/promtail/config.yaml
+  prometheus:
+      image: prom/prometheus:latest
+      container_name: prometheus
+      ports:
+        - "9090:9090"
+      volumes:
+        - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus_data:/prometheus
+        - ./nestjs-logs:/nestjs-logs:ro
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.path=/prometheus'
+        - '--web.console.libraries=/etc/prometheus/console_libraries'
+        - '--web.console.templates=/etc/prometheus/consoles'
+        - '--web.enable-lifecycle'
+      restart: unless-stopped
+      networks:
+        - monitoring
 
-  # prometheus:
-  #   image: prom/prometheus:latest
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./src/shared/observability/config/prometheus.yml:/etc/prometheus/prometheus.yml
+  # Grafana - Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./nestjs-logs:/nestjs-logs:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
 
-  # tempo:
-  #   image: grafana/tempo:2.3.1
-  #   ports:
-  #     - "3200:3200"
-  #   command: ["-config.file=/etc/tempo.yaml"]
-  #   volumes:
-  #     - ./src/shared/observability/config/tempo.yaml:/etc/tempo.yaml
+  # Loki - Log aggregation
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml
+      - ./monitoring/loki/loki_data:/loki
+      - ./nestjs-logs:/nestjs-logs:ro
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  # Promtail - Log collector for Loki
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - ./monitoring/promtail/promtail-config.yml:/etc/promtail/config.yml
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./nestjs-logs:/nestjs-logs:ro
+    command: -config.file=/etc/promtail/config.yml
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - loki
+
+  # Tempo - Distributed tracing backend
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    command: -config.file=/etc/tempo/tempo-config.yml
+    volumes:
+      - ./monitoring/tempo/tempo-config.yml:/etc/tempo/tempo-config.yml
+      - ./monitoring/tempo/tempo_data:/tmp/tempo
+      - ./nestjs-logs:/nestjs-logs:ro
+    ports:
+      - "3200:3200"  # tempo
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  # OpenTelemetry Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: --config=/etc/otel-collector-config.yml
+    volumes:
+      - ./monitoring/otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ./nestjs-logs:/nestjs-logs:ro
+    ports:
+      - "4316:4317"  # OTLP gRPC receiver
+      - "8888:8888"  # metrics endpoint
+      - "8889:8889"  # health check extension
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - tempo
+      - prometheus
+      - loki
 
   postgres:
     image: postgres:latest
@@ -71,11 +142,23 @@ networks:
   credpalfx_default:
     driver: bridge
     name: credpalfx_default
+  monitoring:
+    driver: bridge
+    name: monitoring
 
 volumes:
   credpalfx_postgres_data:
     driver: local
   credpalfx_redis_data:
     driver: local
-  # grafana-storage:
-  #   driver: local
+  loki_data:
+    driver: local
+  tempo_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  nestjs-logs:
+    driver: local
+

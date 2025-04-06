@@ -90,5 +90,5 @@ clean:
 		docker compose down >/dev/null 2>&1; \
 		echo "✓ Stopped all running services"; \
 	fi
-	@docker volume rm -f credpal-fx_credpalfx_postgres_data credpal-fx_credpalfx_redis_data >/dev/null 2>&1 || true
+	@docker volume rm -f credpal-fx_tempo_data credpal-fx_prometheus_data credpal-fx_grafana_data credpal-fx_loki_data credpal-fx_credpalfx_postgres_data credpal-fx_credpalfx_redis_data >/dev/null 2>&1 || true
 	@echo "✓ Successfully cleaned up all resources" 

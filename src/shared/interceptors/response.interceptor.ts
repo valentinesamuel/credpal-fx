@@ -75,15 +75,16 @@ export class ResponseInterceptor<T>
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
 
-    this.logger.info("Request successful", {
-      statusCode,
-      success: true,
-      message: "Request successful",
-      path: `${request.protocol}://${request.get("host")}${request.url}`,
-      method: request.method,
-      duration: Date.now() - startTime,
-    });
-
+    if (request.url !== "/metrics") {
+      this.logger.info("Request successful", {
+        statusCode,
+        success: true,
+        message: "Request successful",
+        path: `${request.protocol}://${request.get("host")}${request.url}`,
+        method: request.method,
+        duration: Date.now() - startTime,
+      });
+    }
     return {
       statusCode,
       success: true,

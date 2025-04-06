@@ -3,7 +3,7 @@ import { registerAs } from "@nestjs/config";
 const NODE_ENVIRONMENTS = ["development", "production"];
 
 export default registerAs("common", () => ({
-  port: process.env.APP_PORT || 3000,
+  port: process.env.APP_PORT,
   appName: process.env.APP_NAME,
   appHostName: process.env.APP_HOSTNAME,
   corsWhitelist: process.env.CORS_WHITELIST,
@@ -15,6 +15,9 @@ export default registerAs("common", () => ({
     port: process.env.REDIS_PORT,
     password: process.env.REDIS_PASSWORD,
     url: process.env.REDIS_URL,
+  },
+  logging: {
+    enableFileLogging: process.env.ENABLE_FILE_LOGGING,
   },
   auth: {
     authName: process.env.APP_AUTH_NAME,

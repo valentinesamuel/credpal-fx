@@ -1,21 +1,81 @@
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { NodeSDK, resources } from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto";
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from "@opentelemetry/semantic-conventions";
+import {
+  LoggerProvider,
+  SimpleLogRecordProcessor,
+} from "@opentelemetry/sdk-logs";
+import { logs } from "@opentelemetry/api-logs";
+import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
+import { Resource } from "@opentelemetry/resources";
 import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
 
-const traceExporter = new OTLPTraceExporter({
-  url: "http://localhost:3200/v1/traces",
-});
+const resource: Resource = {
+  attributes: {
+    [ATTR_SERVICE_NAME]: "nestjs-app",
+    [ATTR_SERVICE_VERSION]: "1.0.0",
+  },
+  asyncAttributesPending: false,
+  getRawAttributes: () => [],
+  merge: (other: Resource | null) => other || this,
+  waitForAsyncAttributes: () => Promise.resolve(),
+};
 
-const sdk = new NodeSDK({
-  spanProcessor: new BatchSpanProcessor(traceExporter),
-  instrumentations: [
-    getNodeAutoInstrumentations(),
-    new NestInstrumentation({
-      enabled: true,
+export function setupTelemetry() {
+  const sdk = new NodeSDK({
+    resource: resource,
+    traceExporter: new OTLPTraceExporter({
+      url: "http://localhost:4316/v1/traces",
     }),
-  ],
-});
+    metricReader: new PeriodicExportingMetricReader({
+      exporter: new OTLPMetricExporter({
+        url: "http://localhost:4316/v1/metrics",
+      }),
+    }),
+    instrumentations: [
+      getNodeAutoInstrumentations(),
+      new NestInstrumentation({
+        enabled: true,
+      }),
+    ],
+  });
 
-sdk.start();
+  // Set up logs
+  const loggerProvider = new LoggerProvider({
+    resource: resource,
+  });
+
+  const logExporter = new OTLPLogExporter({
+    url: "http://localhost:4316/v1/logs",
+  });
+
+  loggerProvider.addLogRecordProcessor(
+    new SimpleLogRecordProcessor(logExporter),
+  );
+  logs.setGlobalLoggerProvider(loggerProvider);
+
+  // Start the SDK
+  sdk.start();
+
+  // Handle shutdown gracefully
+  const shutdown = () => {
+    sdk
+      .shutdown()
+      .then(() => console.log("Tracing and metrics terminated"))
+      .catch((error) =>
+        console.log("Error terminating tracing and metrics", error),
+      )
+      .finally(() => process.exit(0));
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
+}
+
+// To use in main.ts, simply import and call setupTelemetry() before bootstrapping your app
