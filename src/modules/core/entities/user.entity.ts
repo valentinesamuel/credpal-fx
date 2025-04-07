@@ -1,5 +1,5 @@
 import { BaseEntity } from "@shared/repositoryHelpers/base.entity";
-import { Column, Entity, Index, OneToMany, Unique } from "typeorm";
+import { Column, Entity, Index, OneToOne, Unique } from "typeorm";
 import { Wallet } from "./wallet.entity";
 
 @Unique(["email", "firstName", "lastName"])
@@ -18,9 +18,9 @@ export class User extends BaseEntity {
   @Column({ type: "varchar" })
   password: string;
 
-  @Column({ type: "boolean" })
+  @Column({ type: "boolean", default: false })
   isVerified: boolean;
 
-  @OneToMany(() => Wallet, (wallet) => wallet.user)
-  wallets: Wallet[];
+  @OneToOne(() => Wallet, (wallet) => wallet.user)
+  wallet: Wallet;
 }

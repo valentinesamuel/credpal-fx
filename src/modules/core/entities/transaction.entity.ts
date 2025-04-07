@@ -2,6 +2,7 @@ import { BaseEntity } from "@shared/repositoryHelpers/base.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { WalletCurrency } from "./walletBalance.entity";
 import { Wallet } from "./wallet.entity";
+import { Currency } from "./currency.entity";
 
 export enum TransactionType {
   DEPOSIT = "DEPOSIT",
@@ -45,10 +46,18 @@ export class Transaction extends BaseEntity {
   type: TransactionType;
 
   @Column({ type: "varchar" })
-  sourceCurrency: WalletCurrency;
+  sourceCurrencyId: string;
+
+  @ManyToOne(() => Currency, (currency) => currency.sourceTransactions)
+  @JoinColumn({ name: "sourceCurrencyId" })
+  sourceCurrency: Currency;
 
   @Column({ type: "varchar" })
-  destinationCurrency: WalletCurrency;
+  destinationCurrencyId: string;
+
+  @ManyToOne(() => Currency, (currency) => currency.destinationTransactions)
+  @JoinColumn({ name: "destinationCurrencyId" })
+  destinationCurrency: Currency;
 
   @Column({ type: "integer" })
   amount: number;

@@ -20,6 +20,11 @@ export class EmailAdapter {
     await this.emailProvider.sendPasswordResetEmail(email, resetToken);
   }
 
+  async sendOtpEmail(email: string, otpCode: string): Promise<void> {
+    this.initializeProviders(EmailProviderEnum.GMAIL);
+    await this.emailProvider.sendOtpEmail(email, otpCode);
+  }
+
   private initializeProviders(emailProvider: EmailProviderEnum) {
     switch (emailProvider) {
       case EmailProviderEnum.GMAIL:

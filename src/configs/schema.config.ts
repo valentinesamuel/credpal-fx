@@ -32,6 +32,12 @@ export default {
 
     // jwt
     AUTH_SECRET: Joi.string().required(),
+    AUTH_EXPIRY_MINUTES: Joi.number().required(),
+
+    // otp
+    OTP_SALT_ROUNDS: Joi.number().required(),
+    OTP_EXPIRY_MINUTES: Joi.number().required(),
+    OTP_SMS_FROM: Joi.string().required(),
 
     // sms
     TWILIO_ACCOUNT_SID: Joi.string().required(),

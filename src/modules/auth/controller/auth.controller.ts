@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from "@nestjs/common";
 import {
   ApiInternalServerErrorResponse,
@@ -16,8 +17,13 @@ import {
 import { AppLogger } from "@shared/observability/logger";
 import { RegisterUserDto } from "../dto/registerUser.dto";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { RegisterUserCommand } from "../commands/commandHandlers";
+import {
+  RegisterUserCommand,
+  VerifyOtpCommand,
+} from "../commands/commandHandlers";
 import { GetUserByIdQuery } from "../queries/queryHandlers";
+import { VerifyOtpDto } from "../dto/verifyOtp.dto";
+import { OtpGuard } from "@modules/otp/guards/otp.guard";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -40,14 +46,18 @@ export class AuthController {
     return this.commandBus.execute(new RegisterUserCommand(registerUserDto));
   }
 
-  @Get("user/:id")
+  @UseGuards(OtpGuard)
+  @Post("verify")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ operationId: "getUserById", summary: "get user by id" })
-  @ApiOkResponse({ description: "user found" })
+  @ApiOperation({ operationId: "verify", summary: "verify a user" })
+  @ApiOkResponse({ description: "user verified" })
   @ApiInternalServerErrorResponse({
     description: "Internal server error",
   })
-  async getUserById(@Param("id") userId: string) {
-    return this.queryBus.execute(new GetUserByIdQuery(userId));
+  async verify(@Body() verifyOtpDto: VerifyOtpDto) {
+    const result = await this.commandBus.execute(
+      new VerifyOtpCommand(verifyOtpDto),
+    );
+    return result;
   }
 }

@@ -10,6 +10,7 @@ export class GmailProvider implements EmailInterface {
   private readonly logger = new AppLogger(GmailProvider.name);
 
   private readonly EMAIL_FROM: string;
+  private readonly expiryMinutes: number;
 
   constructor(
     private readonly mailerService: MailerService,
@@ -18,6 +19,9 @@ export class GmailProvider implements EmailInterface {
     this.EMAIL_FROM = this.configService.get<string>(
       "notification.email.gmail.smtpFrom",
     );
+    this.expiryMinutes = this.configService.get<number>(
+      "common.otp.expiryMinutes",
+    );
   }
 
   async sendWelcomeEmail(email: string, firstName: string): Promise<void> {
@@ -25,7 +29,7 @@ export class GmailProvider implements EmailInterface {
       await this.mailerService.sendMail({
         to: email,
         from: this.EMAIL_FROM,
-        subject: "Welcome to Our App!",
+        subject: "Welcome to CredpalFX!",
         html: `
           <div>
             <h1>Welcome ${firstName}!</h1>
@@ -69,6 +73,26 @@ export class GmailProvider implements EmailInterface {
         `Failed to send password reset email to ${email}`,
         error.stack,
       );
+      throw error;
+    }
+  }
+
+  async sendOtpEmail(email: string, otpCode: string): Promise<void> {
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        from: this.EMAIL_FROM,
+        subject: "OTP Verification",
+        html: `
+          <div>
+            <h1>OTP Verification</h1>
+            <p>Your OTP is ${otpCode}, expires in ${this.expiryMinutes} minutes</p>
+          </div>
+        `,
+      });
+      this.logger.log(`OTP email sent to ${email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send OTP email to ${email}`, error.stack);
       throw error;
     }
   }

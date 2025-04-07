@@ -10,6 +10,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { CoreModule } from "@modules/core/core.module";
 import { AuthModule } from "@modules/auth/auth.module";
+import { OtpModule } from "@modules/otp/otp.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from "@modules/auth/auth.module";
     }),
     CoreModule,
     AuthModule,
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@adapters/cache.module";
 import { EmailModule } from "@adapters/email/email.module";
+import { OtpModule } from "@modules/otp/otp.module";
 
 // Define all command handlers
 const CommandHandlers = [RegisterUserHandler];
@@ -32,8 +33,7 @@ const QueryHandlers = [GetUserByIdHandler];
         signOptions: { expiresIn: "1d" },
       }),
     }),
-    CacheModule,
-    EmailModule,
+    OtpModule,
   ],
   providers: [
     // Services

@@ -10,6 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { EmailAdapter } from "@adapters/email/email.adapter";
+import { OtpService } from "@modules/core/services/otp.service";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)
@@ -22,9 +23,10 @@ export class RegisterUserHandler
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly userService: UserService,
     private configService: ConfigService,
-    private readonly jwtService: JwtService,
-    private readonly cacheAdapter: CacheAdapter,
-    private readonly emailAdapter: EmailAdapter,
+    // private readonly jwtService: JwtService,
+    // private readonly cacheAdapter: CacheAdapter,
+    // private readonly emailAdapter: EmailAdapter,
+    private readonly otpService: OtpService,
   ) {}
 
   async execute(command: RegisterUserCommand) {
@@ -33,11 +35,20 @@ export class RegisterUserHandler
     return this.entityManager.transaction(async () => {
       this.logger.log("Registering user in transaction");
 
-      // Use the transactional service
+      const hashedPassword = await this.hashPassword(payload.password);
+
       await this.userService.findUserAndFailIfExist({
         email: payload.email,
       });
-      const user = await this.userService.addUser(payload);
+
+      const user = await this.userService.addUser({
+        ...payload,
+        password: hashedPassword,
+      });
+
+      const otp = await this.otpService.generateOtp(payload.email);
+      await this.otpService.createOtp(otp.otpCode, payload.email);
+      await this.otpService.sendOtpToPhoneNumber(otp.otpCode, payload.email);
 
       this.logger.log("User registered successfully");
       return {

@@ -8,10 +8,13 @@ export class Otp extends BaseEntity {
   pinId: string;
 
   @Column({ type: "time with time zone" })
-  expiresAt: string;
+  expiresAt: Date;
 
   @Column({ type: "boolean" })
   isActive: boolean;
+
+  @Column({ type: "varchar" })
+  email: string;
 
   @Column({ type: "varchar" })
   userId: string;

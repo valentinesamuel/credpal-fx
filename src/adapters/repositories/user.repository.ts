@@ -1,8 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, EntityManager, Repository } from "typeorm";
 import { User } from "@modules/core/entities/user.entity";
+
+export type PartialPickUser = Partial<Pick<User, "id" | "email">>;
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -39,7 +41,12 @@ export class UserRepository extends Repository<User> {
     return this.userRepository.softDelete({ id });
   }
 
-  async findOneAndUpdateById(id: string, data: Partial<User>) {
-    return this.userRepository.update({ id }, data);
+  async findOneAndUpdateByData(userData: PartialPickUser, data: Partial<User>) {
+    const user = await this.getUserByData(userData);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    await this.userRepository.update({ id: user.id }, data);
+    return this.getUserByData({ id: user.id });
   }
 }

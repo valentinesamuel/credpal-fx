@@ -1,4 +1,7 @@
-import { UserRepository } from "@adapters/repositories/user.repository";
+import {
+  PartialPickUser,
+  UserRepository,
+} from "@adapters/repositories/user.repository";
 import {
   ConflictException,
   Injectable,
@@ -45,5 +48,9 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
     return user;
+  }
+
+  async updateUserByData(userData: PartialPickUser, data: Partial<User>) {
+    return this.userRepository.findOneAndUpdateByData(userData, data);
   }
 }
