@@ -30,7 +30,7 @@ import { CacheAdapter } from "./cache/cache.adapter";
       inject: [ConfigService],
     }),
   ],
-  providers: [RedisProvider, CacheAdapter],
+  providers: [RedisProvider, CacheAdapter, Keyv],
   exports: [CacheAdapter],
 })
 export class CacheModule {}

@@ -5,7 +5,9 @@ const NODE_ENVIRONMENTS = ["development", "production"];
 export default registerAs("common", () => ({
   port: process.env.APP_PORT,
   appName: process.env.APP_NAME,
+  appAuthSecret: process.env.APP_AUTH_SECRET,
   appHostName: process.env.APP_HOSTNAME,
+  appAuthName: process.env.APP_AUTH_NAME,
   corsWhitelist: process.env.CORS_WHITELIST,
   nodeEnv: process.env.NODE_ENV,
   tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY,

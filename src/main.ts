@@ -8,6 +8,8 @@ import { Logger } from "@nestjs/common";
 import { ResponseInterceptor } from "@shared/interceptors/response.interceptor";
 import { setupTelemetry } from "@shared/observability/tracing";
 import { TraceInterceptor } from "@shared/interceptors/trace.interceptor";
+import { CustomFieldValidationPipe } from "@shared/validations/custom.validation";
+import { AuthorizationGuard } from "@shared/guards/authorization.guard";
 
 const PRODUCT_NAME = "Credpal FX";
 const PRODUCT_TAG = "Credpal FX";
@@ -69,6 +71,10 @@ async function bootstrap() {
 
   setUpCORS(app, configService);
 
+  app.useGlobalPipes(CustomFieldValidationPipe);
+
+  app.useGlobalGuards(new AuthorizationGuard(configService));
+
   app.useGlobalInterceptors(new ResponseInterceptor(), new TraceInterceptor());
 
   buildAPIDocumentation(app, configService);
@@ -82,7 +88,6 @@ async function bootstrap() {
 
 bootstrap().catch((err) => {
   const logger = new AppLogger("Bootstrap");
-  logger.log(err);
   logger.error({
     message: "Unhandled startup error",
     error: err,

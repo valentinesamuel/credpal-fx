@@ -8,6 +8,8 @@ import schemaConfig from "@config/schema.config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Broker } from "@broker/broker";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
+import { CoreModule } from "@modules/core/core.module";
+import { AuthModule } from "@modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { PrometheusModule } from "@willsoto/nestjs-prometheus";
     PrometheusModule.register({
       path: "/metrics",
     }),
+    CoreModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [Broker],

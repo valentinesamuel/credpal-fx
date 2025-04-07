@@ -23,6 +23,7 @@ export default {
     APP_HOSTNAME: Joi.string().required(),
     CORS_WHITELIST: Joi.string().required(),
     APP_AUTH_NAME: Joi.string().required(),
+    APP_AUTH_SECRET: Joi.string().required(),
     NODE_ENV: Joi.string()
       .valid(...NODE_ENVIRONMENTS)
       .default(DEFAULT_NODE_ENV),

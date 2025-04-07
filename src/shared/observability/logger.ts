@@ -15,7 +15,7 @@ export class AppLogger implements LoggerService {
   private logFilePath = "nestjs-logs/app.log";
 
   constructor(private readonly namespace: string = "") {
-    this.fileLoggingEnabled = "TRUE";
+    this.fileLoggingEnabled = ENABLE_FILE_LOGGING;
     this.setupLogger();
   }
 
