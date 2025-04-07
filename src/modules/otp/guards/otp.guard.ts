@@ -17,7 +17,7 @@ export type UserOtpRequest = {
 export class OtpGuard implements CanActivate {
   private readonly logger = new AppLogger(OtpGuard.name);
 
-  constructor(private readonly otpService: OtpService) {}
+  constructor() {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
@@ -26,9 +26,7 @@ export class OtpGuard implements CanActivate {
 
     this.logger.log("Checking OTP...", otp);
 
-    const isOtpValid = await this.otpService.validateOtp(otp);
-
-    if (!isOtpValid) {
+    if (!otp) {
       this.logger.log("❌ ERR_CREDPAL_3: Invalid OTP");
       throw new BadRequestException("ERR_CREDPAL_3: Invalid OTP");
     }

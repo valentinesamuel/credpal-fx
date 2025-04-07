@@ -45,7 +45,7 @@ export class OtpService {
     const expiresAt = addMinutes(new Date(), this.expiryMinutes);
 
     return this.otpRepository.createOtp({
-      email: otp.email,
+      phoneNumber: otp.phoneNumber,
       pinId,
       expiresAt,
       isActive: true,
@@ -67,14 +67,14 @@ export class OtpService {
     const response = await this.smsAdapter.sendSMS({
       to: phone,
       from: this.configService.get<string>("notification.sms.twilio.from"),
-      message: `Your OTP is ${otpCode} and it would expire in ${this.expiryMinutes} minutes - CredpalFX`,
+      message: `Your OTP is ${otpCode} and it will expire in ${this.expiryMinutes} minutes - CredpalFX`,
     });
     return response;
   }
 
   async validateOtp(otp: VerifyOtpDto): Promise<boolean> {
     const otpRecord = await this.otpRepository.findOne({
-      where: { email: otp.email, isActive: true },
+      where: { phoneNumber: otp.phoneNumber, isActive: true },
     });
 
     if (!otpRecord) {
@@ -83,7 +83,7 @@ export class OtpService {
     const isOtpValid = await bcrypt.compare(otp.otpCode, otpRecord.pinId);
 
     if (!isOtpValid) {
-      throw new BadRequestException("Invalid OTP");
+      return false;
     }
 
     if (otpRecord.expiresAt < new Date()) {
@@ -91,17 +91,19 @@ export class OtpService {
       throw new BadRequestException("OTP Expired");
     }
 
-    this.otpRepository.update(otpRecord.id, { isActive: false });
     return true;
   }
 
-  async markOtpAsUsed(otpCode: string) {
+  async markOtpAsUsed(otp: VerifyOtpDto) {
+    const pinId = await bcrypt.hash(otp.otpCode, this.otpSaltRounds);
+
     const otpRecord = await this.otpRepository.findOne({
-      where: { pinId: otpCode },
+      where: { phoneNumber: otp.phoneNumber, isActive: true },
     });
     if (!otpRecord) {
-      throw new BadRequestException("Invalid OTP");
+      return false;
     }
     await this.otpRepository.update(otpRecord.id, { isActive: false });
+    return true;
   }
 }

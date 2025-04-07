@@ -33,18 +33,18 @@ export class TwilioProvider
 
   async sendSMS(params: SendSMSParams): Promise<BaseSMSResponse | any> {
     try {
-      // const response = await this.twilioClient.messages.create({
-      //   body: params.message,
-      //   from: this.FROM,
-      //   to: params.to,
-      // });
+      const response = await this.twilioClient.messages.create({
+        body: params.message,
+        from: this.FROM,
+        to: params.to,
+      });
 
-      // this.logger.log("✅ Twilio API request successful:", response);
-      // return {
-      //   status: "success",
-      //   message: response,
-      // };
-      console.log("✅ Twilio API request successful:", params);
+      this.logger.log("✅ Twilio API request successful:", response);
+      return {
+        status: "success",
+        message: response,
+      };
+      // console.log("✅ Twilio API request successful:", params);
     } catch (error) {
       this.logger.error("❌ Twilio API request failed:", error.message);
       return {

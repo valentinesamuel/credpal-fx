@@ -13,12 +13,12 @@ export class VerifyOtpDto {
   otpCode: string;
 
   @ApiProperty({
-    description: "The email of the user",
+    description: "The phone number of the user",
     type: "string",
     required: true,
-    example: "user@example.com",
+    example: "+2348123456789",
   })
   @IsString()
   @IsNotEmpty()
-  email: string;
+  phoneNumber: string;
 }

@@ -13,9 +13,13 @@ import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@adapters/cache.module";
 import { EmailModule } from "@adapters/email/email.module";
 import { OtpModule } from "@modules/otp/otp.module";
+import { UtilityService } from "@shared/utils/utility.service";
+import { CountryModule } from "@modules/country/country.module";
+import { VerifyOtpHandler } from "./commands/handlers/verifyOtpHandler.command";
+import { SMSModule } from "@adapters/sms/sms.module";
 
 // Define all command handlers
-const CommandHandlers = [RegisterUserHandler];
+const CommandHandlers = [RegisterUserHandler, VerifyOtpHandler];
 
 const QueryHandlers = [GetUserByIdHandler];
 
@@ -24,6 +28,8 @@ const QueryHandlers = [GetUserByIdHandler];
     ConfigModule.forRoot(),
     CqrsModule,
     CoreModule,
+    CacheModule,
+    SMSModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -34,6 +40,7 @@ const QueryHandlers = [GetUserByIdHandler];
       }),
     }),
     OtpModule,
+    CountryModule,
   ],
   providers: [
     // Services

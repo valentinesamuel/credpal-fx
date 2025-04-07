@@ -23,6 +23,16 @@ export class RegisterUserDto {
   password: string;
 
   @ApiProperty({
+    description: "The phone number of the user",
+    type: "string",
+    required: true,
+    example: "+2348123456789",
+  })
+  @IsString()
+  @IsNotEmpty()
+  phoneNumber: string;
+
+  @ApiProperty({
     description: "The first name of the user",
     type: "string",
     required: true,

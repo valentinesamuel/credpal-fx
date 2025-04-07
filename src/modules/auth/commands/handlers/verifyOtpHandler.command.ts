@@ -13,8 +13,8 @@ import { User } from "@modules/core/entities/user.entity";
 import { EmailAdapter } from "@adapters/email/email.adapter";
 import { SMSAdapter } from "@adapters/sms/sms.adapter";
 
-@CommandHandler(VerifyOtpCommand)
 @Injectable()
+@CommandHandler(VerifyOtpCommand)
 export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
   private readonly logger = new AppLogger(VerifyOtpHandler.name);
 
@@ -39,10 +39,10 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
         throw new BadRequestException("Invalid OTP");
       }
 
-      await this.otpService.markOtpAsUsed(payload.otpCode);
+      await this.otpService.markOtpAsUsed(payload);
 
       const user = await this.userService.updateUserByData(
-        { email: payload.email },
+        { phoneNumber: payload.phoneNumber },
         { isVerified: true },
       );
 
@@ -79,10 +79,10 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
   }
 
   async sendWelcomeSMS(phoneNumber: string) {
-    await this.smsAdapter.sendSMS({
-      to: phoneNumber,
-      message: `Welcome to CredpalFX`,
-    });
+    // await this.smsAdapter.sendSMS({
+    //   to: phoneNumber,
+    //   message: `Welcome to CredpalFX`,
+    // });
   }
 
   async createWallet(userId: string) {}

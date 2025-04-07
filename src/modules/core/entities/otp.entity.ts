@@ -14,7 +14,7 @@ export class Otp extends BaseEntity {
   isActive: boolean;
 
   @Column({ type: "varchar" })
-  email: string;
+  phoneNumber: string;
 
   @Column({ type: "varchar", nullable: true })
   userId: string;
