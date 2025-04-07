@@ -14,11 +14,11 @@ import { CacheAdapter } from "./cache/cache.adapter";
           stores: [
             new Keyv(
               new KeyvRedis({
-                url: configService.get<string>("cache.url"), // The Redis server URL (use 'rediss' for TLS)
-                password: configService.get<string>("cache.password"), // Optional password if Redis has authentication enabled
+                url: configService.get<string>("cache.url"),
+                password: configService.get<string>("cache.password"),
 
                 socket: {
-                  port: Number(configService.get<string>("cache.port")), // Port number
+                  port: Number(configService.get<string>("cache.port")),
                   reconnectStrategy: (retries) => Math.min(retries * 50, 2000), // Custom reconnect logic
                   keepAlive: 30000, // Keep-alive timeout (in milliseconds)
                 },
