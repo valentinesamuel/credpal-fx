@@ -4,6 +4,7 @@ import { User } from "@modules/core/entities/user.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@adapters/cache.module";
+import { Broker } from "@broker/broker";
 
 @Module({
   imports: [

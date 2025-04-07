@@ -7,12 +7,17 @@ import {
 } from "@nestjs/swagger";
 import { AppLogger } from "@shared/observability/logger";
 import { RegisterUserDto } from "../dto/registerUser.dto";
+import { Broker } from "@broker/broker";
+import { RegisterUserUsecase } from "../usecases/registerUser.usecase";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   private readonly logger = new AppLogger(AuthController.name);
-  constructor() {}
+  constructor(
+    private readonly serviceBroker: Broker,
+    private readonly registerUserUsecase: RegisterUserUsecase,
+  ) {}
 
   @Post("register")
   @HttpCode(HttpStatus.OK)
@@ -22,8 +27,11 @@ export class AuthController {
     description: "Internal server error",
   })
   async register(@Body() registerUserDto: RegisterUserDto) {
-    this.logger.log(
-      `otp verification in progress for,${registerUserDto.email}`,
+    const result = await this.serviceBroker.runUsecases(
+      [this.registerUserUsecase],
+      {
+        ...registerUserDto,
+      },
     );
   }
 }

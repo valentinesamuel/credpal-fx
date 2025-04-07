@@ -5,6 +5,8 @@ import { UserRepository } from "@adapters/repositories/user.repository";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@modules/core/entities/user.entity";
 import { AuthController } from "./controller/auth.controller";
+import { RegisterUserUsecase } from "./usecases/registerUser.usecase";
+import { Broker } from "@broker/broker";
 
 @Module({
   imports: [CoreModule, TypeOrmModule.forFeature([User])],
@@ -14,6 +16,12 @@ import { AuthController } from "./controller/auth.controller";
 
     // Repositories
     UserRepository,
+
+    // UseCases
+    RegisterUserUsecase,
+
+    // Broker
+    Broker,
   ],
   exports: [],
   controllers: [AuthController],
