@@ -21,25 +21,25 @@ export class UserRepository extends Repository<User> {
   }
 
   async createUser(userData: Partial<User>): Promise<User> {
-    const user = this.create(userData);
-    return this.save(user);
+    const user = this.entityManager.create(User, userData);
+    return this.userRepository.save(user);
   }
 
   async getUserByData(
     userData: Partial<Pick<User, "id" | "email">>,
   ): Promise<User> {
-    return this.findOne({
+    return this.userRepository.findOne({
       where: [{ email: userData?.email }, { id: userData?.id }],
       select: ["id", "firstName", "lastName", "email", "createdAt"],
-      relations: ["profiles", "country"],
+      relations: ["wallets"],
     });
   }
 
   async findOneAndDeleteById(id: string): Promise<DeleteResult> {
-    return this.softDelete({ id });
+    return this.userRepository.softDelete({ id });
   }
 
   async findOneAndUpdateById(id: string, data: Partial<User>) {
-    return this.update({ id }, data);
+    return this.userRepository.update({ id }, data);
   }
 }

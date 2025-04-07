@@ -5,11 +5,18 @@ import { UserRepository } from "@adapters/repositories/user.repository";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@modules/core/entities/user.entity";
 import { AuthController } from "./controller/auth.controller";
-import { RegisterUserUsecase } from "./usecases/registerUser.usecase";
-import { Broker } from "@broker/broker";
+import { CqrsModule } from "@nestjs/cqrs";
+import { GetUserByIdHandler } from "./queries/handlers/getUserById.handler";
+import { RegisterUserHandler } from "./commands/handlers/registerUserHandler.command";
+
+// Define all command handlers
+const CommandHandlers = [RegisterUserHandler];
+
+// Define all query handlers
+const QueryHandlers = [GetUserByIdHandler];
 
 @Module({
-  imports: [CoreModule, TypeOrmModule.forFeature([User])],
+  imports: [CqrsModule, CoreModule, TypeOrmModule.forFeature([User])],
   providers: [
     // Services
     UserService,
@@ -17,13 +24,10 @@ import { Broker } from "@broker/broker";
     // Repositories
     UserRepository,
 
-    // UseCases
-    RegisterUserUsecase,
-
-    // Broker
-    Broker,
+    // Handlers
+    ...CommandHandlers,
+    ...QueryHandlers,
   ],
-  exports: [],
   controllers: [AuthController],
 })
 export class AuthModule {}

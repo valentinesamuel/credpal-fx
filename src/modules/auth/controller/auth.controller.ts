@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from "@nestjs/common";
 import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -7,16 +15,18 @@ import {
 } from "@nestjs/swagger";
 import { AppLogger } from "@shared/observability/logger";
 import { RegisterUserDto } from "../dto/registerUser.dto";
-import { Broker } from "@broker/broker";
-import { RegisterUserUsecase } from "../usecases/registerUser.usecase";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { RegisterUserCommand } from "../commands/commandHandlers";
+import { GetUserByIdQuery } from "../queries/queryHandlers";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   private readonly logger = new AppLogger(AuthController.name);
+
   constructor(
-    private readonly serviceBroker: Broker,
-    private readonly registerUserUsecase: RegisterUserUsecase,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Post("register")
@@ -27,11 +37,17 @@ export class AuthController {
     description: "Internal server error",
   })
   async register(@Body() registerUserDto: RegisterUserDto) {
-    const result = await this.serviceBroker.runUsecases(
-      [this.registerUserUsecase],
-      {
-        ...registerUserDto,
-      },
-    );
+    return this.commandBus.execute(new RegisterUserCommand(registerUserDto));
+  }
+
+  @Get("user/:id")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ operationId: "getUserById", summary: "get user by id" })
+  @ApiOkResponse({ description: "user found" })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error",
+  })
+  async getUserById(@Param("id") userId: string) {
+    return this.queryBus.execute(new GetUserByIdQuery(userId));
   }
 }
