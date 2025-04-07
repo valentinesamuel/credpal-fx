@@ -5,8 +5,6 @@ import { EntityManager } from "typeorm";
 import { UserService } from "@modules/core/services/user.service";
 import { Injectable } from "@nestjs/common";
 import { RegisterUserCommand } from "../commandHandlers";
-import { User } from "@modules/core/entities/user.entity";
-import { UserRepository } from "@adapters/repositories/user.repository";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)

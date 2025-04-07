@@ -6,7 +6,6 @@ import typeormConfig from "@config/typeorm.config";
 import cacheConfig from "@config/cache.config";
 import schemaConfig from "@config/schema.config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Broker } from "@broker/broker";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { CoreModule } from "@modules/core/core.module";
 import { AuthModule } from "@modules/auth/auth.module";
@@ -29,7 +28,7 @@ import { AuthModule } from "@modules/auth/auth.module";
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [Broker],
-  exports: [Broker],
+  providers: [],
+  exports: [],
 })
 export class AppModule {}
