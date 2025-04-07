@@ -4,7 +4,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, EntityManager, Repository } from "typeorm";
 import { User } from "@modules/core/entities/user.entity";
 
-export type PartialPickUser = Partial<Pick<User, "id" | "email">>;
+export type PartialPickUser = Partial<
+  Pick<User, "id" | "email" | "phoneNumber">
+>;
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -29,7 +31,11 @@ export class UserRepository extends Repository<User> {
 
   async getUserByData(userData: PartialPickUser): Promise<User> {
     return this.userRepository.findOne({
-      where: [{ email: userData?.email }, { id: userData?.id }],
+      where: [
+        { email: userData?.email },
+        { id: userData?.id },
+        { phoneNumber: userData?.phoneNumber },
+      ],
       relations: ["wallet"],
     });
   }

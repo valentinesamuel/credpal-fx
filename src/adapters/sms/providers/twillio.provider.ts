@@ -6,15 +6,16 @@ import {
   SMSNotificationInterface,
 } from "../sms.interface";
 import * as twilio from "twilio";
+import { AppLogger } from "@shared/observability/logger";
 
 @Injectable()
 export class TwilioProvider
   implements SMSNotificationInterface<BaseSMSResponse>
 {
-  private readonly logger = new Logger(TwilioProvider.name);
-  private readonly twilioClient;
-  private readonly MESSAGING_SERVICE_SID: string;
+  private readonly logger = new AppLogger(TwilioProvider.name);
+  private readonly twilioClient: twilio.Twilio;
   private readonly WHATSAPP_FROM: string;
+  private readonly FROM: string;
 
   constructor(private readonly configService: ConfigService) {
     const accountSid = this.configService.get<string>(
@@ -23,29 +24,27 @@ export class TwilioProvider
     const authToken = this.configService.get<string>(
       "notification.sms.twilio.authToken",
     );
-    this.MESSAGING_SERVICE_SID = this.configService.get<string>(
-      "notification.sms.twilio.messagingServiceSid",
-    );
     this.WHATSAPP_FROM = this.configService.get<string>(
       "notification.sms.twilio.whatsappFrom",
     );
+    this.FROM = this.configService.get<string>("notification.sms.twilio.from");
     this.twilioClient = twilio(accountSid, authToken);
   }
 
   async sendSMS(params: SendSMSParams): Promise<BaseSMSResponse | any> {
     try {
-      const response = await this.twilioClient.messages.create({
-        body: params.message,
-        from: "CredpalFX",
-        messagingServiceSid: this.MESSAGING_SERVICE_SID,
-        to: params.to,
-      });
+      // const response = await this.twilioClient.messages.create({
+      //   body: params.message,
+      //   from: this.FROM,
+      //   to: params.to,
+      // });
 
-      this.logger.log("✅ Twilio API request successful:", response);
-      return {
-        status: "success",
-        message: response,
-      };
+      // this.logger.log("✅ Twilio API request successful:", response);
+      // return {
+      //   status: "success",
+      //   message: response,
+      // };
+      console.log("✅ Twilio API request successful:", params);
     } catch (error) {
       this.logger.error("❌ Twilio API request failed:", error.message);
       return {

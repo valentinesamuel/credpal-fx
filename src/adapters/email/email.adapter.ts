@@ -12,6 +12,7 @@ import {
   DestinationTypeEnum,
 } from "@modules/core/entities/config.entity";
 import { Injectable } from "@nestjs/common";
+import { SendGridProvider } from "./providers/sendgrid.provider";
 
 @Injectable()
 export class EmailAdapter implements EmailInterface {
@@ -19,8 +20,8 @@ export class EmailAdapter implements EmailInterface {
   private readonly logger = new AppLogger(EmailAdapter.name);
   private readonly config: Promise<Config>;
   constructor(
-    private readonly sendGridProvider: EmailInterface,
-    private configRepository: ConfigRepository,
+    private readonly sendGridProvider: SendGridProvider,
+    private readonly configRepository: ConfigRepository,
   ) {
     this.config = this.configRepository.findConfig({
       where: { type: DestinationTypeEnum.EMAIL, isActive: true },

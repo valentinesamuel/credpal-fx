@@ -1,6 +1,6 @@
 export type SendSMSParams = {
   to: string;
-  from: string;
+  from?: string;
   message: string;
 };
 

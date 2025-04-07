@@ -41,6 +41,7 @@ export class RegisterUserHandler
       });
 
       const otp = await this.otpService.generateOtp(payload.email);
+
       await this.otpService.createOtp(
         {
           email: payload.email,
@@ -48,7 +49,7 @@ export class RegisterUserHandler
         },
         user.id,
       );
-      await this.otpService.sendOtpEmail(otp.otpCode, payload.email);
+      await this.otpService.sendOtpSms(otp.otpCode, payload.email);
 
       this.logger.log("User registered successfully");
       return {

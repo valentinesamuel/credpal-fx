@@ -11,6 +11,7 @@ import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { User } from "@modules/core/entities/user.entity";
 import { EmailAdapter } from "@adapters/email/email.adapter";
+import { SMSAdapter } from "@adapters/sms/sms.adapter";
 
 @CommandHandler(VerifyOtpCommand)
 @Injectable()
@@ -23,7 +24,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     private configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly cacheAdapter: CacheAdapter,
-    private readonly emailAdapter: EmailAdapter,
+    private readonly smsAdapter: SMSAdapter,
     private readonly otpService: OtpService,
   ) {}
 
@@ -52,7 +53,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
       const token = await this.generateJwtToken(user);
 
       // send verification email
-      await this.emailAdapter.sendWelcomeEmail(user.email, user.firstName);
+      await this.sendWelcomeSMS(user.phoneNumber);
 
       delete user.password;
 
@@ -75,6 +76,13 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
       Number(this.configService.get<number>("common.jwt.expiryMinutes")),
     );
     return token;
+  }
+
+  async sendWelcomeSMS(phoneNumber: string) {
+    await this.smsAdapter.sendSMS({
+      to: phoneNumber,
+      message: `Welcome to CredpalFX`,
+    });
   }
 
   async createWallet(userId: string) {}

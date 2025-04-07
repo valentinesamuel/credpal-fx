@@ -43,7 +43,6 @@ export default {
     TWILIO_ACCOUNT_SID: Joi.string().required(),
     TWILIO_AUTH_TOKEN: Joi.string().required(),
     TWILIO_FROM: Joi.string().required(),
-    TWILIO_MESSAGING_SERVICE_SID: Joi.string().required(),
     TWILIO_WHATSAPP_FROM: Joi.string().required(),
 
     // Email

@@ -31,6 +31,7 @@ export class UserService {
   async findUserAndFailIfExist(filter: {
     email?: string;
     id?: string;
+    phoneNumber?: string;
   }): Promise<void> {
     const user = await this.userRepository.getUserByData(filter);
     if (user) {
