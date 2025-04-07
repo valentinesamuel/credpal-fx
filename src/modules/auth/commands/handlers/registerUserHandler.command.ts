@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
+import { EmailAdapter } from "@adapters/email/email.adapter";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)
@@ -23,6 +24,7 @@ export class RegisterUserHandler
     private configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly cacheAdapter: CacheAdapter,
+    private readonly emailAdapter: EmailAdapter,
   ) {}
 
   async execute(command: RegisterUserCommand) {

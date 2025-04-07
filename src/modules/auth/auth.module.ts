@@ -8,15 +8,33 @@ import { AuthController } from "./controller/auth.controller";
 import { CqrsModule } from "@nestjs/cqrs";
 import { GetUserByIdHandler } from "./queries/handlers/getUserById.handler";
 import { RegisterUserHandler } from "./commands/handlers/registerUserHandler.command";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
+import { CacheModule } from "@adapters/cache.module";
+import { EmailModule } from "@adapters/email/email.module";
 
 // Define all command handlers
 const CommandHandlers = [RegisterUserHandler];
 
-// Define all query handlers
 const QueryHandlers = [GetUserByIdHandler];
 
 @Module({
-  imports: [CqrsModule, CoreModule, TypeOrmModule.forFeature([User])],
+  imports: [
+    CqrsModule,
+    CoreModule,
+    TypeOrmModule.forFeature([User]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        global: true,
+        secret: configService.get<string>("common.auth.authSecret"),
+        signOptions: { expiresIn: "1d" },
+      }),
+    }),
+    CacheModule,
+    EmailModule,
+  ],
   providers: [
     // Services
     UserService,

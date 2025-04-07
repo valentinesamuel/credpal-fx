@@ -18,14 +18,14 @@ export class AuthorizationGuard implements CanActivate {
 
     // Get the token from the request headers
     const accessKey =
-      req?.headers[this.configService.get<string>("common.appAuthName")];
+      req?.headers[this.configService.get<string>("common.auth.authName")];
 
     if (!accessKey) {
       this.logger.error("❌ ERR_CREDPAL_1: Request is forbidden");
       throw new ForbiddenException("Request is forbidden", "ERR_CREDPAL_1");
     }
 
-    const token = this.configService.get<string>("common.appAuthSecret");
+    const token = this.configService.get<string>("common.auth.authSecret");
 
     if (accessKey !== token) {
       this.logger.error("❌ ERR_CREDPAL_2: Request is forbidden");

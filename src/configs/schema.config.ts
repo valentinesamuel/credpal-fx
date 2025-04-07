@@ -33,10 +33,19 @@ export default {
     // jwt
     AUTH_SECRET: Joi.string().required(),
 
-    // Encryption
-    ENCRYPTION_KEY: Joi.string().required(),
-    ENCRYPTION_IV_LENGTH: Joi.number().required(),
-    ENCRYPTION_ALGORITHM: Joi.string().required(),
+    // sms
+    TWILIO_ACCOUNT_SID: Joi.string().required(),
+    TWILIO_AUTH_TOKEN: Joi.string().required(),
+    TWILIO_FROM: Joi.string().required(),
+    TWILIO_MESSAGING_SERVICE_SID: Joi.string().required(),
+    TWILIO_WHATSAPP_FROM: Joi.string().required(),
+
+    // Email
+    GMAIL_SMTP_HOST: Joi.string().required(),
+    GMAIL_SMTP_PORT: Joi.number().required(),
+    GMAIL_SMTP_USERNAME: Joi.string().required(),
+    GMAIL_SMTP_PASSWORD: Joi.string().required(),
+    GMAIL_SMTP_FROM: Joi.string().required(),
 
     // typeorm
     DATABASE_TYPE: Joi.string().required(),

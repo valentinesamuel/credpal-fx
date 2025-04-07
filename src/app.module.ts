@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import commonConfig from "@config/common.config";
 import typeormConfig from "@config/typeorm.config";
 import cacheConfig from "@config/cache.config";
+import notificationConfig from "@config/notification.config";
 import schemaConfig from "@config/schema.config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
@@ -13,7 +14,7 @@ import { AuthModule } from "@modules/auth/auth.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [commonConfig, typeormConfig, cacheConfig],
+      load: [commonConfig, typeormConfig, cacheConfig, notificationConfig],
       ...schemaConfig,
     }),
     TypeOrmModule.forRootAsync({
