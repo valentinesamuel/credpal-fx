@@ -5,6 +5,10 @@ import { EntityManager } from "typeorm";
 import { UserService } from "@modules/core/services/user.service";
 import { Injectable } from "@nestjs/common";
 import { RegisterUserCommand } from "../commandHandlers";
+import * as bcrypt from "bcrypt";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { CacheAdapter } from "@adapters/cache/cache.adapter";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)
@@ -16,6 +20,9 @@ export class RegisterUserHandler
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly userService: UserService,
+    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly cacheAdapter: CacheAdapter,
   ) {}
 
   async execute(command: RegisterUserCommand) {
@@ -36,5 +43,10 @@ export class RegisterUserHandler
         userId: user.id,
       };
     });
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const salt = this.configService.get<string>("common.saltRounds");
+    return bcrypt.hash(password, Number(salt));
   }
 }

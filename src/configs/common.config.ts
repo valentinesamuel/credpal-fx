@@ -7,6 +7,7 @@ export default registerAs("common", () => ({
   appName: process.env.APP_NAME,
   appAuthSecret: process.env.APP_AUTH_SECRET,
   appHostName: process.env.APP_HOSTNAME,
+  saltRounds: process.env.SALT_ROUNDS,
   appAuthName: process.env.APP_AUTH_NAME,
   corsWhitelist: process.env.CORS_WHITELIST,
   nodeEnv: process.env.NODE_ENV,
