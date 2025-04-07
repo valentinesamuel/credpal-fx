@@ -10,7 +10,7 @@ import { GetUserByIdHandler } from "./queries/handlers/getUserById.handler";
 import { RegisterUserHandler } from "./commands/handlers/registerUserHandler.command";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { CacheModule } from "@adapters/cache.module";
+import { CacheModule } from "@adapters/cache/cache.module";
 import { EmailModule } from "@adapters/email/email.module";
 import { OtpModule } from "@modules/otp/otp.module";
 import { UtilityService } from "@shared/utils/utility.service";

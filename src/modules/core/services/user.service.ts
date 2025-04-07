@@ -21,7 +21,7 @@ export class UserService {
   }
 
   async findUserById(id: string) {
-    return this.userRepository.findOne({ where: { id: id } });
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async findUserByData(userData: Partial<Pick<User, "id" | "email">>) {
@@ -53,5 +53,27 @@ export class UserService {
 
   async updateUserByData(userData: PartialPickUser, data: Partial<User>) {
     return this.userRepository.findOneAndUpdateByData(userData, data);
+  }
+
+  async getPermissions(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        "role",
+        "role.rolePermissions",
+        "role.rolePermissions.permission",
+      ],
+    });
+    return user.role.rolePermissions.map(
+      (rolePermission) => rolePermission.permission.action,
+    );
+  }
+
+  async getRole(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ["role"],
+    });
+    return user.role.name;
   }
 }

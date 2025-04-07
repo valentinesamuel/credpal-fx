@@ -36,7 +36,7 @@ export class UserRepository extends Repository<User> {
         { id: userData?.id },
         { phoneNumber: userData?.phoneNumber },
       ],
-      relations: ["wallet", "country"],
+      relations: ["wallet", "country", "role"],
     });
   }
 

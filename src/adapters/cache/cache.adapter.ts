@@ -2,19 +2,22 @@ import { Injectable } from "@nestjs/common";
 import { RedisProvider } from "./providers/redis.provider";
 import { AppLogger } from "@shared/observability/logger";
 import { CacheInterface, CacheProviderEnum } from "./cache.interface";
+import { Logger } from "@nestjs/common";
 
 @Injectable()
 export class CacheAdapter implements CacheInterface {
   private cacheProvider: CacheInterface;
-  private logger = new AppLogger(CacheAdapter.name);
-  constructor(private readonly redisProvider: RedisProvider) {}
+  private logger = new Logger(CacheAdapter.name);
+  constructor(private readonly redisProvider: RedisProvider) {
+    this.logger.debug("Cache adapter initialized");
+  }
 
   async set(key: string, value: any, ttl?: number): Promise<boolean> {
     this.initializeProvider(CacheProviderEnum.REDIS);
     return this.cacheProvider.set(key, value, ttl);
   }
 
-  async get(key: string): Promise<any> {
+  async get(key: string) {
     this.initializeProvider(CacheProviderEnum.REDIS);
     return this.cacheProvider.get(key);
   }

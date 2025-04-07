@@ -10,7 +10,6 @@ import { OtpService } from "@modules/core/services/otp.service";
 import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { User } from "@modules/core/entities/user.entity";
-import { EmailAdapter } from "@adapters/email/email.adapter";
 import { SMSAdapter } from "@adapters/sms/sms.adapter";
 
 @Injectable()
@@ -70,11 +69,13 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
       id: user.id,
       email: user.email,
     });
+
     await this.cacheAdapter.set(
-      `auth:${user.id}`,
+      `token:${user.id}`,
       token,
       Number(this.configService.get<number>("common.jwt.expiryMinutes")),
     );
+
     return token;
   }
 

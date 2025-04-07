@@ -11,6 +11,7 @@ import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { CoreModule } from "@modules/core/core.module";
 import { AuthModule } from "@modules/auth/auth.module";
 import { OtpModule } from "@modules/otp/otp.module";
+import { CacheModule } from "@adapters/cache/cache.module";
 
 @Module({
   imports: [

@@ -95,8 +95,6 @@ export class OtpService {
   }
 
   async markOtpAsUsed(otp: VerifyOtpDto) {
-    const pinId = await bcrypt.hash(otp.otpCode, this.otpSaltRounds);
-
     const otpRecord = await this.otpRepository.findOne({
       where: { phoneNumber: otp.phoneNumber, isActive: true },
     });

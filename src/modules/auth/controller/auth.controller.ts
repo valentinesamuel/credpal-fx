@@ -24,17 +24,13 @@ import {
 import { GetUserByIdQuery } from "../queries/queryHandlers";
 import { VerifyOtpDto } from "../dto/verifyOtp.dto";
 import { OtpGuard } from "@modules/otp/guards/otp.guard";
-import * as bcrypt from "bcrypt";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   private readonly logger = new AppLogger(AuthController.name);
 
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Post("register")
   @HttpCode(HttpStatus.OK)
