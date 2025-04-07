@@ -1,34 +1,42 @@
-import { EmailInterface, EmailProviderEnum } from "./email.interface";
-import { GmailProvider } from "./providers/gmail.provider";
+import { ConfigRepository } from "@adapters/repositories/config.repository";
+import {
+  EmailInterface,
+  EmailProviderEnum,
+  EmailResponse,
+  ISendMailParams,
+} from "./email.interface";
+("./providers/sendgrid.provider");
 import { AppLogger } from "@shared/observability/logger";
+import {
+  Config,
+  DestinationTypeEnum,
+} from "@modules/core/entities/config.entity";
+import { Injectable } from "@nestjs/common";
 
-export class EmailAdapter {
+@Injectable()
+export class EmailAdapter implements EmailInterface {
   private emailProvider: EmailInterface;
   private readonly logger = new AppLogger(EmailAdapter.name);
-  constructor(private readonly gmailProvider: GmailProvider) {}
-
-  async sendWelcomeEmail(email: string, firstName: string): Promise<void> {
-    this.initializeProviders(EmailProviderEnum.GMAIL);
-    await this.emailProvider.sendWelcomeEmail(email, firstName);
+  private readonly config: Promise<Config>;
+  constructor(
+    private readonly sendGridProvider: EmailInterface,
+    private configRepository: ConfigRepository,
+  ) {
+    this.config = this.configRepository.findConfig({
+      where: { type: DestinationTypeEnum.EMAIL, isActive: true },
+    });
   }
 
-  async sendPasswordResetEmail(
-    email: string,
-    resetToken: string,
-  ): Promise<void> {
-    this.initializeProviders(EmailProviderEnum.GMAIL);
-    await this.emailProvider.sendPasswordResetEmail(email, resetToken);
+  async sendMail(params: ISendMailParams): Promise<EmailResponse> {
+    const config = await this.config;
+    this.initializeProviders(config?.provider ?? EmailProviderEnum.SENDGRID);
+    return await this.emailProvider.sendMail(params);
   }
 
-  async sendOtpEmail(email: string, otpCode: string): Promise<void> {
-    this.initializeProviders(EmailProviderEnum.GMAIL);
-    await this.emailProvider.sendOtpEmail(email, otpCode);
-  }
-
-  private initializeProviders(emailProvider: EmailProviderEnum) {
+  private initializeProviders(emailProvider: string) {
     switch (emailProvider) {
-      case EmailProviderEnum.GMAIL:
-        this.emailProvider = this.gmailProvider;
+      case EmailProviderEnum.SENDGRID:
+        this.emailProvider = this.sendGridProvider;
         break;
       default:
         this.logger.error("❌ Invalid email provider.");

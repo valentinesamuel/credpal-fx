@@ -1,15 +1,12 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import * as bcrypt from "bcrypt";
 import { AppLogger } from "@shared/observability/logger";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 import { UserService } from "@modules/core/services/user.service";
 import { Injectable } from "@nestjs/common";
 import { RegisterUserCommand } from "../commandHandlers";
-import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-import { CacheAdapter } from "@adapters/cache/cache.adapter";
-import { EmailAdapter } from "@adapters/email/email.adapter";
 import { OtpService } from "@modules/core/services/otp.service";
 
 @Injectable()
@@ -23,9 +20,6 @@ export class RegisterUserHandler
     @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly userService: UserService,
     private configService: ConfigService,
-    // private readonly jwtService: JwtService,
-    // private readonly cacheAdapter: CacheAdapter,
-    // private readonly emailAdapter: EmailAdapter,
     private readonly otpService: OtpService,
   ) {}
 
@@ -47,8 +41,14 @@ export class RegisterUserHandler
       });
 
       const otp = await this.otpService.generateOtp(payload.email);
-      await this.otpService.createOtp(otp.otpCode, payload.email);
-      await this.otpService.sendOtpToPhoneNumber(otp.otpCode, payload.email);
+      await this.otpService.createOtp(
+        {
+          email: payload.email,
+          otpCode: otp.otpCode,
+        },
+        user.id,
+      );
+      await this.otpService.sendOtpEmail(otp.otpCode, payload.email);
 
       this.logger.log("User registered successfully");
       return {
@@ -59,7 +59,11 @@ export class RegisterUserHandler
   }
 
   private async hashPassword(password: string): Promise<string> {
-    const salt = this.configService.get<string>("common.saltRounds");
-    return bcrypt.hash(password, Number(salt));
+    const rounds = Number(
+      this.configService.get<string>("common.auth.saltRounds"),
+    );
+    const salt = await bcrypt.genSalt(rounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return hashedPassword;
   }
 }

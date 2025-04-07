@@ -23,7 +23,6 @@ export default {
     APP_HOSTNAME: Joi.string().required(),
     CORS_WHITELIST: Joi.string().required(),
     APP_AUTH_NAME: Joi.string().required(),
-    SALT_ROUNDS: Joi.number().required(),
     APP_AUTH_SECRET: Joi.string().required(),
     NODE_ENV: Joi.string()
       .valid(...NODE_ENVIRONMENTS)
@@ -31,6 +30,7 @@ export default {
     IS_DEVELOPMENT: Joi.boolean().default(IS_DEVELOPMENT_DEFAULT),
 
     // jwt
+    SALT_ROUNDS: Joi.number().required(),
     AUTH_SECRET: Joi.string().required(),
     AUTH_EXPIRY_MINUTES: Joi.number().required(),
 
@@ -47,11 +47,8 @@ export default {
     TWILIO_WHATSAPP_FROM: Joi.string().required(),
 
     // Email
-    GMAIL_SMTP_HOST: Joi.string().required(),
-    GMAIL_SMTP_PORT: Joi.number().required(),
-    GMAIL_SMTP_USERNAME: Joi.string().required(),
-    GMAIL_SMTP_PASSWORD: Joi.string().required(),
-    GMAIL_SMTP_FROM: Joi.string().required(),
+    SENDGRID_FROM: Joi.string().required(),
+    SENDGRID_MAIL_API_KEY: Joi.string().required(),
 
     // typeorm
     DATABASE_TYPE: Joi.string().required(),

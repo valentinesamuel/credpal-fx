@@ -75,7 +75,8 @@ async function bootstrap() {
 
   app.useGlobalGuards(new AuthorizationGuard(configService));
 
-  app.useGlobalInterceptors(new ResponseInterceptor(), new TraceInterceptor());
+  app.useGlobalInterceptors(new TraceInterceptor());
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   buildAPIDocumentation(app, configService);
 

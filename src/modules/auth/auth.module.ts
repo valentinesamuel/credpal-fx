@@ -21,6 +21,7 @@ const QueryHandlers = [GetUserByIdHandler];
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     CqrsModule,
     CoreModule,
     TypeOrmModule.forFeature([User]),
@@ -28,7 +29,6 @@ const QueryHandlers = [GetUserByIdHandler];
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        global: true,
         secret: configService.get<string>("common.auth.authSecret"),
         signOptions: { expiresIn: "1d" },
       }),

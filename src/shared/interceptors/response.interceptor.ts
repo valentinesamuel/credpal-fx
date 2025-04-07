@@ -75,16 +75,16 @@ export class ResponseInterceptor<T>
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
 
-    if (request.url !== "/metrics") {
-      this.logger.info("Request successful", {
-        statusCode,
-        success: true,
-        message: "Request successful",
-        path: `${request.protocol}://${request.get("host")}${request.url}`,
-        method: request.method,
-        duration: Date.now() - startTime,
-      });
-    }
+    // if (request.url !== "/metrics") {
+    //   this.logger.info("Request successful", {
+    //     statusCode,
+    //     success: true,
+    //     message: "Request successful",
+    //     path: `${request.protocol}://${request.get("host")}${request.url}`,
+    //     method: request.method,
+    //     duration: Date.now() - startTime,
+    //   });
+    // }
 
     return {
       statusCode,
@@ -122,18 +122,18 @@ export class ResponseInterceptor<T>
           exceptionResponse["message"],
         );
 
-        this.logger.error("Bad Request", "", {
-          statusCode: status,
-          success: false,
-          message: "Bad Request",
-          error: responseMsr,
-          errorStack: exception.stack,
-          errorName: exception.name,
-          errorDetails: exception,
-          url: `${request.protocol}://${request.get("host")}${request.url}`,
-          method: request.method,
-          duration: Date.now() - startTime,
-        });
+        // this.logger.error("Bad Request", "", {
+        //   statusCode: status,
+        //   success: false,
+        //   message: "Bad Request",
+        //   error: responseMsr,
+        //   errorStack: exception.stack,
+        //   errorName: exception.name,
+        //   errorDetails: exception,
+        //   url: `${request.protocol}://${request.get("host")}${request.url}`,
+        //   method: request.method,
+        //   duration: Date.now() - startTime,
+        // });
 
         return response.status(status).json({
           statusCode: status,
@@ -147,18 +147,18 @@ export class ResponseInterceptor<T>
     }
 
     // Fallback for non-validation errors
-    this.logger.error("Request failed", "", {
-      statusCode: status,
-      success: false,
-      message: message ?? "Request failed",
-      error: exception,
-      errorStack: exception.stack,
-      errorName: exception.name,
-      errorDetails: exception,
-      url: `${request.protocol}://${request.get("host")}${request.url}`,
-      method: request.method,
-      duration: Date.now() - startTime,
-    });
+    // this.logger.error("Request failed", "", {
+    //   statusCode: status,
+    //   success: false,
+    //   message: message ?? "Request failed",
+    //   error: exception,
+    //   errorStack: exception.stack,
+    //   errorName: exception.name,
+    //   errorDetails: exception,
+    //   url: `${request.protocol}://${request.get("host")}${request.url}`,
+    //   method: request.method,
+    //   duration: Date.now() - startTime,
+    // });
 
     return response.status(status).json({
       statusCode: status,

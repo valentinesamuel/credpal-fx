@@ -4,7 +4,6 @@ import * as bcrypt from "bcrypt";
 import { addMinutes } from "date-fns";
 import { AppLogger } from "@shared/observability/logger";
 import { OtpRepository } from "@adapters/repositories/otp.repository";
-import { UserService } from "./user.service";
 import { SMSAdapter } from "@adapters/sms/sms.adapter";
 import { VerifyOtpDto } from "@modules/auth/dto/verifyOtp.dto";
 import { EmailAdapter } from "@adapters/email/email.adapter";
@@ -18,12 +17,13 @@ export class OtpService {
     private readonly configService: ConfigService,
     private readonly otpRepository: OtpRepository,
     private readonly emailAdapter: EmailAdapter,
+    private readonly smsAdapter: SMSAdapter,
   ) {
-    this.otpSaltRounds = this.configService.get<number>(
-      "common.otp.otpSaltRounds",
+    this.otpSaltRounds = Number(
+      this.configService.get<string>("common.otp.otpSaltRounds"),
     );
-    this.expiryMinutes = this.configService.get<number>(
-      "common.otp.expiryMinutes",
+    this.expiryMinutes = Number(
+      this.configService.get<string>("common.otp.expiryMinutes"),
     );
   }
 
@@ -40,27 +40,42 @@ export class OtpService {
     return { otpCode, pinId, expiresAt };
   }
 
-  async createOtp(otpCode: string, email: string) {
-    const pinId = await bcrypt.hash(otpCode, this.otpSaltRounds);
+  async createOtp(otp: VerifyOtpDto, userId: string) {
+    const pinId = await bcrypt.hash(otp.otpCode, this.otpSaltRounds);
     const expiresAt = addMinutes(new Date(), this.expiryMinutes);
 
     return this.otpRepository.createOtp({
-      email,
+      email: otp.email,
       pinId,
       expiresAt,
       isActive: true,
+      userId,
     });
   }
 
-  async sendOtpToPhoneNumber(otpCode: string, email: string) {
-    this.emailAdapter.sendOtpEmail(email, otpCode);
+  async sendOtpEmail(otpCode: string, email: string) {
+    const response = await this.emailAdapter.sendMail({
+      to: email,
+      from: this.configService.get<string>("notification.email.sendgrid.from"),
+      subject: "OTP Verification",
+      text: `Your OTP is ${otpCode}`,
+    });
+    return response;
+  }
+
+  async sendOtpSms(otpCode: string, phone: string) {
+    const response = await this.smsAdapter.sendSMS({
+      to: phone,
+      from: this.configService.get<string>("notification.sms.twilio.from"),
+      message: `Your OTP is ${otpCode} and it would expire in ${this.expiryMinutes} minutes - CredpalFX`,
+    });
+    return response;
   }
 
   async validateOtp(otp: VerifyOtpDto): Promise<boolean> {
     const otpRecord = await this.otpRepository.findOne({
       where: { email: otp.email, isActive: true },
     });
-    this.logger.log("OTP Record...", otpRecord);
 
     if (!otpRecord) {
       return false;

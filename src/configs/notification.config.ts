@@ -11,12 +11,9 @@ export default registerAs("notification", () => ({
     },
   },
   email: {
-    gmail: {
-      smtpHost: process.env.GMAIL_SMTP_HOST,
-      smtpPort: parseInt(process.env.GMAIL_SMTP_PORT, 10),
-      smtpUsername: process.env.GMAIL_SMTP_USERNAME,
-      smtpPassword: process.env.GMAIL_SMTP_PASSWORD,
-      smtpFrom: process.env.GMAIL_SMTP_FROM,
+    sendgrid: {
+      from: process.env.SENDGRID_FROM,
+      sgMailApiKey: process.env.SENDGRID_MAIL_API_KEY,
     },
   },
 }));

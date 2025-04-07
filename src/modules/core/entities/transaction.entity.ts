@@ -74,9 +74,9 @@ export class Transaction extends BaseEntity {
   @Column({ type: "json" })
   metadata: Record<string, any>;
 
-  @Column({ type: "time with time zone" })
+  @Column({ type: "timestamp with time zone" })
   initializedAt: string;
 
-  @Column({ type: "time with time zone" })
+  @Column({ type: "timestamp with time zone" })
   completedAt: string;
 }

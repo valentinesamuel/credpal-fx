@@ -24,6 +24,7 @@ import {
 import { GetUserByIdQuery } from "../queries/queryHandlers";
 import { VerifyOtpDto } from "../dto/verifyOtp.dto";
 import { OtpGuard } from "@modules/otp/guards/otp.guard";
+import * as bcrypt from "bcrypt";
 
 @ApiTags("Auth")
 @Controller("auth")

@@ -7,7 +7,7 @@ export class Otp extends BaseEntity {
   @Column({ type: "varchar" })
   pinId: string;
 
-  @Column({ type: "time with time zone" })
+  @Column({ type: "timestamp with time zone" })
   expiresAt: Date;
 
   @Column({ type: "boolean" })
@@ -16,10 +16,6 @@ export class Otp extends BaseEntity {
   @Column({ type: "varchar" })
   email: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: true })
   userId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "user_id" })
-  user: User;
 }

@@ -27,13 +27,10 @@ export class UserRepository extends Repository<User> {
     return this.userRepository.save(user);
   }
 
-  async getUserByData(
-    userData: Partial<Pick<User, "id" | "email">>,
-  ): Promise<User> {
+  async getUserByData(userData: PartialPickUser): Promise<User> {
     return this.userRepository.findOne({
       where: [{ email: userData?.email }, { id: userData?.id }],
-      select: ["id", "firstName", "lastName", "email", "createdAt"],
-      relations: ["wallets"],
+      relations: ["wallet"],
     });
   }
 

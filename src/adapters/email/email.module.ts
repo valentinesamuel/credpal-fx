@@ -1,35 +1,13 @@
 import { Module } from "@nestjs/common";
-import { MailerModule } from "@nestjs-modules/mailer";
-import { ConfigModule, ConfigService } from "@nestjs/config";
 import { EmailAdapter } from "./email.adapter";
-import { GmailProvider } from "./providers/gmail.provider";
+import { SendGridProvider } from "./providers/sendgrid.provider";
+import { Config } from "@modules/core/entities/config.entity";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigRepository } from "@adapters/repositories/config.repository";
 
 @Module({
-  imports: [
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        transport: {
-          host: configService.get<string>("notification.email.gmail.smtpHost"),
-          secure: true,
-          port: Number(configService.get("notification.email.gmail.smtpPort")),
-          auth: {
-            user: configService.get<string>(
-              "notification.email.gmail.smtpUser",
-            ),
-            pass: configService.get<string>(
-              "notification.email.gmail.smtpPassword",
-            ),
-          },
-        },
-        defaults: {
-          from: configService.get<string>("notification.email.gmail.smtpFrom"),
-        },
-      }),
-    }),
-  ],
-  providers: [EmailAdapter, GmailProvider],
+  imports: [TypeOrmModule.forFeature([Config])],
+  providers: [EmailAdapter, SendGridProvider, ConfigRepository],
   exports: [EmailAdapter],
 })
 export class EmailModule {}
