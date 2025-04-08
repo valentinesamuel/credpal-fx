@@ -47,7 +47,7 @@ export class InitializeUserWalletHandler
         sourceCurrencyId: currency.id,
         destinationCurrencyId: currency.id,
         amount: initialDepositAmount,
-        exchangeRate: 1,
+        exchangeRate: 1, // TODO: Add exchange rate from FX API
         status: TransactionStatus.PENDING,
         referenceId: user.id,
         metadata: { userId: user.id },

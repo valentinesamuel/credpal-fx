@@ -1,5 +1,5 @@
 import { WalletRepository } from "@adapters/repositories/wallet.repository";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { AppLogger } from "@shared/observability/logger";
 import { Wallet } from "../entities/wallet.entity";
 import { WalletBalance } from "../entities/walletBalance.entity";
@@ -12,6 +12,10 @@ export class WalletService {
 
   async getWalletByUserId(userId: string) {
     return this.walletRepository.findWallet({ userId });
+  }
+
+  async getWalletBalanceByData(walletBalanceData: Partial<WalletBalance>) {
+    return this.walletRepository.findWalletBalance(walletBalanceData);
   }
 
   async createWallet(walletData: Partial<Wallet>): Promise<Wallet> {
@@ -28,10 +32,17 @@ export class WalletService {
     return this.walletRepository.updateWallet(id, walletData);
   }
 
+  async updateWalletBalance(
+    id: string,
+    walletBalanceData: Partial<WalletBalance>,
+  ): Promise<WalletBalance> {
+    return this.walletRepository.updateWalletBalance(id, walletBalanceData);
+  }
+
   async getWalletAndFailIfNotExists(id: string) {
     const wallet = await this.walletRepository.findWallet({ id });
     if (!wallet) {
-      throw new Error(`Wallet not found for id: ${id}`);
+      throw new NotFoundException(`Wallet not found for id: ${id}`);
     }
     return wallet;
   }

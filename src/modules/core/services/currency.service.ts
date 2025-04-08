@@ -2,7 +2,7 @@ import {
   CurrencyRepository,
   PickCurrencyData,
 } from "@adapters/repositories/currency.repository";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Currency } from "@modules/core/entities/currency.entity";
 
 @Injectable()
@@ -26,5 +26,18 @@ export class CurrencyService {
 
   async getCurrencyByData(currencyData: PickCurrencyData): Promise<Currency> {
     return this.currencyRepository.getCurrencyByData(currencyData);
+  }
+
+  async getCurrencyByDataAndFailIfNotExists(
+    currencyData: PickCurrencyData,
+  ): Promise<Currency> {
+    const currency =
+      await this.currencyRepository.getCurrencyByData(currencyData);
+    if (!currency) {
+      throw new NotFoundException(
+        `Currency not found for code: ${currencyData.code}`,
+      );
+    }
+    return currency;
   }
 }

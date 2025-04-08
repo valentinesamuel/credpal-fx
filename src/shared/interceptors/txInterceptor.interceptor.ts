@@ -62,6 +62,7 @@ export class TransactionInterceptor implements NestInterceptor {
           .catch((err) => {
             this.logger.error(`Rollback failed: ${err.message}`);
           });
+
         return throwError(() => error);
       }),
     );
