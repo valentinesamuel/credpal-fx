@@ -10,6 +10,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from "@modules/core/entities/transaction.entity";
+import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
 
 @Injectable()
 @CommandHandler(FundWalletCommand)
@@ -21,6 +22,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
     private readonly currencyService: CurrencyService,
     private readonly unitOfWork: UnitOfWork,
     private readonly transactionService: TransactionService,
+    private readonly walletBalanceService: WalletBalanceService,
   ) {}
 
   async execute(command: FundWalletCommand) {
@@ -54,18 +56,19 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
       });
 
       // if there is a wallet balance for that currency, update it, else create a new wallet balance
-      const walletBalance = await this.walletService.getWalletBalanceByData({
-        walletId: wallet.id,
-        currencyId: currency.id,
-      });
+      const walletBalance =
+        await this.walletBalanceService.getWalletBalanceByData({
+          walletId: wallet.id,
+          currencyId: currency.id,
+        });
 
       if (walletBalance) {
-        await this.walletService.updateWalletBalance(walletBalance.id, {
+        await this.walletBalanceService.updateWalletBalance(walletBalance.id, {
           amount: walletBalance.amount + payload.amount,
           availableAmount: walletBalance.availableAmount + payload.amount,
         });
       } else {
-        await this.walletService.createWalletBalance({
+        await this.walletBalanceService.createWalletBalance({
           walletId: wallet.id,
           currencyId: currency.id,
           amount: payload.amount,

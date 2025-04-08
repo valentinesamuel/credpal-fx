@@ -20,7 +20,7 @@ export class WalletBalance extends BaseEntity {
   @Column({ type: "integer" })
   availableAmount: number;
 
-  @OneToOne(() => Wallet)
+  @ManyToOne(() => Wallet)
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet;
 }

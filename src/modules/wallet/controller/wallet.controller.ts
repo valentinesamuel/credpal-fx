@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -25,7 +26,11 @@ import { Request } from "express";
 import { User } from "@modules/core/entities/user.entity";
 import { RequirePermissions } from "@shared/decorators/permission.decorator";
 import { PERMISSIONS } from "@shared/guards/enums/permission.enum";
-import { FundWalletCommand } from "../commands/commandHandlers";
+import {
+  ConvertCurrencyCommand,
+  FundWalletCommand,
+} from "../commands/commandHandlers";
+import { ConvertCurrencyDto } from "../dto/convertCurrency.dto";
 
 @ApiTags("Wallet")
 @Controller("wallet")
@@ -69,5 +74,24 @@ export class WalletController {
   })
   fundWallet(@Req() req: Request & { user: User }) {
     return this.commandBus.execute(new FundWalletCommand(req.body, req.user));
+  }
+
+  @Post("/convert")
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  // @RequirePermissions(
+  //   [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+  //   "ANY",
+  // )
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ operationId: "convertCurrency", summary: "convert currency" })
+  @ApiOkResponse({ description: "currency converted" })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error",
+  })
+  convertCurrency(
+    @Req() req: Request & { user: User },
+    @Body() body: ConvertCurrencyDto,
+  ) {
+    return this.commandBus.execute(new ConvertCurrencyCommand(body, req.user));
   }
 }

@@ -15,9 +15,16 @@ import { WalletBalance } from "@modules/core/entities/walletBalance.entity";
 import { CurrencyModule } from "@modules/currency/currency.module";
 import { InitializeUserWalletHandler } from "./commands/handlers/initializeUserWallet.command";
 import { TransactionModule } from "@modules/transaction/transaction.module";
+import { ConvertCurrencyHandler } from "./commands/handlers/convertCurrency.command";
+import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
+import { WalletBalanceRepository } from "@adapters/repositories/walletBalance.repository";
 
 // Define all command handlers
-const CommandHandlers = [FundWalletHandler, InitializeUserWalletHandler];
+const CommandHandlers = [
+  FundWalletHandler,
+  InitializeUserWalletHandler,
+  ConvertCurrencyHandler,
+];
 
 const QueryHandlers = [GetWalletHandler];
 
@@ -35,9 +42,11 @@ const QueryHandlers = [GetWalletHandler];
   providers: [
     // Services
     WalletService,
+    WalletBalanceService,
 
     // Repositories
     WalletRepository,
+    WalletBalanceRepository,
 
     // Handlers
     ...CommandHandlers,

@@ -12,6 +12,7 @@ export enum TransactionType {
   CHARGEBACK = "CHARGEBACK",
   FEE = "FEE",
   INTEREST = "INTEREST",
+  CONVERSION = "CONVERSION",
 }
 
 export enum PaymentMethod {
@@ -19,6 +20,8 @@ export enum PaymentMethod {
   CREDIT_CARD = "CREDIT_CARD",
   PAYPAL = "PAYPAL",
   CASH = "CASH",
+  WALLET = "WALLET",
+  BONUS = "BONUS",
 }
 
 export enum TransactionStatus {

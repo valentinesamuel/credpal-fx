@@ -56,7 +56,8 @@ export class PermissionsGuard implements CanActivate {
 
     if (
       cachedUserPermissions &&
-      cachedUserPermissions.expires > new Date().getTime()
+      cachedUserPermissions.expires > new Date().getTime() &&
+      cachedUserPermissions.value
     ) {
       userPermissions = JSON.parse(cachedUserPermissions.value);
     } else {
@@ -67,7 +68,7 @@ export class PermissionsGuard implements CanActivate {
       await this.cacheAdapter.set(
         `permissions<rn>${user.id}`,
         JSON.stringify(freshUserPermissions),
-        Number(this.configService.get<number>("cache.ttl")),
+        Number(this.configService.get<number>("cache.ttl")) * 1,
       );
     }
 
@@ -80,7 +81,7 @@ export class PermissionsGuard implements CanActivate {
 
     if (!isValid) {
       this.logger.error(
-        `User ${user.id} does not have the required permissions: ${missingPermissions.join(", ")}`,
+        `User ${user.id} does not have the required permissions: ${missingPermissions.join(", ")}. You have ${userPermissions.join(", ")}`,
       );
       throw new ForbiddenException(`Insufficient Permissions`);
     }

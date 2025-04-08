@@ -44,12 +44,16 @@ export class JwtAuthGuard implements CanActivate {
       // Fetch User Details from cache, if nothing is there, then fetch from DB
       const cachedUser = await this.cacheAdapter.get(`user<rn>${payload.id}`);
 
-      if (!cachedUser || cachedUser.expires > new Date().getTime()) {
+      if (
+        !cachedUser ||
+        cachedUser.expires > new Date().getTime() ||
+        !cachedUser.value
+      ) {
         const user = await this.userService.findUserByIdWithRoles(payload.id);
         this.cacheAdapter.set(
           `user<rn>${payload.id}`,
           JSON.stringify(user),
-          Number(this.configService.get<number>("cache.ttl")),
+          Number(this.configService.get<number>("cache.ttl")) * 1,
         );
         delete user.password;
         req.user = user;

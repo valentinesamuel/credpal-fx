@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  VersionColumn,
 } from "typeorm";
 
 import { IsDateString, IsOptional } from "class-validator";
@@ -23,6 +24,9 @@ export abstract class BaseEntity extends TypeOrmBaseEntity {
     default: () => "CURRENT_TIMESTAMP",
   })
   updatedAt: Date;
+
+  @VersionColumn({ default: 0 })
+  version: number;
 
   @IsOptional()
   @IsDateString()

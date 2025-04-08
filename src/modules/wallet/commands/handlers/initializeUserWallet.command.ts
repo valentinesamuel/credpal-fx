@@ -11,8 +11,7 @@ import {
   TransactionType,
 } from "@modules/core/entities/transaction.entity";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
-import { RoleRepository } from "@adapters/repositories/role.repository";
-import { UserService } from "@modules/core/services/user.service";
+import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
 
 @Injectable()
 @CommandHandler(InitializeUserWalletCommand)
@@ -25,6 +24,7 @@ export class InitializeUserWalletHandler
     private readonly walletService: WalletService,
     private readonly currencyService: CurrencyService,
     private readonly transactionService: TransactionService,
+    private readonly walletBalanceService: WalletBalanceService,
     private readonly unitOfWork: UnitOfWork,
   ) {}
 
@@ -52,13 +52,13 @@ export class InitializeUserWalletHandler
         amount: initialDepositAmount,
         exchangeRate: 1, // TODO: Add exchange rate from FX API
         status: TransactionStatus.PENDING,
-        paymentMethod: PaymentMethod.BANK_TRANSFER,
+        paymentMethod: PaymentMethod.BONUS,
         referenceId: user.id,
         metadata: { userId: user.id },
         initializedAt: new Date().toISOString(),
       });
 
-      await this.walletService.createWalletBalance({
+      await this.walletBalanceService.createWalletBalance({
         walletId: wallet.id,
         currencyId: currency.id,
         amount: initialDepositAmount,

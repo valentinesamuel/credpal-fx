@@ -38,7 +38,7 @@ export class WalletRepository extends BaseRepository<Wallet> {
   ): Promise<WalletBalance> {
     const walletBalance =
       this.walletBalanceRepository.create(walletBalanceData);
-    return this.manager.save(walletBalance);
+    return this.walletBalanceRepository.save(walletBalance);
   }
 
   async findWallet(

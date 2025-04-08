@@ -73,7 +73,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     await this.cacheAdapter.set(
       `token<rn>${user.id}`,
       token,
-      Number(this.configService.get<number>("cache.ttl")),
+      Number(this.configService.get<number>("cache.ttl")) * 1,
     );
 
     return token;
