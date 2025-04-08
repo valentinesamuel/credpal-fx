@@ -34,7 +34,6 @@ export class InitializeUserWalletHandler
         this.logger.log("Initializing user wallet in transaction");
         const initialDepositAmount = 120000;
 
-        // Pass the transaction entity manager to services
         const currency = await this.currencyService.getCurrencyByData(
           { countryId: user.countryId },
           transactionEntityManager,

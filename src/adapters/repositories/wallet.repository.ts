@@ -48,6 +48,7 @@ export class WalletRepository extends Repository<Wallet> {
     const manager = transactionEntityManager || this.entityManager;
     return manager.findOne(Wallet, {
       where: [{ id: filter.id }, { userId: filter.userId }],
+      relations: ["balances", "balances.currency", "balances.currency.country"],
     });
   }
 
