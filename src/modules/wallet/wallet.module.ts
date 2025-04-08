@@ -11,20 +11,26 @@ import { CoreModule } from "@modules/core/core.module";
 import { ConfigModule } from "@nestjs/config";
 import { CacheModule } from "@adapters/cache/cache.module";
 import { AuthModule } from "@modules/auth/auth.module";
+import { WalletBalance } from "@modules/core/entities/walletBalance.entity";
+import { CurrencyModule } from "@modules/currency/currency.module";
+import { InitializeUserWalletHandler } from "./commands/handlers/initializeUserWallet.command";
+import { TransactionModule } from "@modules/transaction/transaction.module";
 
 // Define all command handlers
-const CommandHandlers = [FundWalletHandler];
+const CommandHandlers = [FundWalletHandler, InitializeUserWalletHandler];
 
 const QueryHandlers = [GetWalletHandler];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Wallet]),
+    TypeOrmModule.forFeature([Wallet, WalletBalance]),
     ConfigModule.forRoot(),
     CoreModule,
     CacheModule,
     CqrsModule,
     AuthModule,
+    CurrencyModule,
+    TransactionModule,
   ],
   providers: [
     // Services

@@ -7,6 +7,8 @@ import { OtpRepository } from "@adapters/repositories/otp.repository";
 import { SMSAdapter } from "@adapters/sms/sms.adapter";
 import { VerifyOtpDto } from "@modules/auth/dto/verifyOtp.dto";
 import { EmailAdapter } from "@adapters/email/email.adapter";
+import { EntityManager } from "typeorm";
+import { Otp } from "../entities/otp.entity";
 
 @Injectable()
 export class OtpService {
@@ -18,6 +20,7 @@ export class OtpService {
     private readonly otpRepository: OtpRepository,
     private readonly emailAdapter: EmailAdapter,
     private readonly smsAdapter: SMSAdapter,
+    private readonly entityManager: EntityManager,
   ) {
     this.otpSaltRounds = Number(
       this.configService.get<string>("common.otp.otpSaltRounds"),
@@ -40,17 +43,25 @@ export class OtpService {
     return { otpCode, pinId, expiresAt };
   }
 
-  async createOtp(otp: VerifyOtpDto, userId: string) {
+  async createOtp(
+    otp: VerifyOtpDto,
+    userId: string,
+    transactionEntityManager?: EntityManager,
+  ) {
     const pinId = await bcrypt.hash(otp.otpCode, this.otpSaltRounds);
     const expiresAt = addMinutes(new Date(), this.expiryMinutes);
 
-    return this.otpRepository.createOtp({
-      phoneNumber: otp.phoneNumber,
-      pinId,
-      expiresAt,
-      isActive: true,
-      userId,
-    });
+    const manager = transactionEntityManager || this.entityManager;
+    return this.otpRepository.createOtp(
+      {
+        phoneNumber: otp.phoneNumber,
+        pinId,
+        expiresAt,
+        isActive: true,
+        userId,
+      },
+      transactionEntityManager,
+    );
   }
 
   async sendOtpEmail(otpCode: string, email: string) {
@@ -72,10 +83,17 @@ export class OtpService {
     return response;
   }
 
-  async validateOtp(otp: VerifyOtpDto): Promise<boolean> {
-    const otpRecord = await this.otpRepository.findOne({
-      where: { phoneNumber: otp.phoneNumber, isActive: true },
-    });
+  async validateOtp(
+    otp: VerifyOtpDto,
+    transactionEntityManager?: EntityManager,
+  ): Promise<boolean> {
+    const otpRecord = await this.otpRepository.findOtp(
+      {
+        phoneNumber: otp.phoneNumber,
+        isActive: true,
+      },
+      transactionEntityManager,
+    );
 
     if (!otpRecord) {
       return false;
@@ -87,21 +105,33 @@ export class OtpService {
     }
 
     if (otpRecord.expiresAt < new Date()) {
-      this.otpRepository.update(otpRecord.id, { isActive: false });
+      const manager = transactionEntityManager || this.entityManager;
+      await manager.update(Otp, { id: otpRecord.id }, { isActive: false });
       throw new BadRequestException("OTP Expired");
     }
 
     return true;
   }
 
-  async markOtpAsUsed(otp: VerifyOtpDto) {
-    const otpRecord = await this.otpRepository.findOne({
-      where: { phoneNumber: otp.phoneNumber, isActive: true },
-    });
+  async markOtpAsUsed(
+    otp: VerifyOtpDto,
+    transactionEntityManager?: EntityManager,
+  ) {
+    const otpRecord = await this.otpRepository.findOtp(
+      {
+        phoneNumber: otp.phoneNumber,
+        isActive: true,
+      },
+      transactionEntityManager,
+    );
     if (!otpRecord) {
       return false;
     }
-    await this.otpRepository.update(otpRecord.id, { isActive: false });
+    await this.otpRepository.updateOtp(
+      otpRecord.id,
+      { isActive: false },
+      transactionEntityManager,
+    );
     return true;
   }
 }

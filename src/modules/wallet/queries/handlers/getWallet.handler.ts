@@ -14,8 +14,6 @@ export class GetWalletHandler implements IQueryHandler<GetWalletQuery> {
   async execute(query: GetWalletQuery) {
     const { userId } = query;
 
-    console.log(query);
-
     return this.walletService.getWalletByUserId(userId);
   }
 }

@@ -24,13 +24,21 @@ export class UserRepository extends Repository<User> {
     );
   }
 
-  async createUser(userData: Partial<User>): Promise<User> {
+  async createUser(
+    userData: Partial<User>,
+    transactionEntityManager?: EntityManager,
+  ): Promise<User> {
+    const manager = transactionEntityManager || this.entityManager;
     const user = this.entityManager.create(User, userData);
-    return this.userRepository.save(user);
+    return manager.save(user);
   }
 
-  async getUserByData(userData: PartialPickUser): Promise<User> {
-    return this.userRepository.findOne({
+  async getUserByData(
+    userData: PartialPickUser,
+    transactionEntityManager?: EntityManager,
+  ): Promise<User> {
+    const manager = transactionEntityManager || this.entityManager;
+    return manager.findOne(User, {
       where: [
         { email: userData?.email },
         { id: userData?.id },
@@ -40,16 +48,25 @@ export class UserRepository extends Repository<User> {
     });
   }
 
-  async findOneAndDeleteById(id: string): Promise<DeleteResult> {
-    return this.userRepository.softDelete({ id });
+  async findOneAndDeleteById(
+    id: string,
+    transactionEntityManager?: EntityManager,
+  ): Promise<DeleteResult> {
+    const manager = transactionEntityManager || this.entityManager;
+    return manager.softDelete(User, { id });
   }
 
-  async findOneAndUpdateByData(userData: PartialPickUser, data: Partial<User>) {
-    const user = await this.getUserByData(userData);
+  async findOneAndUpdateByData(
+    userData: PartialPickUser,
+    data: Partial<User>,
+    transactionEntityManager?: EntityManager,
+  ) {
+    const manager = transactionEntityManager || this.entityManager;
+    const user = await this.getUserByData(userData, transactionEntityManager);
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    await this.userRepository.update({ id: user.id }, data);
-    return this.getUserByData({ id: user.id });
+    await manager.update(User, { id: user.id }, data);
+    return this.getUserByData({ id: user.id }, transactionEntityManager);
   }
 }

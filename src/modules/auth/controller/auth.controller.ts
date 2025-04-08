@@ -24,6 +24,7 @@ import {
 import { GetUserByIdQuery } from "../queries/queryHandlers";
 import { VerifyOtpDto } from "../dto/verifyOtp.dto";
 import { OtpGuard } from "@modules/otp/guards/otp.guard";
+import { InitializeUserWalletCommand } from "@modules/wallet/commands/commandHandlers";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -55,6 +56,8 @@ export class AuthController {
     const result = await this.commandBus.execute(
       new VerifyOtpCommand(verifyOtpDto),
     );
+
+    await this.commandBus.execute(new InitializeUserWalletCommand(result.user));
     return result;
   }
 }

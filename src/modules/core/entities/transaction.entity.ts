@@ -76,6 +76,6 @@ export class Transaction extends BaseEntity {
   @Column({ type: "timestamp with time zone" })
   initializedAt: string;
 
-  @Column({ type: "timestamp with time zone" })
+  @Column({ type: "timestamp with time zone", nullable: true })
   completedAt: string;
 }

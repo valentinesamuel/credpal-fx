@@ -28,7 +28,7 @@ export class Wallet extends BaseEntity {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: WalletStatus.ACTIVE })
   status: WalletStatus;
 
   @OneToMany(() => Transaction, (transaction) => transaction.sourceWallet)
