@@ -24,4 +24,8 @@ export class TransactionService {
   ): Promise<Transaction> {
     return this.transactionRepository.updateTransaction(id, transactionData);
   }
+
+  async getAllTransactionsByWalletId(walletId: string): Promise<Transaction[]> {
+    return this.transactionRepository.getAllTransactionsByWalletId(walletId);
+  }
 }

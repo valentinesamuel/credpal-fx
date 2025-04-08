@@ -19,6 +19,7 @@ import { Role } from "@modules/core/entities/role.entity";
 import { RolePermission } from "@modules/core/entities/rolePermission.entity";
 import { CountryModule } from "@modules/country/country.module";
 import { CurrencyModule } from "@modules/currency/currency.module";
+import { TransactionModule } from "@modules/transaction/transaction.module";
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { CurrencyModule } from "@modules/currency/currency.module";
     CountryModule,
     OtpModule,
     WalletModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [SeederService],

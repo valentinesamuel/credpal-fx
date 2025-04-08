@@ -45,4 +45,19 @@ export class TransactionRepository extends Repository<Transaction> {
       id,
     });
   }
+
+  async getAllTransactionsByWalletId(walletId: string): Promise<Transaction[]> {
+    return this.find({
+      where: [{ sourceWalletId: walletId }, { destinationWalletId: walletId }],
+      relations: [
+        "sourceWallet",
+        "destinationWallet",
+        "sourceCurrency",
+        "destinationCurrency",
+      ],
+      order: {
+        createdAt: "DESC",
+      },
+    });
+  }
 }

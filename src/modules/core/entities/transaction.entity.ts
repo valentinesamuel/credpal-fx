@@ -33,6 +33,19 @@ export enum TransactionStatus {
   CHARGEBACK = "CHARGEBACK",
 }
 
+export interface TransactionMetadata {
+  userId: string;
+  rateSource: string;
+  preBalance: {
+    source: number;
+    destination?: number;
+  };
+  postBalance?: {
+    source: number;
+    destination?: number;
+  };
+}
+
 @Entity()
 export class Transaction extends BaseEntity {
   @Index()
@@ -84,7 +97,7 @@ export class Transaction extends BaseEntity {
   referenceId: string;
 
   @Column({ type: "json" })
-  metadata: Record<string, any>;
+  metadata: TransactionMetadata;
 
   @Column({ type: "timestamp with time zone" })
   initializedAt: string;

@@ -18,6 +18,9 @@ import { TransactionModule } from "@modules/transaction/transaction.module";
 import { ConvertCurrencyHandler } from "./commands/handlers/convertCurrency.command";
 import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
 import { WalletBalanceRepository } from "@adapters/repositories/walletBalance.repository";
+import { TransactionService } from "@modules/core/services/transaction.service";
+import { TransactionRepository } from "@adapters/repositories/transaction.repository";
+import { Transaction } from "@modules/core/entities/transaction.entity";
 
 // Define all command handlers
 const CommandHandlers = [
@@ -30,28 +33,30 @@ const QueryHandlers = [GetWalletHandler];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Wallet, WalletBalance]),
+    TypeOrmModule.forFeature([Wallet, WalletBalance, Transaction]),
     ConfigModule.forRoot(),
     CoreModule,
     CacheModule,
     CqrsModule,
     AuthModule,
     CurrencyModule,
-    TransactionModule,
   ],
   providers: [
     // Services
     WalletService,
     WalletBalanceService,
+    TransactionService,
 
     // Repositories
     WalletRepository,
     WalletBalanceRepository,
+    TransactionRepository,
 
     // Handlers
     ...CommandHandlers,
     ...QueryHandlers,
   ],
   controllers: [WalletController],
+  exports: [WalletService, WalletRepository],
 })
 export class WalletModule {}

@@ -65,7 +65,6 @@ export function setupTelemetry() {
   logs.setGlobalLoggerProvider(loggerProvider);
 
   // Start the SDK
-  console.log(process.env.ENABLE_FILE_LOGGING);
   if (process.env.ENABLE_FILE_LOGGING === "true") {
     sdk.start();
   }

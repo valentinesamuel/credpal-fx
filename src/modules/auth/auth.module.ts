@@ -16,6 +16,9 @@ import { VerifyOtpHandler } from "./commands/handlers/verifyOtpHandler.command";
 import { SMSModule } from "@adapters/sms/sms.module";
 import { RoleRepository } from "@adapters/repositories/role.repository";
 import { Role } from "@modules/core/entities/role.entity";
+import { UtilityService } from "@shared/utils/utility.service";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
+import { JwtService } from "@nestjs/jwt";
 
 const CommandHandlers = [RegisterUserHandler, VerifyOtpHandler];
 
@@ -25,8 +28,6 @@ const QueryHandlers = [GetUserByIdHandler];
   imports: [
     ConfigModule.forRoot(),
     CqrsModule,
-    CoreModule,
-
     CacheModule,
     SMSModule,
     TypeOrmModule.forFeature([User, Role]),
@@ -37,6 +38,9 @@ const QueryHandlers = [GetUserByIdHandler];
   providers: [
     // Services
     UserService,
+    UtilityService,
+    UnitOfWork,
+    JwtService,
 
     // Repositories
     UserRepository,

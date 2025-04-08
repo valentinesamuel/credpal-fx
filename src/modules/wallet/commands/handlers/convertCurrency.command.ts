@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { ConvertCurrencyCommand } from "../commandHandlers";
 import { AppLogger } from "@shared/observability/logger";
@@ -21,11 +21,11 @@ export class ConvertCurrencyHandler
   private readonly logger = new AppLogger(ConvertCurrencyHandler.name);
 
   constructor(
+    private readonly transactionService: TransactionService,
     private readonly walletService: WalletService,
     private readonly walletBalanceService: WalletBalanceService,
     private readonly currencyService: CurrencyService,
     private readonly unitOfWork: UnitOfWork,
-    private readonly transactionService: TransactionService,
   ) {}
 
   async execute(command: ConvertCurrencyCommand) {
