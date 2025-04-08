@@ -1,10 +1,9 @@
-import { CacheAdapter } from "@adapters/cache/cache.adapter";
-import { UserService } from "@modules/core/services/user.service";
 import {
   Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Logger,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import {
@@ -14,48 +13,50 @@ import {
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    private userService: UserService,
-    private cacheAdadpter: CacheAdapter,
-  ) {}
+  private readonly logger = new Logger(RolesGuard.name);
+
+  constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const RoleRequirement = this.reflector.getAllAndOverride<RoleRequirement>(
+    const roleRequirement = this.reflector.getAllAndOverride<RoleRequirement>(
       __ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    if (!RoleRequirement) return true;
+    // If no roles are required, allow access
+    if (!roleRequirement) return true;
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    // Fetch user's roles from DB/Redis
-    let userRole: string;
-
-    const cachedUserRole = (await this.cacheAdadpter.get(
-      `role:${user.id}`,
-    )) as string;
-
-    if (cachedUserRole) {
-      userRole = JSON.parse(cachedUserRole);
-    } else {
-      const freshUserRole = await this.userService.getRole(user.id);
-      userRole = freshUserRole;
-      await this.cacheAdadpter.set(
-        `role:${user.id}`,
-        JSON.stringify(freshUserRole),
-        60 * 60,
+    if (!user) {
+      this.logger.error(
+        "User not found in request. Ensure JwtAuthGuard runs first",
       );
+      throw new ForbiddenException("User not authenticated");
     }
 
-    if (!RoleRequirement.roles.includes(userRole)) {
-      throw new ForbiddenException(
-        `User does not have the required role: ${RoleRequirement.roles.join(", ")}`,
+    const hasRequiredRole =
+      roleRequirement.operation === "ANY"
+        ? roleRequirement.roles.some((role) => {
+            const hasRole =
+              user.role?.name.toLowerCase() === role.toLowerCase();
+            return hasRole;
+          })
+        : roleRequirement.roles.every(
+            (role) => user.role?.name.toLowerCase() === role.toLowerCase(),
+          );
+
+    if (!hasRequiredRole) {
+      this.logger.error(
+        `User ${user.id} does not have the required roles: ${roleRequirement.roles.join(", ")}`,
       );
+      throw new ForbiddenException("Insufficient permissions");
     }
 
+    this.logger.log(
+      `✅ Request is authorized for roles: ${roleRequirement.roles.join(", ")}`,
+    );
     return true;
   }
 }

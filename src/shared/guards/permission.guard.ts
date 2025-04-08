@@ -5,6 +5,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import {
@@ -13,55 +14,66 @@ import {
   PermissionRequirement,
   PermissionValidationResult,
 } from "@shared/decorators/permission.decorator";
-import { AppLogger } from "@shared/observability/logger";
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  private logger = new AppLogger(PermissionsGuard.name);
+  private readonly logger = new Logger(PermissionsGuard.name);
+
   constructor(
     private reflector: Reflector,
     private userService: UserService,
-    private cacheAdadpter: CacheAdapter,
+    private cacheAdapter: CacheAdapter,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const PermissionRequirement =
+    const permissionRequirement =
       this.reflector.getAllAndOverride<PermissionRequirement>(
         __PERMISSIONS_KEY,
         [context.getHandler(), context.getClass()],
       );
 
-    if (!PermissionRequirement) return true;
+    // If no permissions are required, allow access
+    if (!permissionRequirement) return true;
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
+    if (!user) {
+      this.logger.error(
+        "User not found in request. Ensure JwtAuthGuard runs first",
+      );
+      throw new ForbiddenException("User not authenticated");
+    }
+
     // Fetch user's permissions from DB/Redis
     let userPermissions: string[];
 
-    const cachedUserPermissions = (await this.cacheAdadpter.get(
+    const cachedUserPermissions = await this.cacheAdapter.get(
       `permissions:${user.id}`,
-    )) as string;
+    );
 
-    if (cachedUserPermissions) {
-      userPermissions = JSON.parse(cachedUserPermissions);
+    if (
+      cachedUserPermissions &&
+      cachedUserPermissions.expires > new Date().getTime()
+    ) {
+      userPermissions = JSON.parse(cachedUserPermissions.value);
     } else {
       const freshUserPermissions = await this.userService.getPermissions(
         user.id,
       );
       userPermissions = freshUserPermissions;
-      await this.cacheAdadpter.set(
+      await this.cacheAdapter.set(
         `permissions:${user.id}`,
         JSON.stringify(freshUserPermissions),
         60 * 60,
       );
     }
 
-    // know the missing permissions and the operation
+    // Validate if user has required permissions
     const { isValid, missingPermissions } = this.validatePermissions(
-      PermissionRequirement.permissions,
+      permissionRequirement.permissions,
       userPermissions,
-      PermissionRequirement.operation,
+      permissionRequirement.operation,
     );
 
     if (!isValid) {
@@ -71,6 +83,9 @@ export class PermissionsGuard implements CanActivate {
       throw new ForbiddenException(`Insufficient Permissions`);
     }
 
+    this.logger.log(
+      `✅ Request is authorized for permissions: ${permissionRequirement.permissions.join(", ")}`,
+    );
     return true;
   }
 
@@ -82,8 +97,12 @@ export class PermissionsGuard implements CanActivate {
     const missingPermissions = requiredPermissions.filter(
       (perm) => !userPermissions.includes(perm),
     );
+
     const isValid =
-      operation === "ALL" ? missingPermissions.length === 0 : true;
+      operation === "ANY"
+        ? missingPermissions.length < requiredPermissions.length
+        : missingPermissions.length === 0;
+
     return { isValid, missingPermissions };
   }
 }

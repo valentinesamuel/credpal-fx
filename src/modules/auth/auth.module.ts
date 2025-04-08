@@ -8,17 +8,13 @@ import { AuthController } from "./controller/auth.controller";
 import { CqrsModule } from "@nestjs/cqrs";
 import { GetUserByIdHandler } from "./queries/handlers/getUserById.handler";
 import { RegisterUserHandler } from "./commands/handlers/registerUserHandler.command";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { JwtModule } from "@nestjs/jwt";
+import { ConfigModule } from "@nestjs/config";
 import { CacheModule } from "@adapters/cache/cache.module";
-import { EmailModule } from "@adapters/email/email.module";
 import { OtpModule } from "@modules/otp/otp.module";
-import { UtilityService } from "@shared/utils/utility.service";
 import { CountryModule } from "@modules/country/country.module";
 import { VerifyOtpHandler } from "./commands/handlers/verifyOtpHandler.command";
 import { SMSModule } from "@adapters/sms/sms.module";
 
-// Define all command handlers
 const CommandHandlers = [RegisterUserHandler, VerifyOtpHandler];
 
 const QueryHandlers = [GetUserByIdHandler];
@@ -28,17 +24,11 @@ const QueryHandlers = [GetUserByIdHandler];
     ConfigModule.forRoot(),
     CqrsModule,
     CoreModule,
+
     CacheModule,
     SMSModule,
     TypeOrmModule.forFeature([User]),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>("common.auth.authSecret"),
-        signOptions: { expiresIn: "1d" },
-      }),
-    }),
+
     OtpModule,
     CountryModule,
   ],
@@ -53,6 +43,7 @@ const QueryHandlers = [GetUserByIdHandler];
     ...CommandHandlers,
     ...QueryHandlers,
   ],
+  exports: [UserService],
   controllers: [AuthController],
 })
 export class AuthModule {}

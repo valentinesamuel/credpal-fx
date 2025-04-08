@@ -20,8 +20,16 @@ export class UserService {
     return this.userRepository.createUser(userData);
   }
 
-  async findUserById(id: string) {
-    return this.userRepository.findOne({ where: { id } });
+  async findUserByIdWithRoles(id: string) {
+    return this.userRepository.findOne({
+      where: { id },
+      relations: [
+        "role",
+        "role.rolePermissions",
+        "role.rolePermissions.permission",
+        "role.rolePermissions.role",
+      ],
+    });
   }
 
   async findUserByData(userData: Partial<Pick<User, "id" | "email">>) {

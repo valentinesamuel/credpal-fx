@@ -1,6 +1,5 @@
 import { BaseEntity } from "@shared/repositoryHelpers/base.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
-import { WalletCurrency } from "./walletBalance.entity";
 import { Wallet } from "./wallet.entity";
 import { Currency } from "./currency.entity";
 

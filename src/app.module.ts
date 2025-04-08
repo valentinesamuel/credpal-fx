@@ -12,6 +12,8 @@ import { CoreModule } from "@modules/core/core.module";
 import { AuthModule } from "@modules/auth/auth.module";
 import { OtpModule } from "@modules/otp/otp.module";
 import { CacheModule } from "@adapters/cache/cache.module";
+import { WalletModule } from "@modules/wallet/wallet.module";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -27,9 +29,18 @@ import { CacheModule } from "@adapters/cache/cache.module";
     PrometheusModule.register({
       path: "/metrics",
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>("common.auth.authSecret"),
+        signOptions: { expiresIn: "1d" },
+      }),
+    }),
     CoreModule,
     AuthModule,
     OtpModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -13,7 +13,7 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
 
   async execute(query: GetUserByIdQuery) {
     this.logger.log(`Fetching user with ID: ${query.userId}`);
-    const user = await this.userService.findUserById(query.userId);
+    const user = await this.userService.findUserByIdWithRoles(query.userId);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${query.userId} not found`);

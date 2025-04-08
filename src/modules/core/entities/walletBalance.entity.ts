@@ -3,14 +3,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { Wallet } from "./wallet.entity";
 import { Currency } from "./currency.entity";
 
-export enum WalletCurrency {
-  USD = "USD",
-  EUR = "EUR",
-  GBP = "GBP",
-  JPY = "JPY",
-  AUD = "AUD",
-}
-
 @Entity()
 export class WalletBalance extends BaseEntity {
   @Column({ type: "varchar" })

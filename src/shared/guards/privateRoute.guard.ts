@@ -5,13 +5,13 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
-import { EncryptionUtil } from "@shared/utils/encryption/encryption.util";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class PrivateRouteGuard implements CanActivate {
   private readonly logger = new Logger(PrivateRouteGuard.name);
 
-  constructor(private readonly encryptionUtil: EncryptionUtil) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
@@ -21,7 +21,8 @@ export class PrivateRouteGuard implements CanActivate {
       throw new UnauthorizedException("Unauthorized");
     }
 
-    const decryptedToken = this.encryptionUtil.decrypt(token);
+    const decryptedToken = await this.jwtService.verifyAsync(token);
+
     if (!decryptedToken) {
       throw new UnauthorizedException("Unauthorized");
     }
