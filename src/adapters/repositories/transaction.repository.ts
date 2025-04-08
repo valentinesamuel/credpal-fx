@@ -21,19 +21,15 @@ export class TransactionRepository extends Repository<Transaction> {
 
   async createTransaction(
     transactionData: Partial<Transaction>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Transaction> {
-    const manager = transactionEntityManager || this.entityManager;
     const transaction = this.create(transactionData);
-    return manager.save(transaction);
+    return this.save(transaction);
   }
 
   async findTransaction(
     filter: Partial<Pick<Transaction, "id">>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Transaction> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Transaction, {
+    return this.findOne({
       where: {
         id: filter.id,
       },
@@ -43,10 +39,8 @@ export class TransactionRepository extends Repository<Transaction> {
   async updateTransaction(
     id: string,
     transactionData: Partial<Transaction>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Transaction> {
-    const manager = transactionEntityManager || this.entityManager;
-    await manager.update(Transaction, { id }, transactionData);
+    await this.update({ id }, transactionData);
     return this.findTransaction({
       id,
     });

@@ -24,21 +24,13 @@ export class UserRepository extends Repository<User> {
     );
   }
 
-  async createUser(
-    userData: Partial<User>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<User> {
-    const manager = transactionEntityManager || this.entityManager;
-    const user = this.entityManager.create(User, userData);
-    return manager.save(user);
+  async createUser(userData: Partial<User>): Promise<User> {
+    const user = this.create(userData);
+    return this.save(user);
   }
 
-  async getUserByData(
-    userData: PartialPickUser,
-    transactionEntityManager?: EntityManager,
-  ): Promise<User> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(User, {
+  async getUserByData(userData: PartialPickUser): Promise<User> {
+    return this.findOne({
       where: [
         { email: userData?.email },
         { id: userData?.id },
@@ -48,25 +40,16 @@ export class UserRepository extends Repository<User> {
     });
   }
 
-  async findOneAndDeleteById(
-    id: string,
-    transactionEntityManager?: EntityManager,
-  ): Promise<DeleteResult> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.softDelete(User, { id });
+  async findOneAndDeleteById(id: string): Promise<DeleteResult> {
+    return this.softDelete({ id });
   }
 
-  async findOneAndUpdateByData(
-    userData: PartialPickUser,
-    data: Partial<User>,
-    transactionEntityManager?: EntityManager,
-  ) {
-    const manager = transactionEntityManager || this.entityManager;
-    const user = await this.getUserByData(userData, transactionEntityManager);
+  async findOneAndUpdateByData(userData: PartialPickUser, data: Partial<User>) {
+    const user = await this.getUserByData(userData);
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    await manager.update(User, { id: user.id }, data);
-    return this.getUserByData({ id: user.id }, transactionEntityManager);
+    await this.update({ id: user.id }, data);
+    return this.getUserByData({ id: user.id });
   }
 }

@@ -4,6 +4,7 @@ import { User } from "@modules/core/entities/user.entity";
 import { UtilityService } from "@shared/utils/utility.service";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [UtilityService],
-  exports: [UtilityService, JwtModule],
+  providers: [UtilityService, UnitOfWork],
+  exports: [UtilityService, JwtModule, UnitOfWork],
 })
 export class CoreModule {}

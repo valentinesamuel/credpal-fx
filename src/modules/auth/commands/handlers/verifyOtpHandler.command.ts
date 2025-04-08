@@ -10,6 +10,7 @@ import { OtpService } from "@modules/core/services/otp.service";
 import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { User } from "@modules/core/entities/user.entity";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 
 @Injectable()
 @CommandHandler(VerifyOtpCommand)
@@ -23,12 +24,13 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     private readonly jwtService: JwtService,
     private readonly cacheAdapter: CacheAdapter,
     private readonly otpService: OtpService,
+    private readonly unitOfWork: UnitOfWork,
   ) {}
 
   async execute(command: VerifyOtpCommand) {
     const { payload } = command;
 
-    return this.entityManager.transaction(async () => {
+    return this.unitOfWork.executeInTransaction(async () => {
       this.logger.log("Verifying OTP in transaction");
 
       const isOtpValid = await this.otpService.validateOtp(payload);

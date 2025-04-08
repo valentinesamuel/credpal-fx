@@ -23,21 +23,13 @@ export class CurrencyRepository extends Repository<Currency> {
     );
   }
 
-  async createCurrency(
-    currencyData: Partial<Currency>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Currency> {
-    const manager = transactionEntityManager || this.entityManager;
+  async createCurrency(currencyData: Partial<Currency>): Promise<Currency> {
     const currency = this.create(currencyData);
-    return manager.save(currency);
+    return this.save(currency);
   }
 
-  async findCurrency(
-    filter: PickCurrencyData,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Currency> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Currency, {
+  async findCurrency(filter: PickCurrencyData): Promise<Currency> {
+    return this.findOne({
       where: [
         { id: filter.id },
         { name: filter.name },
@@ -50,24 +42,13 @@ export class CurrencyRepository extends Repository<Currency> {
   async updateCurrency(
     id: string,
     currencyData: Partial<Currency>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Currency> {
-    const manager = transactionEntityManager || this.entityManager;
-    await manager.update(Currency, { id }, currencyData);
-    return this.findCurrency(
-      {
-        id,
-      },
-      transactionEntityManager,
-    );
+    await this.update({ id }, currencyData);
+    return this.findCurrency({ id });
   }
 
-  async getCurrencyByData(
-    currencyData: PickCurrencyData,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Currency> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Currency, {
+  async getCurrencyByData(currencyData: PickCurrencyData): Promise<Currency> {
+    return this.findOne({
       where: [
         { id: currencyData?.id },
         { name: currencyData?.name },

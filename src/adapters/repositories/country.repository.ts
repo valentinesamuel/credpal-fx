@@ -23,21 +23,13 @@ export class CountryRepository extends Repository<Country> {
     );
   }
 
-  async createCountry(
-    countryData: Partial<Country>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Country> {
-    const manager = transactionEntityManager || this.entityManager;
+  async createCountry(countryData: Partial<Country>): Promise<Country> {
     const country = this.create(countryData);
-    return manager.save(country);
+    return this.save(country);
   }
 
-  async findCountry(
-    id: string,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Country> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Country, {
+  async findCountry(id: string): Promise<Country> {
+    return this.findOne({
       where: {
         id,
       },
@@ -47,27 +39,17 @@ export class CountryRepository extends Repository<Country> {
   async updateCountry(
     id: string,
     updateData: Partial<Country>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Country | undefined> {
-    const manager = transactionEntityManager || this.entityManager;
-    await manager.update(Country, { id }, updateData);
-    return this.findCountry(id, transactionEntityManager);
+    await this.update({ id }, updateData);
+    return this.findCountry(id);
   }
 
-  async findOneAndDeleteById(
-    id: string,
-    transactionEntityManager?: EntityManager,
-  ): Promise<DeleteResult> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.softDelete(Country, { id });
+  async findOneAndDeleteById(id: string): Promise<DeleteResult> {
+    return this.softDelete({ id });
   }
 
-  async getCountryByData(
-    countryData: PickCountryData,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Country> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Country, {
+  async getCountryByData(countryData: PickCountryData): Promise<Country> {
+    return this.findOne({
       where: [
         { id: countryData?.id },
         { name: countryData?.name },

@@ -1,64 +1,48 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { EntityManager, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Wallet } from "@modules/core/entities/wallet.entity";
 import { WalletBalance } from "@modules/core/entities/walletBalance.entity";
+import { BaseRepository } from "./transactions/base.repository";
+import { UnitOfWork } from "./transactions/unitOfWork.trx";
 
 @Injectable()
-export class WalletRepository extends Repository<Wallet> {
+export class WalletRepository extends BaseRepository<Wallet> {
   private readonly logger = new Logger(WalletRepository.name);
 
   constructor(
     @InjectRepository(Wallet)
-    private readonly walletRepository: Repository<Wallet>,
+    walletRepository: Repository<Wallet>,
     @InjectRepository(WalletBalance)
     private readonly walletBalanceRepository: Repository<WalletBalance>,
-    private readonly entityManager: EntityManager,
+    unitOfWork: UnitOfWork,
   ) {
-    super(
-      walletRepository.target,
-      walletRepository.manager,
-      walletRepository.queryRunner,
-    );
+    super(walletRepository, unitOfWork);
   }
 
-  async createWallet(
-    walletData: Partial<Wallet>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Wallet> {
-    const manager = transactionEntityManager || this.entityManager;
+  async createWallet(walletData: Partial<Wallet>): Promise<Wallet> {
     const wallet = this.create(walletData);
-    return manager.save(wallet);
+    return this.save(wallet);
   }
 
   async createWalletBalance(
     walletBalanceData: Partial<WalletBalance>,
-    transactionEntityManager?: EntityManager,
   ): Promise<WalletBalance> {
-    const manager = transactionEntityManager || this.entityManager;
     const walletBalance =
       this.walletBalanceRepository.create(walletBalanceData);
-    return manager.save(walletBalance);
+    return this.manager.save(walletBalance);
   }
 
   async findWallet(
     filter: Partial<Pick<Wallet, "id" | "userId">>,
-    transactionEntityManager?: EntityManager,
   ): Promise<Wallet> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Wallet, {
+    return this.findOne({
       where: [{ id: filter.id }, { userId: filter.userId }],
-      relations: ["balances", "balances.currency", "balances.currency.country"],
     });
   }
 
-  async updateWallet(
-    id: string,
-    walletData: Partial<Wallet>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Wallet> {
-    const manager = transactionEntityManager || this.entityManager;
-    await manager.update(Wallet, { id }, walletData);
-    return this.findWallet({ id }, transactionEntityManager);
+  async updateWallet(id: string, walletData: Partial<Wallet>): Promise<Wallet> {
+    await this.update({ id }, walletData);
+    return this.findWallet({ id });
   }
 }

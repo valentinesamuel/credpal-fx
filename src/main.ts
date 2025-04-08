@@ -10,6 +10,8 @@ import { setupTelemetry } from "@shared/observability/tracing";
 import { TraceInterceptor } from "@shared/interceptors/trace.interceptor";
 import { CustomFieldValidationPipe } from "@shared/validations/custom.validation";
 import { AuthorizationGuard } from "@shared/guards/authorization.guard";
+import { TransactionInterceptor } from "@shared/interceptors/txInterceptor.interceptor";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 
 const PRODUCT_NAME = "Credpal FX";
 const PRODUCT_TAG = "Credpal FX";
@@ -75,8 +77,11 @@ async function bootstrap() {
 
   app.useGlobalGuards(new AuthorizationGuard(configService));
 
-  app.useGlobalInterceptors(new TraceInterceptor());
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalInterceptors(
+    new TraceInterceptor(),
+    new TransactionInterceptor(app.get(UnitOfWork)),
+    new ResponseInterceptor(),
+  );
 
   buildAPIDocumentation(app, configService);
 

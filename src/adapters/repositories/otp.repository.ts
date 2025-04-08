@@ -10,7 +10,6 @@ export class OtpRepository extends Repository<Otp> {
   constructor(
     @InjectRepository(Otp)
     private readonly otpRepository: Repository<Otp>,
-    private readonly entityManager: EntityManager,
   ) {
     super(
       otpRepository.target,
@@ -19,23 +18,17 @@ export class OtpRepository extends Repository<Otp> {
     );
   }
 
-  async createOtp(
-    OtpData: Partial<Otp>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Otp> {
-    const manager = transactionEntityManager || this.entityManager;
+  async createOtp(OtpData: Partial<Otp>): Promise<Otp> {
     const otp = this.create(OtpData);
-    return manager.save(otp);
+    return this.save(otp);
   }
 
   async findOtp(
     filter: Partial<
       Pick<Otp, "id" | "userId" | "pinId" | "phoneNumber" | "isActive">
     >,
-    transactionEntityManager?: EntityManager,
   ): Promise<Otp> {
-    const manager = transactionEntityManager || this.entityManager;
-    return manager.findOne(Otp, {
+    return this.findOne({
       where: {
         id: filter.id,
         userId: filter.userId,
@@ -46,18 +39,8 @@ export class OtpRepository extends Repository<Otp> {
     });
   }
 
-  async updateOtp(
-    id: string,
-    otpData: Partial<Otp>,
-    transactionEntityManager?: EntityManager,
-  ): Promise<Otp> {
-    const manager = transactionEntityManager || this.entityManager;
-    await manager.update(Otp, { id }, otpData);
-    return this.findOtp(
-      {
-        id,
-      },
-      transactionEntityManager,
-    );
+  async updateOtp(id: string, otpData: Partial<Otp>): Promise<Otp> {
+    await this.update({ id }, otpData);
+    return this.findOtp({ id });
   }
 }
