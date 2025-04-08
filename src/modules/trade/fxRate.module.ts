@@ -8,17 +8,30 @@ import { CoreModule } from "@modules/core/core.module";
 import { CacheModule } from "@adapters/cache/cache.module";
 import { AuthModule } from "@modules/auth/auth.module";
 import { CqrsModule } from "@nestjs/cqrs";
+import { FXRateAdapter } from "@adapters/fxRates/fxRate.adapter";
+import { ExchangeRateApiProviderAPI } from "@adapters/fxRates/providers/exchageRateApi.provider";
+import { HttpModule } from "@nestjs/axios";
+import { CurrencyModule } from "@modules/currency/currency.module";
+import { AlphaAdvantageExchangeRateProviderAPI } from "@adapters/fxRates/providers/alphaAdvantage.provider";
 
 @Module({
   imports: [
+    HttpModule,
     CoreModule,
+    CurrencyModule,
     CqrsModule,
     CacheModule,
     AuthModule,
     TypeOrmModule.forFeature([FXRate]),
   ],
-  providers: [FXRateService, FXRateRepository],
-  exports: [FXRateService],
+  providers: [
+    FXRateService,
+    FXRateRepository,
+    FXRateAdapter,
+    ExchangeRateApiProviderAPI,
+    AlphaAdvantageExchangeRateProviderAPI,
+  ],
+  exports: [FXRateService, FXRateAdapter],
   controllers: [FxRateController],
 })
 export class FXRateModule {}

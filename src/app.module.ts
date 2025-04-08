@@ -6,6 +6,7 @@ import typeormConfig from "@config/typeorm.config";
 import cacheConfig from "@config/cache.config";
 import notificationConfig from "@config/notification.config";
 import schemaConfig from "@config/schema.config";
+import fxRateAPIConfig from "@config/fxRateAPI.config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { CoreModule } from "@modules/core/core.module";
@@ -25,7 +26,13 @@ import { FXRateModule } from "@modules/trade/fxRate.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [commonConfig, typeormConfig, cacheConfig, notificationConfig],
+      load: [
+        commonConfig,
+        typeormConfig,
+        cacheConfig,
+        notificationConfig,
+        fxRateAPIConfig,
+      ],
       ...schemaConfig,
     }),
     TypeOrmModule.forRootAsync({

@@ -4,11 +4,10 @@ import { CacheInterface } from "../cache.interface";
 import { AppLogger } from "@shared/observability/logger";
 import KeyvRedis from "@keyv/redis";
 import { ConfigService } from "@nestjs/config";
-import { Logger } from "@nestjs/common";
 
 @Injectable()
 export class RedisProvider implements CacheInterface {
-  private readonly logger = new Logger(RedisProvider.name);
+  private readonly logger = new AppLogger(RedisProvider.name);
   private readonly keyv: Keyv;
   private isConnected = false;
 

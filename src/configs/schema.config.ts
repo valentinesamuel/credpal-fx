@@ -66,6 +66,10 @@ export default {
       DEFAULT_DATABASE_RETRY_ATTEMPTS,
     ),
 
+    // FX API
+    FX_EXCHANGE_RATE_API_KEY: Joi.string().required(),
+    FX_ALPHA_ADVANTAGE_API_KEY: Joi.string().required(),
+
     // logging
     ENABLE_FILE_LOGGING: Joi.boolean().required(),
 
