@@ -7,6 +7,7 @@ import {
   Injectable,
   Logger,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import {
   __PERMISSIONS_KEY,
@@ -23,6 +24,7 @@ export class PermissionsGuard implements CanActivate {
     private reflector: Reflector,
     private userService: UserService,
     private cacheAdapter: CacheAdapter,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -49,7 +51,7 @@ export class PermissionsGuard implements CanActivate {
     let userPermissions: string[];
 
     const cachedUserPermissions = await this.cacheAdapter.get(
-      `permissions:${user.id}`,
+      `permissions<rn>${user.id}`,
     );
 
     if (
@@ -63,9 +65,9 @@ export class PermissionsGuard implements CanActivate {
       );
       userPermissions = freshUserPermissions;
       await this.cacheAdapter.set(
-        `permissions:${user.id}`,
+        `permissions<rn>${user.id}`,
         JSON.stringify(freshUserPermissions),
-        60 * 60,
+        Number(this.configService.get<number>("cache.ttl")),
       );
     }
 

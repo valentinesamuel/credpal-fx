@@ -39,7 +39,7 @@ export class User extends BaseEntity {
   isVerified: boolean;
 
   @Column({ type: "varchar", nullable: true })
-  role_id: string;
+  roleId: string;
 
   @OneToOne(() => Wallet, (wallet) => wallet.user)
   wallet: Wallet;

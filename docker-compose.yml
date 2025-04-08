@@ -138,6 +138,19 @@ services:
     restart: unless-stopped
     networks:
       - credpalfx_default
+  
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: credpalfx_redisinsight
+    ports:
+      - 5540:5540
+    volumes:
+      - redisinsight_data:/db
+    depends_on:
+      - redis
+    networks:
+      - credpalfx_default
+    restart: unless-stopped
 
 networks:
   credpalfx_default:
@@ -161,5 +174,7 @@ volumes:
   grafana_data:
     driver: local
   nestjs-logs:
+    driver: local
+  redisinsight_data:
     driver: local
 

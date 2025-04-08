@@ -8,6 +8,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { UserService } from "@modules/core/services/user.service";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -17,6 +18,7 @@ export class JwtAuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly cacheAdapter: CacheAdapter,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,14 +42,14 @@ export class JwtAuthGuard implements CanActivate {
       }
 
       // Fetch User Details from cache, if nothing is there, then fetch from DB
-      const cachedUser = await this.cacheAdapter.get(`user:${payload.id}`);
+      const cachedUser = await this.cacheAdapter.get(`user<rn>${payload.id}`);
 
       if (!cachedUser || cachedUser.expires > new Date().getTime()) {
         const user = await this.userService.findUserByIdWithRoles(payload.id);
         this.cacheAdapter.set(
-          `user:${payload.id}`,
+          `user<rn>${payload.id}`,
           JSON.stringify(user),
-          60 * 60,
+          Number(this.configService.get<number>("cache.ttl")),
         );
         delete user.password;
         req.user = user;

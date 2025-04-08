@@ -57,7 +57,12 @@ export class AuthController {
       new VerifyOtpCommand(verifyOtpDto),
     );
 
-    await this.commandBus.execute(new InitializeUserWalletCommand(result.user));
-    return result;
+    const wallet = await this.commandBus.execute(
+      new InitializeUserWalletCommand(result.user),
+    );
+
+    result.user.wallet = wallet;
+
+    return { result };
   }
 }

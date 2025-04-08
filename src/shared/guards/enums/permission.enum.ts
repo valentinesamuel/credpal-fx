@@ -1,6 +1,6 @@
 export enum PERMISSIONS {
-  CAN_VIEW_WALLET = "read:wallet",
-  CAN_CREATE_WALLET = "create:wallet",
-  CAN_UPDATE_WALLET = "update:wallet",
-  CAN_DELETE_WALLET = "delete:wallet",
+  CAN_VIEW_WALLET = "wallet.read",
+  CAN_CREATE_WALLET = "wallet.create",
+  CAN_UPDATE_WALLET = "wallet.update",
+  CAN_DELETE_WALLET = "wallet.delete",
 }

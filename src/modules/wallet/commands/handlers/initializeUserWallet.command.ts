@@ -6,10 +6,13 @@ import { WalletService } from "@modules/core/services/wallet.service";
 import { CurrencyService } from "@modules/core/services/currency.service";
 import { TransactionService } from "@modules/core/services/transaction.service";
 import {
+  PaymentMethod,
   TransactionStatus,
   TransactionType,
 } from "@modules/core/entities/transaction.entity";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
+import { RoleRepository } from "@adapters/repositories/role.repository";
+import { UserService } from "@modules/core/services/user.service";
 
 @Injectable()
 @CommandHandler(InitializeUserWalletCommand)
@@ -49,6 +52,7 @@ export class InitializeUserWalletHandler
         amount: initialDepositAmount,
         exchangeRate: 1, // TODO: Add exchange rate from FX API
         status: TransactionStatus.PENDING,
+        paymentMethod: PaymentMethod.BANK_TRANSFER,
         referenceId: user.id,
         metadata: { userId: user.id },
         initializedAt: new Date().toISOString(),
@@ -66,7 +70,9 @@ export class InitializeUserWalletHandler
         completedAt: new Date().toISOString(),
       });
 
-      return { message: "User wallet initialized successfully" };
+      const updatedWallet = await this.walletService.getWalletByUserId(user.id);
+
+      return updatedWallet;
     });
   }
 }

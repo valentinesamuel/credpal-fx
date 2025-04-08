@@ -9,6 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { User } from "@modules/core/entities/user.entity";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
+import { RoleRepository } from "@adapters/repositories/role.repository";
 
 @Injectable()
 @CommandHandler(VerifyOtpCommand)
@@ -22,6 +23,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     private readonly cacheAdapter: CacheAdapter,
     private readonly otpService: OtpService,
     private readonly unitOfWork: UnitOfWork,
+    private readonly roleRepository: RoleRepository,
   ) {}
 
   async execute(command: VerifyOtpCommand) {
@@ -37,9 +39,13 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
 
       await this.otpService.markOtpAsUsed(payload);
 
+      const role = await this.roleRepository.findRole({
+        where: { name: "user" },
+      });
+
       const user = await this.userService.updateUserByData(
         { phoneNumber: payload.phoneNumber },
-        { isVerified: true },
+        { isVerified: true, roleId: role.id },
       );
 
       // generate jwt token and store in cache
@@ -65,9 +71,9 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     });
 
     await this.cacheAdapter.set(
-      `token:${user.id}`,
+      `token<rn>${user.id}`,
       token,
-      Number(this.configService.get<number>("common.jwt.expiryMinutes")),
+      Number(this.configService.get<number>("cache.ttl")),
     );
 
     return token;

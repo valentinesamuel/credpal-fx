@@ -38,7 +38,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         });
 
       // create transaction
-      const transaction = await this.transactionService.createTransaction({
+      let transaction = await this.transactionService.createTransaction({
         amount: payload.amount,
         sourceCurrencyId: currency.id,
         destinationCurrencyId: currency.id,
@@ -47,6 +47,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         type: TransactionType.DEPOSIT,
         exchangeRate: 1, // change this to the actual exchange rate from the API
         status: TransactionStatus.PENDING,
+        paymentMethod: payload.paymentMethod,
         referenceId: user.id,
         metadata: { userId: user.id },
         initializedAt: new Date().toISOString(),
@@ -73,15 +74,18 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
       }
 
       // update transaction
-      await this.transactionService.updateTransaction(transaction.id, {
-        status: TransactionStatus.COMPLETED,
-        completedAt: new Date().toISOString(),
-      });
+      transaction = await this.transactionService.updateTransaction(
+        transaction.id,
+        {
+          status: TransactionStatus.COMPLETED,
+          completedAt: new Date().toISOString(),
+        },
+      );
 
       // return the wallet with balance
       const updatedWallet = await this.walletService.getWalletByUserId(user.id);
 
-      return { wallet: updatedWallet };
+      return { wallet: updatedWallet, transaction };
     });
   }
 }

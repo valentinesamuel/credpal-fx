@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { PaymentMethod } from "@modules/core/entities/transaction.entity";
 
 export class FundWalletDto {
@@ -31,6 +31,6 @@ export class FundWalletDto {
     enum: Object.values(PaymentMethod),
   })
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;
 }

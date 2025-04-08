@@ -76,5 +76,7 @@ export default {
     REDIS_PORT: Joi.number().default(DEFAULT_REDIS_PORT),
     REDIS_PASSWORD: Joi.string().allow(""),
     REDIS_URL: Joi.string().required(),
+    REDIS_NAMESPACE: Joi.string().default("credpalfx"),
+    REDIS_TTL: Joi.number().default(60 * 30), // 30 minutes in seconds
   }),
 };

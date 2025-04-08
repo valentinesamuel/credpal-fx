@@ -37,7 +37,7 @@ export class Transaction extends BaseEntity {
   sourceWalletId: string;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.sourceTransactions)
-  @JoinColumn({ name: "sourceWalletId" })
+  @JoinColumn({ name: "sourceWallet_id" })
   sourceWallet: Wallet;
 
   @Index()
@@ -45,7 +45,7 @@ export class Transaction extends BaseEntity {
   destinationWalletId: string;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.destinationTransactions)
-  @JoinColumn({ name: "destinationWalletId" })
+  @JoinColumn({ name: "destinationWallet_id" })
   destinationWallet: Wallet;
 
   @Column({ type: "varchar" })
@@ -55,17 +55,17 @@ export class Transaction extends BaseEntity {
   sourceCurrencyId: string;
 
   @ManyToOne(() => Currency, (currency) => currency.sourceTransactions)
-  @JoinColumn({ name: "sourceCurrencyId" })
+  @JoinColumn({ name: "sourceCurrency_id" })
   sourceCurrency: Currency;
 
   @Column({ type: "varchar" })
   destinationCurrencyId: string;
 
-  // @Column({ type: "varchar" })
-  // paymentMethod: PaymentMethod;
+  @Column({ type: "varchar" })
+  paymentMethod: PaymentMethod;
 
   @ManyToOne(() => Currency, (currency) => currency.destinationTransactions)
-  @JoinColumn({ name: "destinationCurrencyId" })
+  @JoinColumn({ name: "destinationCurrency_id" })
   destinationCurrency: Currency;
 
   @Column({ type: "integer" })

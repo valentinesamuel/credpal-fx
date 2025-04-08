@@ -5,8 +5,11 @@ import { RolePermission } from "./rolePermission.entity";
 
 @Entity()
 export class Permission extends BaseEntity {
-  @Column({ unique: true })
+  @Column({ unique: true, type: "varchar" })
   action: string;
+
+  @Column({ nullable: true, type: "varchar" })
+  description: string;
 
   @OneToMany(
     () => RolePermission,

@@ -14,6 +14,8 @@ import { OtpModule } from "@modules/otp/otp.module";
 import { CountryModule } from "@modules/country/country.module";
 import { VerifyOtpHandler } from "./commands/handlers/verifyOtpHandler.command";
 import { SMSModule } from "@adapters/sms/sms.module";
+import { RoleRepository } from "@adapters/repositories/role.repository";
+import { Role } from "@modules/core/entities/role.entity";
 
 const CommandHandlers = [RegisterUserHandler, VerifyOtpHandler];
 
@@ -27,7 +29,7 @@ const QueryHandlers = [GetUserByIdHandler];
 
     CacheModule,
     SMSModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
 
     OtpModule,
     CountryModule,
@@ -38,6 +40,7 @@ const QueryHandlers = [GetUserByIdHandler];
 
     // Repositories
     UserRepository,
+    RoleRepository,
 
     // Handlers
     ...CommandHandlers,

@@ -11,9 +11,14 @@ import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { CoreModule } from "@modules/core/core.module";
 import { AuthModule } from "@modules/auth/auth.module";
 import { OtpModule } from "@modules/otp/otp.module";
-import { CacheModule } from "@adapters/cache/cache.module";
 import { WalletModule } from "@modules/wallet/wallet.module";
 import { JwtModule } from "@nestjs/jwt";
+import { SeederService } from "@modules/core/services/seeder.service";
+import { Permission } from "@modules/core/entities/permission.entity";
+import { Role } from "@modules/core/entities/role.entity";
+import { RolePermission } from "@modules/core/entities/rolePermission.entity";
+import { CountryModule } from "@modules/country/country.module";
+import { CurrencyModule } from "@modules/currency/currency.module";
 
 @Module({
   imports: [
@@ -26,6 +31,7 @@ import { JwtModule } from "@nestjs/jwt";
       useFactory: async (configService: ConfigService) =>
         configService.get("typeorm"),
     }),
+    TypeOrmModule.forFeature([Permission, Role, RolePermission]),
     PrometheusModule.register({
       path: "/metrics",
     }),
@@ -39,11 +45,13 @@ import { JwtModule } from "@nestjs/jwt";
     }),
     CoreModule,
     AuthModule,
+    CurrencyModule,
+    CountryModule,
     OtpModule,
     WalletModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [SeederService],
   exports: [],
 })
 export class AppModule {}
