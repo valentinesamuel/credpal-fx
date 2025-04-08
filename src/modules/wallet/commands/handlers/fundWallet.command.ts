@@ -51,7 +51,13 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         status: TransactionStatus.PENDING,
         paymentMethod: payload.paymentMethod,
         referenceId: user.id,
-        metadata: { userId: user.id },
+        metadata: {
+          userId: user.id,
+          rateSource: "FX_API",
+          preBalance: {
+            source: 0,
+          },
+        },
         initializedAt: new Date().toISOString(),
       });
 
@@ -82,6 +88,12 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         {
           status: TransactionStatus.COMPLETED,
           completedAt: new Date().toISOString(),
+          metadata: {
+            ...transaction.metadata,
+            postBalance: {
+              source: walletBalance.availableAmount + payload.amount,
+            },
+          },
         },
       );
 

@@ -54,7 +54,13 @@ export class InitializeUserWalletHandler
         status: TransactionStatus.PENDING,
         paymentMethod: PaymentMethod.BONUS,
         referenceId: user.id,
-        metadata: { userId: user.id },
+        metadata: {
+          userId: user.id,
+          rateSource: "FX_API",
+          preBalance: {
+            source: 0,
+          },
+        },
         initializedAt: new Date().toISOString(),
       });
 
@@ -67,6 +73,12 @@ export class InitializeUserWalletHandler
 
       await this.transactionService.updateTransaction(transaction.id, {
         status: TransactionStatus.COMPLETED,
+        metadata: {
+          ...transaction.metadata,
+          postBalance: {
+            source: initialDepositAmount,
+          },
+        },
         completedAt: new Date().toISOString(),
       });
 
