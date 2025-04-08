@@ -49,6 +49,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         type: TransactionType.DEPOSIT,
         exchangeRate: 1, // change this to the actual exchange rate from the API
         status: TransactionStatus.PENDING,
+        idempotencyKey: `${user.id}-${payload.amount}-${payload.currency}-${payload.paymentMethod}`,
         paymentMethod: payload.paymentMethod,
         referenceId: user.id,
         metadata: {

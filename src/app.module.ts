@@ -20,6 +20,7 @@ import { RolePermission } from "@modules/core/entities/rolePermission.entity";
 import { CountryModule } from "@modules/country/country.module";
 import { CurrencyModule } from "@modules/currency/currency.module";
 import { TransactionModule } from "@modules/transaction/transaction.module";
+import { FXRateModule } from "@modules/trade/fxRate.module";
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { TransactionModule } from "@modules/transaction/transaction.module";
     OtpModule,
     WalletModule,
     TransactionModule,
+    FXRateModule,
   ],
   controllers: [AppController],
   providers: [SeederService],

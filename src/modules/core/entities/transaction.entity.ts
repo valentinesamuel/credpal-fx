@@ -96,6 +96,9 @@ export class Transaction extends BaseEntity {
   @Column({ type: "varchar" })
   referenceId: string;
 
+  @Column({ type: "varchar" })
+  idempotencyKey: string;
+
   @Column({ type: "json" })
   metadata: TransactionMetadata;
 

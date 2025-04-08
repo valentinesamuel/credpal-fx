@@ -52,6 +52,7 @@ export class InitializeUserWalletHandler
         amount: initialDepositAmount,
         exchangeRate: 1, // TODO: Add exchange rate from FX API
         status: TransactionStatus.PENDING,
+        idempotencyKey: `${user.id}-${initialDepositAmount}-${currency.id}-${PaymentMethod.BONUS}`,
         paymentMethod: PaymentMethod.BONUS,
         referenceId: user.id,
         metadata: {

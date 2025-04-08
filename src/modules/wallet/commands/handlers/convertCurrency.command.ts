@@ -114,6 +114,7 @@ export class ConvertCurrencyHandler
         referenceId: user.id,
         exchangeRate: currentConversionRate,
         status: TransactionStatus.PENDING,
+        idempotencyKey: `${user.id}-${payload.amount}-${payload.sourceCurrency}-${payload.targetCurrency}`,
         metadata: {
           userId: user.id,
           rateSource: "FX_API",
