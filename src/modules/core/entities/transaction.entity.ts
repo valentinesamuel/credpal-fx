@@ -14,6 +14,13 @@ export enum TransactionType {
   INTEREST = "INTEREST",
 }
 
+export enum PaymentMethod {
+  BANK_TRANSFER = "BANK_TRANSFER",
+  CREDIT_CARD = "CREDIT_CARD",
+  PAYPAL = "PAYPAL",
+  CASH = "CASH",
+}
+
 export enum TransactionStatus {
   PENDING = "PENDING",
   COMPLETED = "COMPLETED",
@@ -53,6 +60,9 @@ export class Transaction extends BaseEntity {
 
   @Column({ type: "varchar" })
   destinationCurrencyId: string;
+
+  // @Column({ type: "varchar" })
+  // paymentMethod: PaymentMethod;
 
   @ManyToOne(() => Currency, (currency) => currency.destinationTransactions)
   @JoinColumn({ name: "destinationCurrencyId" })

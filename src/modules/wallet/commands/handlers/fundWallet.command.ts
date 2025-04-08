@@ -17,8 +17,19 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
   ) {}
 
   async execute(command: FundWalletCommand) {
-    const { payload } = command;
+    const { payload, user } = command;
 
-    return payload;
+    // get the wallet by user id
+    const wallet = await this.walletService.findWalletByUserIdAndFailIfExists(
+      user.id,
+      this.entityManager,
+    );
+    // get the currency by currency code
+    // create transaction
+    // if there is a wallet balance for that currency, update it, else create a new wallet balance
+    // update transaction
+    // return success message
+
+    return { payload, user };
   }
 }
