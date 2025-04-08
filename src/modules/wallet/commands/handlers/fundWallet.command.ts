@@ -28,9 +28,8 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
 
     return this.unitOfWork.executeInTransaction(async () => {
       // get the wallet by user id
-      const wallet = await this.walletService.getWalletAndFailIfNotExists(
-        user.id,
-      );
+      const wallet =
+        await this.walletService.getWalletByUserIdAndFailIfNotExists(user.id);
 
       // get the currency by currency code
       const currency =
@@ -46,6 +45,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         sourceWalletId: wallet.id,
         destinationWalletId: wallet.id,
         type: TransactionType.DEPOSIT,
+        exchangeRate: 1, // change this to the actual exchange rate from the API
         status: TransactionStatus.PENDING,
         referenceId: user.id,
         metadata: { userId: user.id },

@@ -39,11 +39,18 @@ export class WalletService {
     return this.walletRepository.updateWalletBalance(id, walletBalanceData);
   }
 
-  async getWalletAndFailIfNotExists(id: string) {
-    const wallet = await this.walletRepository.findWallet({ id });
+  async getWalletByUserIdAndFailIfNotExists(userId: string) {
+    const wallet = await this.walletRepository.findWallet({ userId });
     if (!wallet) {
-      throw new NotFoundException(`Wallet not found for id: ${id}`);
+      throw new NotFoundException(`Wallet not found for user: ${userId}`);
     }
     return wallet;
+  }
+
+  async findWalletBalanceAndFailIfExists(id: string) {
+    const walletBalance = await this.walletRepository.findWalletBalance({ id });
+    if (walletBalance) {
+      throw new NotFoundException(`Wallet balance not found for id: ${id}`);
+    }
   }
 }
