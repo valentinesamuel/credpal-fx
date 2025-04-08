@@ -2,8 +2,6 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { VerifyOtpCommand } from "../commandHandlers";
 import { AppLogger } from "@shared/observability/logger";
-import { InjectEntityManager } from "@nestjs/typeorm";
-import { EntityManager } from "typeorm";
 import { UserService } from "@modules/core/services/user.service";
 import { ConfigService } from "@nestjs/config";
 import { OtpService } from "@modules/core/services/otp.service";
@@ -18,9 +16,8 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
   private readonly logger = new AppLogger(VerifyOtpHandler.name);
 
   constructor(
-    @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly userService: UserService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly cacheAdapter: CacheAdapter,
     private readonly otpService: OtpService,

@@ -1,8 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import * as bcrypt from "bcrypt";
 import { AppLogger } from "@shared/observability/logger";
-import { InjectEntityManager } from "@nestjs/typeorm";
-import { EntityManager } from "typeorm";
 import { UserService } from "@modules/core/services/user.service";
 import { Injectable } from "@nestjs/common";
 import { RegisterUserCommand } from "../commandHandlers";
@@ -10,6 +8,7 @@ import { ConfigService } from "@nestjs/config";
 import { OtpService } from "@modules/core/services/otp.service";
 import { UtilityService } from "@shared/utils/utility.service";
 import { CountryService } from "@modules/country/services/country.service";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)
@@ -19,18 +18,18 @@ export class RegisterUserHandler
   private readonly logger = new AppLogger(RegisterUserHandler.name);
 
   constructor(
-    @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly userService: UserService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly otpService: OtpService,
     private readonly utilityServices: UtilityService,
     private readonly countryService: CountryService,
+    private readonly unitOfWork: UnitOfWork,
   ) {}
 
   async execute(command: RegisterUserCommand) {
     const { payload } = command;
 
-    return this.entityManager.transaction(async () => {
+    return this.unitOfWork.executeInTransaction(async () => {
       this.logger.log("Registering user in transaction");
 
       const hashedPassword = await this.hashPassword(payload.password);
