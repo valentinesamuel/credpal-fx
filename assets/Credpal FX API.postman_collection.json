@@ -1,0 +1,1381 @@
+{
+	"info": {
+		"_postman_id": "d1c92d8a-df90-423d-844b-8745b89772f1",
+		"name": "Credpal FX API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33424447"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"valentinesamuel2580@gmail.com\",\n    \"password\": \"password124\",\n    \"firstName\": \"Valentine\",\n    \"phoneNumber\": \"+2348156210785\",\n    \"lastName\": \"Samuel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}auth/register",
+							"host": [
+								"{{base-url}}auth"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "existing user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"valentinesamuel2580@gmail.com\",\n    \"password\": \"password124\",\n    \"firstName\": \"Valentine\",\n    \"phoneNumber\": \"+2348156210785\",\n    \"lastName\": \"Samuel\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}auth/register",
+									"host": [
+										"{{base-url}}auth"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "122"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7a-hGQZF1AKJYqI+sJzl8VO5h8sq+E\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 07 Apr 2025 12:58:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 409,\n    \"success\": false,\n    \"message\": \"This user already exists\",\n    \"errors\": [],\n    \"path\": \"/auth/register\",\n    \"duration\": 184\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"valentinesamuel2580@gmail.com\",\n    \"password\": \"password124\",\n    \"firstName\": \"Valentine\",\n    \"phoneNumber\": \"+2348156210785\",\n    \"lastName\": \"Samuel\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}auth/register",
+									"host": [
+										"{{base-url}}auth"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "205"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"cd-MNaHbT64o1+8XU5IzuBnrDde6VQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 07 Apr 2025 12:59:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"feedback\": \"User registered successfully\",\n        \"userId\": \"1e10cf45-4f06-4435-b68a-f88463395d61\"\n    },\n    \"path\": \"/auth/register\",\n    \"duration\": 6129\n}"
+						}
+					]
+				},
+				{
+					"name": "verify user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phoneNumber\": \"+2348156210785\",\n    \"otpCode\": \"444820\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}auth/verify",
+							"host": [
+								"{{base-url}}auth"
+							],
+							"path": [
+								"verify"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "invalid otp",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phoneNumber\": \"+2348156210785\",\n    \"otpCode\": \"973139\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}auth/verify",
+									"host": [
+										"{{base-url}}auth"
+									],
+									"path": [
+										"verify"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "106"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6a-DCIm44sLqvH3jHcG3ruMCYC080g\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 07 Apr 2025 14:09:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 400,\n    \"success\": false,\n    \"message\": \"Invalid OTP\",\n    \"errors\": [],\n    \"path\": \"/auth/verify\",\n    \"duration\": 11\n}"
+						},
+						{
+							"name": "wallet already exist",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phoneNumber\": \"+2348156210785\",\n    \"otpCode\": \"452519\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}auth/verify",
+									"host": [
+										"{{base-url}}auth"
+									],
+									"path": [
+										"verify"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "168"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a8-wowOR3Ql2bo9YBQSwET+nHVT6uA\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 08 Apr 2025 08:55:23 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 409,\n    \"success\": false,\n    \"message\": \"Wallet already exists for user id: 71b90495-a58c-467d-b8b3-9f9829dc8a30\",\n    \"errors\": [],\n    \"path\": \"/auth/verify\",\n    \"duration\": 3385\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phoneNumber\": \"+2348156210785\",\n    \"otpCode\": \"195304\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}auth/verify",
+									"host": [
+										"{{base-url}}auth"
+									],
+									"path": [
+										"verify"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2084"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"824-THc3Jwj6N5FVHWXZ0k6c6xkHE9U\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 08 Apr 2025 14:56:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"result\": {\n            \"message\": \"User verified successfully\",\n            \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjNjBiNWMyLTc2MjYtNDFmZC05ZjcxLTcwMDI0ZDViMmJjMSIsImVtYWlsIjoidmFsZW50aW5lc2FtdWVsMjU4MEBnbWFpbC5jb20iLCJpYXQiOjE3NDQxMjQyMDYsImV4cCI6MTc0NDIxMDYwNn0.d2CVigJYdVLPFZYxd7uxhIgP_eEA4fUMGOcM6w5KrTk\",\n            \"user\": {\n                \"id\": \"2c60b5c2-7626-41fd-9f71-70024d5b2bc1\",\n                \"createdAt\": \"2025-04-08T14:51:46.388Z\",\n                \"updatedAt\": \"2025-04-08T14:56:46.773Z\",\n                \"deletedAt\": null,\n                \"firstName\": \"Valentine\",\n                \"lastName\": \"Samuel\",\n                \"countryId\": \"5e789450-830a-4e5d-9c3f-3e018919902f\",\n                \"email\": \"valentinesamuel2580@gmail.com\",\n                \"phoneNumber\": \"+2348156210785\",\n                \"isVerified\": true,\n                \"roleId\": \"9346ae6a-23ee-4ff0-a977-e418bf944ee5\",\n                \"wallet\": {\n                    \"id\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n                    \"createdAt\": \"2025-04-08T14:52:56.346Z\",\n                    \"updatedAt\": \"2025-04-08T14:52:56.346Z\",\n                    \"deletedAt\": null,\n                    \"userId\": \"2c60b5c2-7626-41fd-9f71-70024d5b2bc1\",\n                    \"status\": \"ACTIVE\",\n                    \"balances\": [\n                        {\n                            \"id\": \"c97f0271-acba-42ad-afcf-20546dbda910\",\n                            \"createdAt\": \"2025-04-08T14:52:56.346Z\",\n                            \"updatedAt\": \"2025-04-08T14:52:56.346Z\",\n                            \"deletedAt\": null,\n                            \"walletId\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n                            \"currencyId\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n                            \"currency\": {\n                                \"id\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n                                \"createdAt\": \"2025-04-08T14:50:59.742Z\",\n                                \"updatedAt\": \"2025-04-08T14:50:59.742Z\",\n                                \"deletedAt\": null,\n                                \"name\": \"Naira\",\n                                \"code\": \"NGN\",\n                                \"countryId\": \"5e789450-830a-4e5d-9c3f-3e018919902f\",\n                                \"rate\": \"1.00\",\n                                \"symbol\": \"₦\"\n                            },\n                            \"amount\": 120000,\n                            \"availableAmount\": 120000\n                        }\n                    ]\n                },\n                \"country\": {\n                    \"id\": \"5e789450-830a-4e5d-9c3f-3e018919902f\",\n                    \"createdAt\": \"2025-04-08T14:50:53.412Z\",\n                    \"updatedAt\": \"2025-04-08T14:50:53.412Z\",\n                    \"deletedAt\": null,\n                    \"name\": \"Nigeria\",\n                    \"phoneCode\": \"+234\",\n                    \"isoAlphaTwoCode\": \"NG\",\n                    \"isoAlphaThreeCode\": \"NGA\",\n                    \"subdivisionLink\": \"https://en.wikipedia.org/wiki/States_of_Nigeria\"\n                },\n                \"role\": {\n                    \"id\": \"9346ae6a-23ee-4ff0-a977-e418bf944ee5\",\n                    \"createdAt\": \"2025-04-08T14:16:29.956Z\",\n                    \"updatedAt\": \"2025-04-08T14:16:29.956Z\",\n                    \"deletedAt\": null,\n                    \"name\": \"user\",\n                    \"description\": \"Regular user with basic permissions\"\n                }\n            }\n        }\n    },\n    \"path\": \"/auth/verify\",\n    \"duration\": 151\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "wallet",
+			"item": [
+				{
+					"name": "get wallet balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}wallet",
+							"host": [
+								"{{base-url}}wallet"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt-token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base-url}}wallet",
+									"host": [
+										"{{base-url}}wallet"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1172"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"494-LjdoxyJ1VS62qO2oXLnAcXRyZ4Q\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 08 Apr 2025 09:08:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"id\": \"dc73c2fe-5a25-4094-9500-bc8f72047241\",\n        \"createdAt\": \"2025-04-08T08:48:26.872Z\",\n        \"updatedAt\": \"2025-04-08T08:48:26.872Z\",\n        \"deletedAt\": null,\n        \"userId\": \"71b90495-a58c-467d-b8b3-9f9829dc8a30\",\n        \"status\": \"ACTIVE\",\n        \"balances\": [\n            {\n                \"id\": \"404e01d1-cb34-4047-bd6a-7dfc7504ccae\",\n                \"createdAt\": \"2025-04-08T08:48:26.872Z\",\n                \"updatedAt\": \"2025-04-08T08:48:26.872Z\",\n                \"deletedAt\": null,\n                \"walletId\": \"dc73c2fe-5a25-4094-9500-bc8f72047241\",\n                \"currencyId\": \"3111de20-ad5d-46c0-914e-4609a5126ca9\",\n                \"currency\": {\n                    \"id\": \"3111de20-ad5d-46c0-914e-4609a5126ca9\",\n                    \"createdAt\": \"2025-04-08T08:46:37.107Z\",\n                    \"updatedAt\": \"2025-04-08T08:46:37.107Z\",\n                    \"deletedAt\": null,\n                    \"name\": \"Naira\",\n                    \"code\": \"NGN\",\n                    \"countryId\": \"95552567-a3e9-4fbe-925e-90b9b7063a9b\",\n                    \"country\": {\n                        \"id\": \"95552567-a3e9-4fbe-925e-90b9b7063a9b\",\n                        \"createdAt\": \"2025-03-04T15:27:51.584Z\",\n                        \"updatedAt\": \"2025-03-04T15:27:51.584Z\",\n                        \"deletedAt\": null,\n                        \"name\": \"Nigeria\",\n                        \"phoneCode\": \"+234\",\n                        \"isoAlphaTwoCode\": \"NG\",\n                        \"isoAlphaThreeCode\": \"NGA\",\n                        \"subdivisionLink\": \"https://en.wikipedia.org/wiki/States_of_Nigeria\"\n                    },\n                    \"rate\": \"300.00\",\n                    \"symbol\": \"N\"\n                },\n                \"amount\": 120000,\n                \"availableAmount\": 120000\n            }\n        ]\n    },\n    \"path\": \"/wallet\",\n    \"duration\": 15\n}"
+						}
+					]
+				},
+				{
+					"name": "fund wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 50,\n    \"currency\": \"NGN\",\n    \"paymentMethod\": \"BANK_TRANSFER\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}wallet/fund",
+							"host": [
+								"{{base-url}}wallet"
+							],
+							"path": [
+								"fund"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 50,\n    \"currency\": \"NGN\",\n    \"paymentMethod\": \"BANK_TRANSFER\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}wallet/fund",
+									"host": [
+										"{{base-url}}wallet"
+									],
+									"path": [
+										"fund"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1573"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"625-s+LcpGTLMHjn5qyc4EdLkWpMm6o\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 08 Apr 2025 15:04:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"wallet\": {\n            \"id\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n            \"createdAt\": \"2025-04-08T14:52:56.346Z\",\n            \"updatedAt\": \"2025-04-08T14:52:56.346Z\",\n            \"deletedAt\": null,\n            \"userId\": \"2c60b5c2-7626-41fd-9f71-70024d5b2bc1\",\n            \"status\": \"ACTIVE\",\n            \"balances\": [\n                {\n                    \"id\": \"c97f0271-acba-42ad-afcf-20546dbda910\",\n                    \"createdAt\": \"2025-04-08T14:52:56.346Z\",\n                    \"updatedAt\": \"2025-04-08T15:04:47.993Z\",\n                    \"deletedAt\": null,\n                    \"walletId\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n                    \"currencyId\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n                    \"currency\": {\n                        \"id\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n                        \"createdAt\": \"2025-04-08T14:50:59.742Z\",\n                        \"updatedAt\": \"2025-04-08T14:50:59.742Z\",\n                        \"deletedAt\": null,\n                        \"name\": \"Naira\",\n                        \"code\": \"NGN\",\n                        \"countryId\": \"5e789450-830a-4e5d-9c3f-3e018919902f\",\n                        \"rate\": \"1.00\",\n                        \"symbol\": \"₦\"\n                    },\n                    \"amount\": 120100,\n                    \"availableAmount\": 120100\n                }\n            ]\n        },\n        \"transaction\": {\n            \"id\": \"ee9f8a03-7fea-4835-acb6-654e8fad66e2\",\n            \"createdAt\": \"2025-04-08T15:04:47.974Z\",\n            \"updatedAt\": \"2025-04-08T15:04:47.997Z\",\n            \"deletedAt\": null,\n            \"sourceWalletId\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n            \"destinationWalletId\": \"b50ccfc2-9cc3-4898-b452-213b23519af9\",\n            \"type\": \"DEPOSIT\",\n            \"sourceCurrencyId\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n            \"destinationCurrencyId\": \"45ae9b27-0890-4f7e-95c1-eee8fd143fb5\",\n            \"paymentMethod\": \"BANK_TRAER\",\n            \"amount\": 50,\n            \"exchangeRate\": \"1\",\n            \"status\": \"COMPLETED\",\n            \"referenceId\": \"2c60b5c2-7626-41fd-9f71-70024d5b2bc1\",\n            \"metadata\": {\n                \"userId\": \"2c60b5c2-7626-41fd-9f71-70024d5b2bc1\"\n            },\n            \"initializedAt\": \"2025-04-08T15:04:47.974Z\",\n            \"completedAt\": \"2025-04-08T15:04:47.998Z\"\n        }\n    },\n    \"path\": \"/wallet/fund\",\n    \"duration\": 51\n}"
+						}
+					]
+				},
+				{
+					"name": "convert funds",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 100,\n    \"sourceCurrency\":\"NGN\",\n    \"targetCurrency\": \"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}wallet/convert",
+							"host": [
+								"{{base-url}}wallet"
+							],
+							"path": [
+								"convert"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 100,\n    \"sourceCurrency\":\"NGN\",\n    \"targetCurrency\": \"USD\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}wallet/convert",
+									"host": [
+										"{{base-url}}wallet"
+									],
+									"path": [
+										"convert"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1020"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3fc-9r5bux6nNcOPb/MKNArirtgyeOA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 01:18:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"newTransaction\": {\n            \"id\": \"0f591c6d-d02a-4fdd-aab1-061da9e69ec4\",\n            \"createdAt\": \"2025-04-09T01:18:58.293Z\",\n            \"updatedAt\": \"2025-04-09T01:18:58.308Z\",\n            \"version\": 2,\n            \"deletedAt\": null,\n            \"sourceWalletId\": \"06d21e37-66b8-470f-8b61-06fd879f4564\",\n            \"destinationWalletId\": \"06d21e37-66b8-470f-8b61-06fd879f4564\",\n            \"type\": \"CONVERSION\",\n            \"sourceCurrencyId\": \"6f2efd41-7889-4156-9dbb-1e95bef4a9ac\",\n            \"destinationCurrencyId\": \"95262c33-1a19-47f9-867a-8d291885de06\",\n            \"paymentMethod\": \"WALLET\",\n            \"amount\": 100,\n            \"exchangeRate\": \"0.0006\",\n            \"status\": \"COMPLETED\",\n            \"referenceId\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a\",\n            \"idempotencyKey\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a-100-NGN-USD-0.0006\",\n            \"metadata\": {\n                \"userId\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a\",\n                \"rateSource\": \"FX_API\",\n                \"preBalance\": {\n                    \"source\": 119600,\n                    \"destination\": 400\n                },\n                \"postBalance\": {\n                    \"source\": 119500,\n                    \"destination\": 500\n                }\n            },\n            \"initializedAt\": \"2025-04-09T01:18:58.292Z\",\n            \"completedAt\": \"2025-04-09T01:18:58.308Z\"\n        }\n    },\n    \"path\": \"/wallet/convert\",\n    \"duration\": 892\n}"
+						}
+					]
+				},
+				{
+					"name": "trade currency",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 100,\n    \"sourceCurrency\":\"NGN\",\n    \"targetCurrency\": \"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}wallet/trade",
+							"host": [
+								"{{base-url}}wallet"
+							],
+							"path": [
+								"trade"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 100,\n    \"sourceCurrency\":\"NGN\",\n    \"targetCurrency\": \"USD\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}wallet/convert",
+									"host": [
+										"{{base-url}}wallet"
+									],
+									"path": [
+										"convert"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1020"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3fc-9r5bux6nNcOPb/MKNArirtgyeOA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 01:18:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"newTransaction\": {\n            \"id\": \"0f591c6d-d02a-4fdd-aab1-061da9e69ec4\",\n            \"createdAt\": \"2025-04-09T01:18:58.293Z\",\n            \"updatedAt\": \"2025-04-09T01:18:58.308Z\",\n            \"version\": 2,\n            \"deletedAt\": null,\n            \"sourceWalletId\": \"06d21e37-66b8-470f-8b61-06fd879f4564\",\n            \"destinationWalletId\": \"06d21e37-66b8-470f-8b61-06fd879f4564\",\n            \"type\": \"CONVERSION\",\n            \"sourceCurrencyId\": \"6f2efd41-7889-4156-9dbb-1e95bef4a9ac\",\n            \"destinationCurrencyId\": \"95262c33-1a19-47f9-867a-8d291885de06\",\n            \"paymentMethod\": \"WALLET\",\n            \"amount\": 100,\n            \"exchangeRate\": \"0.0006\",\n            \"status\": \"COMPLETED\",\n            \"referenceId\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a\",\n            \"idempotencyKey\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a-100-NGN-USD-0.0006\",\n            \"metadata\": {\n                \"userId\": \"4fdb0ce4-ff41-42c8-9642-c5ca3665510a\",\n                \"rateSource\": \"FX_API\",\n                \"preBalance\": {\n                    \"source\": 119600,\n                    \"destination\": 400\n                },\n                \"postBalance\": {\n                    \"source\": 119500,\n                    \"destination\": 500\n                }\n            },\n            \"initializedAt\": \"2025-04-09T01:18:58.292Z\",\n            \"completedAt\": \"2025-04-09T01:18:58.308Z\"\n        }\n    },\n    \"path\": \"/wallet/convert\",\n    \"duration\": 892\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "fx",
+			"item": [
+				{
+					"name": "get fx rates",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currencyCode\": \"NGN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}fx/rates",
+							"host": [
+								"{{base-url}}fx"
+							],
+							"path": [
+								"rates"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"currencyCode\": \"NGN\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}fx/rates",
+									"host": [
+										"{{base-url}}fx"
+									],
+									"path": [
+										"rates"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2638"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a4e-xa1EwxQQJAL8lm34PSk+FgBFeR8\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 01:42:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": {\n        \"result\": {\n            \"currencyCode\": \"NGN\",\n            \"formattedFXRates\": {\n                \"NGN\": 1,\n                \"AED\": 0.002321,\n                \"AFN\": 0.045538,\n                \"ALL\": 0.057433,\n                \"AMD\": 0.247873,\n                \"ANG\": 0.001131,\n                \"AOA\": 0.574807,\n                \"ARS\": 0.680354,\n                \"AUD\": 0.001034,\n                \"AWG\": 0.001131,\n                \"AZN\": 0.00108,\n                \"BAM\": 0.00113,\n                \"BBD\": 0.001264,\n                \"BDT\": 0.077296,\n                \"BGN\": 0.00113,\n                \"BHD\": 0.000238,\n                \"BIF\": 1.875854,\n                \"BMD\": 0.000632,\n                \"BND\": 0.000845,\n                \"BOB\": 0.004408,\n                \"BRL\": 0.003694,\n                \"BSD\": 0.000632,\n                \"BTN\": 0.053937,\n                \"BWP\": 0.008926,\n                \"BYN\": 0.002084,\n                \"BZD\": 0.001264,\n                \"CAD\": 0.000898,\n                \"CDF\": 1.803001,\n                \"CHF\": 0.000543,\n                \"CLP\": 0.628509,\n                \"CNY\": 0.004604,\n                \"COP\": 2.790699,\n                \"CRC\": 0.325105,\n                \"CUP\": 0.015167,\n                \"CVE\": 0.063725,\n                \"CZK\": 0.014413,\n                \"DJF\": 0.112312,\n                \"DKK\": 0.004312,\n                \"DOP\": 0.039973,\n                \"DZD\": 0.084879,\n                \"EGP\": 0.032637,\n                \"ERN\": 0.009479,\n                \"ETB\": 0.081803,\n                \"EUR\": 0.000578,\n                \"FJD\": 0.001481,\n                \"FKP\": 0.000497,\n                \"FOK\": 0.004312,\n                \"GBP\": 0.000497,\n                \"GEL\": 0.001744,\n                \"GGP\": 0.000497,\n                \"GHS\": 0.009698,\n                \"GIP\": 0.000497,\n                \"GMD\": 0.045206,\n                \"GNF\": 5.357,\n                \"GTQ\": 0.004903,\n                \"GYD\": 0.132621,\n                \"HKD\": 0.004871,\n                \"HNL\": 0.016268,\n                \"HRK\": 0.004354,\n                \"HTG\": 0.08294,\n                \"HUF\": 0.232986,\n                \"IDR\": 10.821592,\n                \"ILS\": 0.002345,\n                \"IMP\": 0.000497,\n                \"INR\": 0.053954,\n                \"IQD\": 0.830117,\n                \"IRR\": 27.850641,\n                \"ISK\": 0.082323,\n                \"JEP\": 0.000497,\n                \"JMD\": 0.100367,\n                \"JOD\": 0.000448,\n                \"JPY\": 0.093423,\n                \"KES\": 0.081001,\n                \"KGS\": 0.05501,\n                \"KHR\": 2.533495,\n                \"KID\": 0.001034,\n                \"KMF\": 0.284321,\n                \"KRW\": 0.924135,\n                \"KWD\": 0.000196,\n                \"KYD\": 0.000527,\n                \"KZT\": 0.329504,\n                \"LAK\": 13.885407,\n                \"LBP\": 56.560317,\n                \"LKR\": 0.188998,\n                \"LRD\": 0.127148,\n                \"LSL\": 0.012331,\n                \"LYD\": 0.003508,\n                \"MAD\": 0.006008,\n                \"MDL\": 0.011259,\n                \"MGA\": 2.955366,\n                \"MKD\": 0.037126,\n                \"MMK\": 1.332197,\n                \"MNT\": 2.216757,\n                \"MOP\": 0.005015,\n                \"MRU\": 0.025244,\n                \"MUR\": 0.028303,\n                \"MVR\": 0.009818,\n                \"MWK\": 1.086093,\n                \"MXN\": 0.0129,\n                \"MYR\": 0.002854,\n                \"MZN\": 0.03981,\n                \"NAD\": 0.012331,\n                \"NIO\": 0.023395,\n                \"NOK\": 0.006821,\n                \"NPR\": 0.086299,\n                \"NZD\": 0.001118,\n                \"OMR\": 0.000243,\n                \"PAB\": 0.000632,\n                \"PEN\": 0.002352,\n                \"PGK\": 0.002615,\n                \"PHP\": 0.036432,\n                \"PKR\": 0.178389,\n                \"PLN\": 0.002482,\n                \"PYG\": 5.122968,\n                \"QAR\": 0.0023,\n                \"RON\": 0.002848,\n                \"RSD\": 0.067977,\n                \"RUB\": 0.053703,\n                \"RWF\": 0.906406,\n                \"SAR\": 0.00237,\n                \"SBD\": 0.005317,\n                \"SCR\": 0.00919,\n                \"SDG\": 0.28456,\n                \"SEK\": 0.006274,\n                \"SGD\": 0.000845,\n                \"SHP\": 0.000497,\n                \"SLE\": 0.014803,\n                \"SLL\": 14.803288,\n                \"SOS\": 0.361927,\n                \"SRD\": 0.023214,\n                \"SSP\": 2.792772,\n                \"STN\": 0.014159,\n                \"SYP\": 8.20356,\n                \"SZL\": 0.012331,\n                \"THB\": 0.021732,\n                \"TJS\": 0.007085,\n                \"TMT\": 0.002277,\n                \"TND\": 0.001954,\n                \"TOP\": 0.001536,\n                \"TRY\": 0.023834,\n                \"TTD\": 0.004328,\n                \"TVD\": 0.001034,\n                \"TWD\": 0.020983,\n                \"TZS\": 1.675493,\n                \"UAH\": 0.026149,\n                \"UGX\": 2.345592,\n                \"USD\": 0.000627,\n                \"UYU\": 0.026929,\n                \"UZS\": 8.128978,\n                \"VES\": 0.046579,\n                \"VND\": 16.412479,\n                \"VUV\": 0.080323,\n                \"WST\": 0.001827,\n                \"XAF\": 0.379095,\n                \"XCD\": 0.001706,\n                \"XCG\": 0.001131,\n                \"XDR\": 0.000471,\n                \"XOF\": 0.379095,\n                \"XPF\": 0.068965,\n                \"YER\": 0.156078,\n                \"ZAR\": 0.012331,\n                \"ZMW\": 0.017418,\n                \"ZWL\": 0.016805\n            },\n            \"lastUpdated\": null,\n            \"provider\": \"exchangeRateApi\"\n        }\n    },\n    \"path\": \"/fx/rates\",\n    \"duration\": 7480\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "external api",
+			"item": [
+				{
+					"name": "exchange rate",
+					"item": [
+						{
+							"name": "get currency pair rate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://v6.exchangerate-api.com/v6/{{exchangeRate-key}}/pair/EUR/GBP",
+									"protocol": "https",
+									"host": [
+										"v6",
+										"exchangerate-api",
+										"com"
+									],
+									"path": [
+										"v6",
+										"{{exchangeRate-key}}",
+										"pair",
+										"EUR",
+										"GBP"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://v6.exchangerate-api.com/v6/{{exchangeRate-key}}/pair/EUR/GBP",
+											"protocol": "https",
+											"host": [
+												"v6",
+												"exchangerate-api",
+												"com"
+											],
+											"path": [
+												"v6",
+												"{{exchangeRate-key}}",
+												"pair",
+												"EUR",
+												"GBP"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 08 Apr 2025 21:02:34 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "232"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "access-control-allow-headers",
+											"value": "*"
+										},
+										{
+											"key": "access-control-allow-origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										},
+										{
+											"key": "x-content-type-options",
+											"value": "NOSNIFF"
+										},
+										{
+											"key": "x-frame-options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "cf-cache-status",
+											"value": "DYNAMIC"
+										},
+										{
+											"key": "vary",
+											"value": "accept-encoding"
+										},
+										{
+											"key": "Server",
+											"value": "cloudflare"
+										},
+										{
+											"key": "CF-RAY",
+											"value": "92d4b4d82efc63e7-LHR"
+										},
+										{
+											"key": "alt-svc",
+											"value": "h3=\":443\"; ma=86400"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"result\": \"success\",\n    \"documentation\": \"https://www.exchangerate-api.com/docs\",\n    \"terms_of_use\": \"https://www.exchangerate-api.com/terms\",\n    \"time_last_update_unix\": 1744070401,\n    \"time_last_update_utc\": \"Tue, 08 Apr 2025 00:00:01 +0000\",\n    \"time_next_update_unix\": 1744156801,\n    \"time_next_update_utc\": \"Wed, 09 Apr 2025 00:00:01 +0000\",\n    \"base_code\": \"EUR\",\n    \"target_code\": \"GBP\",\n    \"conversion_rate\": 0.8565\n}"
+								}
+							]
+						},
+						{
+							"name": "get currency pairs rate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.exchangerate-api.com/v4/latest/USD",
+									"protocol": "https",
+									"host": [
+										"api",
+										"exchangerate-api",
+										"com"
+									],
+									"path": [
+										"v4",
+										"latest",
+										"USD"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://api.exchangerate-api.com/v4/latest/USD",
+											"protocol": "https",
+											"host": [
+												"api",
+												"exchangerate-api",
+												"com"
+											],
+											"path": [
+												"v4",
+												"latest",
+												"USD"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 08 Apr 2025 23:11:35 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "public, max-age=3600"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "NOSNIFF"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"provider\": \"https://www.exchangerate-api.com\",\n    \"WARNING_UPGRADE_TO_V6\": \"https://www.exchangerate-api.com/docs/free\",\n    \"terms\": \"https://www.exchangerate-api.com/terms\",\n    \"base\": \"USD\",\n    \"date\": \"2025-04-08\",\n    \"time_last_updated\": 1744070401,\n    \"rates\": {\n        \"USD\": 1,\n        \"AED\": 3.67,\n        \"AFN\": 71.78,\n        \"ALL\": 90.42,\n        \"AMD\": 391.28,\n        \"ANG\": 1.79,\n        \"AOA\": 919.19,\n        \"ARS\": 1076.33,\n        \"AUD\": 1.66,\n        \"AWG\": 1.79,\n        \"AZN\": 1.7,\n        \"BAM\": 1.79,\n        \"BBD\": 2,\n        \"BDT\": 121.54,\n        \"BGN\": 1.79,\n        \"BHD\": 0.376,\n        \"BIF\": 2986.08,\n        \"BMD\": 1,\n        \"BND\": 1.35,\n        \"BOB\": 6.93,\n        \"BRL\": 5.86,\n        \"BSD\": 1,\n        \"BTN\": 85.92,\n        \"BWP\": 14.03,\n        \"BYN\": 3.13,\n        \"BZD\": 2,\n        \"CAD\": 1.42,\n        \"CDF\": 2877.54,\n        \"CHF\": 0.858,\n        \"CLP\": 975.13,\n        \"CNY\": 7.32,\n        \"COP\": 4244.09,\n        \"CRC\": 505.02,\n        \"CUP\": 24,\n        \"CVE\": 100.86,\n        \"CZK\": 23.04,\n        \"DJF\": 177.72,\n        \"DKK\": 6.83,\n        \"DOP\": 62.97,\n        \"DZD\": 133.46,\n        \"EGP\": 51.4,\n        \"ERN\": 15,\n        \"ETB\": 130.89,\n        \"EUR\": 0.915,\n        \"FJD\": 2.33,\n        \"FKP\": 0.783,\n        \"FOK\": 6.83,\n        \"GBP\": 0.783,\n        \"GEL\": 2.75,\n        \"GGP\": 0.783,\n        \"GHS\": 15.59,\n        \"GIP\": 0.783,\n        \"GMD\": 72.65,\n        \"GNF\": 8711.86,\n        \"GTQ\": 7.71,\n        \"GYD\": 209.85,\n        \"HKD\": 7.77,\n        \"HNL\": 25.6,\n        \"HRK\": 6.89,\n        \"HTG\": 130.82,\n        \"HUF\": 372.69,\n        \"IDR\": 16668.86,\n        \"ILS\": 3.78,\n        \"IMP\": 0.783,\n        \"INR\": 85.92,\n        \"IQD\": 1309.13,\n        \"IRR\": 42001.31,\n        \"ISK\": 132.19,\n        \"JEP\": 0.783,\n        \"JMD\": 157.85,\n        \"JOD\": 0.709,\n        \"JPY\": 147.3,\n        \"KES\": 129.27,\n        \"KGS\": 87.05,\n        \"KHR\": 3995.52,\n        \"KID\": 1.66,\n        \"KMF\": 449.99,\n        \"KRW\": 1467.14,\n        \"KWD\": 0.308,\n        \"KYD\": 0.833,\n        \"KZT\": 522.17,\n        \"LAK\": 21782.95,\n        \"LBP\": 89500,\n        \"LKR\": 297.29,\n        \"LRD\": 200.19,\n        \"LSL\": 19.55,\n        \"LYD\": 4.84,\n        \"MAD\": 9.54,\n        \"MDL\": 17.76,\n        \"MGA\": 4636.91,\n        \"MKD\": 55.99,\n        \"MMK\": 2102.8,\n        \"MNT\": 3501.33,\n        \"MOP\": 8,\n        \"MRU\": 39.88,\n        \"MUR\": 45.05,\n        \"MVR\": 15.45,\n        \"MWK\": 1745.12,\n        \"MXN\": 20.69,\n        \"MYR\": 4.47,\n        \"MZN\": 63.91,\n        \"NAD\": 19.55,\n        \"NGN\": 1597.14,\n        \"NIO\": 36.77,\n        \"NOK\": 10.94,\n        \"NPR\": 137.47,\n        \"NZD\": 1.8,\n        \"OMR\": 0.384,\n        \"PAB\": 1,\n        \"PEN\": 3.69,\n        \"PGK\": 4.07,\n        \"PHP\": 57.38,\n        \"PKR\": 280.72,\n        \"PLN\": 3.92,\n        \"PYG\": 8043.11,\n        \"QAR\": 3.64,\n        \"RON\": 4.54,\n        \"RSD\": 107.1,\n        \"RUB\": 86.02,\n        \"RWF\": 1439.4,\n        \"SAR\": 3.75,\n        \"SBD\": 8.18,\n        \"SCR\": 14.78,\n        \"SDG\": 454.18,\n        \"SEK\": 10.07,\n        \"SGD\": 1.35,\n        \"SHP\": 0.783,\n        \"SLE\": 22.72,\n        \"SLL\": 22718.05,\n        \"SOS\": 571.8,\n        \"SRD\": 36.82,\n        \"SSP\": 4548.22,\n        \"STN\": 22.41,\n        \"SYP\": 12904.65,\n        \"SZL\": 19.55,\n        \"THB\": 34.62,\n        \"TJS\": 10.88,\n        \"TMT\": 3.5,\n        \"TND\": 3.08,\n        \"TOP\": 2.39,\n        \"TRY\": 38.02,\n        \"TTD\": 6.76,\n        \"TVD\": 1.66,\n        \"TWD\": 33.01,\n        \"TZS\": 2655.82,\n        \"UAH\": 41.11,\n        \"UGX\": 3658.25,\n        \"UYU\": 42.22,\n        \"UZS\": 12957.83,\n        \"VES\": 73.36,\n        \"VND\": 25697.77,\n        \"VUV\": 122.19,\n        \"WST\": 2.84,\n        \"XAF\": 599.99,\n        \"XCD\": 2.7,\n        \"XCG\": 1.79,\n        \"XDR\": 0.749,\n        \"XOF\": 599.99,\n        \"XPF\": 109.15,\n        \"YER\": 245.61,\n        \"ZAR\": 19.54,\n        \"ZMW\": 28,\n        \"ZWL\": 6.79\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "alpha advantage",
+					"item": [
+						{
+							"name": "get currency pair",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey={{alphaAdvantage-key}}",
+									"protocol": "https",
+									"host": [
+										"www",
+										"alphavantage",
+										"co"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "function",
+											"value": "CURRENCY_EXCHANGE_RATE"
+										},
+										{
+											"key": "from_currency",
+											"value": "USD"
+										},
+										{
+											"key": "to_currency",
+											"value": "JPY"
+										},
+										{
+											"key": "apikey",
+											"value": "{{alphaAdvantage-key}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey={{alphaAdvantage-key}}",
+											"protocol": "https",
+											"host": [
+												"www",
+												"alphavantage",
+												"co"
+											],
+											"path": [
+												"query"
+											],
+											"query": [
+												{
+													"key": "function",
+													"value": "CURRENCY_EXCHANGE_RATE"
+												},
+												{
+													"key": "from_currency",
+													"value": "USD"
+												},
+												{
+													"key": "to_currency",
+													"value": "JPY"
+												},
+												{
+													"key": "apikey",
+													"value": "{{alphaAdvantage-key}}"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 08 Apr 2025 20:56:52 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Report-To",
+											"value": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?ts=1744145812&sid=1b10b0ff-8a76-4548-befa-353fc6c6c045&s=fJvAlLPMVK67mqXFCYGMBOF8e9jrpyqfmysL1CTx7kw%3D\"}]}"
+										},
+										{
+											"key": "Reporting-Endpoints",
+											"value": "heroku-nel=https://nel.heroku.com/reports?ts=1744145812&sid=1b10b0ff-8a76-4548-befa-353fc6c6c045&s=fJvAlLPMVK67mqXFCYGMBOF8e9jrpyqfmysL1CTx7kw%3D"
+										},
+										{
+											"key": "Nel",
+											"value": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}"
+										},
+										{
+											"key": "Allow",
+											"value": "GET, HEAD, OPTIONS"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Vary",
+											"value": "Cookie, Origin"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 vegur"
+										},
+										{
+											"key": "cf-cache-status",
+											"value": "DYNAMIC"
+										},
+										{
+											"key": "Server",
+											"value": "cloudflare"
+										},
+										{
+											"key": "CF-RAY",
+											"value": "92d4ac801fc6edf8-LHR"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "br"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"Realtime Currency Exchange Rate\": {\n        \"1. From_Currency Code\": \"USD\",\n        \"2. From_Currency Name\": \"United States Dollar\",\n        \"3. To_Currency Code\": \"JPY\",\n        \"4. To_Currency Name\": \"Japanese Yen\",\n        \"5. Exchange Rate\": \"146.28100000\",\n        \"6. Last Refreshed\": \"2025-04-08 20:56:33\",\n        \"7. Time Zone\": \"UTC\",\n        \"8. Bid Price\": \"146.27530000\",\n        \"9. Ask Price\": \"146.28740000\"\n    }\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "get al transactions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base-url}}transaction",
+					"host": [
+						"{{base-url}}transaction"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}transaction",
+							"host": [
+								"{{base-url}}transaction"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1805"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"70d-CM/AGOC62U9tUzLLzyO++zl/dOw\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 08 Apr 2025 18:47:10 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Request successful\",\n    \"result\": [\n        {\n            \"id\": \"d4ee572e-348a-4749-8f06-4f1ee65af456\",\n            \"createdAt\": \"2025-04-08T18:05:19.094Z\",\n            \"updatedAt\": \"2025-04-08T18:05:19.109Z\",\n            \"version\": 0,\n            \"deletedAt\": null,\n            \"sourceWalletId\": \"e2e76a7d-8031-4d41-932d-3e1f0b0c654b\",\n            \"sourceWallet\": null,\n            \"destinationWalletId\": \"e2e76a7d-8031-4d41-932d-3e1f0b0c654b\",\n            \"destinationWallet\": null,\n            \"type\": \"CONVERSION\",\n            \"sourceCurrencyId\": \"793ffd0a-fa62-48b8-b5a7-3b4f78200b18\",\n            \"sourceCurrency\": null,\n            \"destinationCurrencyId\": \"674d9fde-59e4-43a0-a1fb-df3f6bfd0351\",\n            \"paymentMethod\": \"WALLET\",\n            \"destinationCurrency\": null,\n            \"amount\": 100,\n            \"exchangeRate\": \"1200.33\",\n            \"status\": \"COMPLETED\",\n            \"referenceId\": \"46c55f27-932e-49d2-a7fa-845e8bbaae5d\",\n            \"metadata\": {\n                \"userId\": \"46c55f27-932e-49d2-a7fa-845e8bbaae5d\",\n                \"rateSource\": \"FX_API\",\n                \"preBalance\": {\n                    \"source\": 120000,\n                    \"destination\": 0\n                },\n                \"postBalance\": {\n                    \"source\": 119900,\n                    \"destination\": 100\n                }\n            },\n            \"initializedAt\": \"2025-04-08T18:05:19.091Z\",\n            \"completedAt\": \"2025-04-08T18:05:19.109Z\"\n        },\n        {\n            \"id\": \"ee71dcb0-bd77-4553-930a-c238513e44f7\",\n            \"createdAt\": \"2025-04-08T17:57:04.426Z\",\n            \"updatedAt\": \"2025-04-08T17:57:04.435Z\",\n            \"version\": 0,\n            \"deletedAt\": null,\n            \"sourceWalletId\": \"e2e76a7d-8031-4d41-932d-3e1f0b0c654b\",\n            \"sourceWallet\": null,\n            \"destinationWalletId\": \"e2e76a7d-8031-4d41-932d-3e1f0b0c654b\",\n            \"destinationWallet\": null,\n            \"type\": \"DEPOSIT\",\n            \"sourceCurrencyId\": \"793ffd0a-fa62-48b8-b5a7-3b4f78200b18\",\n            \"sourceCurrency\": null,\n            \"destinationCurrencyId\": \"793ffd0a-fa62-48b8-b5a7-3b4f78200b18\",\n            \"paymentMethod\": \"BANK_TRANSFER\",\n            \"destinationCurrency\": null,\n            \"amount\": 120000,\n            \"exchangeRate\": \"1\",\n            \"status\": \"COMPLETED\",\n            \"referenceId\": \"46c55f27-932e-49d2-a7fa-845e8bbaae5d\",\n            \"metadata\": {\n                \"userId\": \"46c55f27-932e-49d2-a7fa-845e8bbaae5d\"\n            },\n            \"initializedAt\": \"2025-04-08T17:57:04.426Z\",\n            \"completedAt\": \"2025-04-08T17:57:04.434Z\"\n        }\n    ],\n    \"path\": \"/transaction\",\n    \"duration\": 16\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{x-api-key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "x-credpal_fx-key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

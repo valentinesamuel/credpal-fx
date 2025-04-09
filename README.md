@@ -2,6 +2,38 @@
 
 ## Table of Contents
 
+- [Project Overview](#project-overview)
+- [Setup Instructions](#setup-instructions)
+  - [Prerequisites](#prerequisites)
+  - [Environment Setup](#environment-setup)
+  - [Development Commands](#development-commands)
+- [Key Assumptions](#key-assumptions)
+- [Project Structure](#project-structure)
+- [API Documentation](#api-documentation)
+  - [Swagger Documentation](#swagger-documentation)
+  - [Postman Collection](#postman-collection)
+- [Architectural Decisions](#architectural-decisions)
+  - [Technology Stack](#technology-stack)
+  - [Key Design Patterns](#key-design-patterns)
+- [Process Flows](#process-flows)
+  - [Authentication Flow](#authentication-flow)
+  - [Trading Flow](#trading-flow)
+  - [Wallet Management Flow](#wallet-management-flow)
+- [Flow Charts](#flow-charts)
+  - [Trading Process](#trading-process)
+  - [Wallet Management](#wallet-management)
+  - [Currency Exchange](#currency-exchange)
+- [Database ERD](#database-erd)
+- [Endpoints](#endpoints)
+  - [Authentication](#authentication)
+  - [Wallet](#wallet)
+  - [Transaction](#transaction)
+  - [FX](#fx)
+- [Key Features](#key-features)
+- [Architectural Diagram](#architectural-diagram)
+- [Challenges](#challenges)
+- [Areas for Improvement](#areas-for-improvement)
+- [Conclusion](#conclusion)
 
 ## Project Overview
 
@@ -106,6 +138,8 @@ A Postman collection is available for testing the API endpoints and it contains 
 - Trading endpoints
 - Transaction history
 - Currency conversion
+
+> You can also import the postman collection from the `assets/Credpal FX API.postman_collection.json` file in the project directory
 
 ## Architectural Decisions
 
@@ -268,6 +302,7 @@ A Postman collection is available for testing the API endpoints and it contains 
 9. More endpoints
 10. Soak and load testing using grafana K6
 11. Asynchronous processing of transfers with worker queue like BullMQ
+12. Cron jobs for periodic fx rate updates
 
 ## Conclusion
 
