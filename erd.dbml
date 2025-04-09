@@ -1,0 +1,176 @@
+// Database schema for Credpal FX
+
+Table users {
+  id uuid [pk]
+  email string [unique]
+  password string
+  firstName string
+  lastName string
+  phoneNumber string [unique]
+  isActive boolean [default: true]
+  isEmailVerified boolean [default: false]
+  isPhoneVerified boolean [default: false]
+  lastLoginAt timestamp
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table roles {
+  id uuid [pk]
+  name string [unique]
+  description string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table permissions {
+  id uuid [pk]
+  name string [unique]
+  description string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table role_permissions {
+  id uuid [pk]
+  roleId uuid [ref: > roles.id]
+  permissionId uuid [ref: > permissions.id]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table wallets {
+  id uuid [pk]
+  userId uuid [ref: > users.id]
+  name string
+  description string
+  isActive boolean [default: true]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table currencies {
+  id uuid [pk]
+  code string [unique]
+  name string
+  symbol string
+  isActive boolean [default: true]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table wallet_balances {
+  id uuid [pk]
+  walletId uuid [ref: > wallets.id]
+  currencyId uuid [ref: > currencies.id]
+  amount decimal
+  availableAmount decimal
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table transactions {
+  id uuid [pk]
+  amount decimal
+  sourceCurrencyId uuid [ref: > currencies.id]
+  destinationCurrencyId uuid [ref: > currencies.id]
+  sourceWalletId uuid [ref: > wallets.id]
+  destinationWalletId uuid [ref: > wallets.id]
+  type enum
+  paymentMethod enum
+  referenceId uuid
+  exchangeRate decimal
+  status enum
+  idempotencyKey string
+  metadata jsonb
+  initializedAt timestamp
+  completedAt timestamp
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table fx_rates {
+  id uuid [pk]
+  sourceCurrencyId uuid [ref: > currencies.id]
+  targetCurrencyId uuid [ref: > currencies.id]
+  rate decimal
+  provider string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table countries {
+  id uuid [pk]
+  name string
+  code string [unique]
+  phoneCode string
+  isActive boolean [default: true]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table configs {
+  id uuid [pk]
+  key string [unique]
+  value string
+  description string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table otps {
+  id uuid [pk]
+  userId uuid [ref: > users.id]
+  code string
+  type enum
+  expiresAt timestamp
+  isUsed boolean [default: false]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+// Indexes
+Index idx_wallet_balances_wallet_currency {
+  walletId
+  currencyId
+  unique: true
+}
+
+Index idx_transactions_idempotency {
+  idempotencyKey
+  unique: true
+}
+
+Index idx_fx_rates_currency_pair {
+  sourceCurrencyId
+  targetCurrencyId
+  unique: true
+}
+
+// Enums
+enum transaction_type {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  TRADE
+  CONVERSION
+}
+
+enum transaction_status {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum payment_method {
+  WALLET
+  BANK
+  CARD
+}
+
+enum otp_type {
+  EMAIL_VERIFICATION
+  PHONE_VERIFICATION
+  PASSWORD_RESET
+}
