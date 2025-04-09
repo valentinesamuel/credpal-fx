@@ -72,7 +72,7 @@ export class RegisterUserHandler
       return {
         feedback: "User registered successfully",
         userId: user.id,
-        otp,
+        // otp,
       };
     });
   }
