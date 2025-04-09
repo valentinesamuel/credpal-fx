@@ -9,6 +9,7 @@ import { OtpService } from "@modules/core/services/otp.service";
 import { UtilityService } from "@shared/utils/utility.service";
 import { CountryService } from "@modules/country/services/country.service";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
+import { SMSAdapter } from "@adapters/sms/sms.adapter";
 
 @Injectable()
 @CommandHandler(RegisterUserCommand)
@@ -65,7 +66,7 @@ export class RegisterUserHandler
         user.id,
       );
 
-      // await this.otpService.sendOtpSms(otp.otpCode, payload.phoneNumber);
+      await this.otpService.sendOtpSms(otp.otpCode, payload.phoneNumber);
 
       this.logger.log("User registered successfully");
       return {

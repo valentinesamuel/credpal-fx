@@ -51,7 +51,7 @@ export class PermissionsGuard implements CanActivate {
     let userPermissions: string[];
 
     const cachedUserPermissions = await this.cacheAdapter.get(
-      `permissions<rn>${user.id}`,
+      `permissions:${user.id}`,
     );
 
     if (
@@ -66,7 +66,7 @@ export class PermissionsGuard implements CanActivate {
       );
       userPermissions = freshUserPermissions;
       await this.cacheAdapter.set(
-        `permissions<rn>${user.id}`,
+        `permissions:${user.id}`,
         JSON.stringify(freshUserPermissions),
         Number(this.configService.get<number>("cache.ttl")) * 1,
       );

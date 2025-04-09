@@ -74,7 +74,7 @@ export class SeederService implements OnModuleInit {
     // Define role structures with permission names (not entities)
     const roleDefinitions = [
       {
-        name: "USER",
+        name: "user",
         description: "Regular user",
         permissionNames: [
           "wallet.read",
@@ -89,7 +89,7 @@ export class SeederService implements OnModuleInit {
         ],
       },
       {
-        name: "ADMIN",
+        name: "admin",
         description: "Administrator",
         permissionNames: [
           "wallet.read",

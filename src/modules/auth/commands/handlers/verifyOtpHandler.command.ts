@@ -10,6 +10,7 @@ import { CacheAdapter } from "@adapters/cache/cache.adapter";
 import { User } from "@modules/core/entities/user.entity";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 import { RoleRepository } from "@adapters/repositories/role.repository";
+import { SMSAdapter } from "@adapters/sms/sms.adapter";
 
 @Injectable()
 @CommandHandler(VerifyOtpCommand)
@@ -24,6 +25,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     private readonly otpService: OtpService,
     private readonly unitOfWork: UnitOfWork,
     private readonly roleRepository: RoleRepository,
+    private readonly smsAdapter: SMSAdapter,
   ) {}
 
   async execute(command: VerifyOtpCommand) {
@@ -42,6 +44,10 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
       const role = await this.roleRepository.findRole({
         where: { name: "user" },
       });
+
+      if (!role) {
+        throw new BadRequestException("Role not found");
+      }
 
       const user = await this.userService.updateUserByData(
         { phoneNumber: payload.phoneNumber },
@@ -71,7 +77,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
     });
 
     await this.cacheAdapter.set(
-      `token<rn>${user.id}`,
+      `token:${user.id}`,
       token,
       Number(this.configService.get<number>("cache.ttl")) * 1,
     );
@@ -80,9 +86,9 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
   }
 
   async sendWelcomeSMS(phoneNumber: string) {
-    // await this.smsAdapter.sendSMS({
-    //   to: phoneNumber,
-    //   message: `Welcome to CredpalFX`,
-    // });
+    await this.smsAdapter.sendSMS({
+      to: phoneNumber,
+      message: `Welcome to CredpalFX`,
+    });
   }
 }

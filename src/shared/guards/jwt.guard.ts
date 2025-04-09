@@ -42,7 +42,7 @@ export class JwtAuthGuard implements CanActivate {
       }
 
       // Fetch User Details from cache, if nothing is there, then fetch from DB
-      const cachedUser = await this.cacheAdapter.get(`user<rn>${payload.id}`);
+      const cachedUser = await this.cacheAdapter.get(`user:${payload.id}`);
 
       if (
         !cachedUser ||
@@ -51,7 +51,7 @@ export class JwtAuthGuard implements CanActivate {
       ) {
         const user = await this.userService.findUserByIdWithRoles(payload.id);
         this.cacheAdapter.set(
-          `user<rn>${payload.id}`,
+          `user:${payload.id}`,
           JSON.stringify(user),
           Number(this.configService.get<number>("cache.ttl")) * 1,
         );

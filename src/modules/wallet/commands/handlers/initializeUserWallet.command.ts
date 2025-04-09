@@ -46,13 +46,18 @@ export class InitializeUserWalletHandler
       const fxRate = await this.fxRateAdapter.getFXRateForCurrencyPair(
         currency.code,
         currency.code,
-        FXRateProviderEnum.ALPHAVANTAGE,
+        FXRateProviderEnum.EXCHANGE_RATE_API,
       );
       const currentConversionRate = fxRate.result.rate;
 
-      const wallet = await this.walletService.createWallet({
-        userId: user.id,
-      });
+      // find user wallet, if ont exists, create new one
+      let wallet = await this.walletService.getWalletByUserId(user.id);
+
+      if (!wallet) {
+        wallet = await this.walletService.createWallet({
+          userId: user.id,
+        });
+      }
 
       const transaction = await this.transactionService.createTransaction({
         sourceWalletId: wallet.id,
@@ -76,12 +81,20 @@ export class InitializeUserWalletHandler
         initializedAt: new Date().toISOString(),
       });
 
-      await this.walletBalanceService.createWalletBalance({
-        walletId: wallet.id,
-        currencyId: currency.id,
-        amount: initialDepositAmount,
-        availableAmount: initialDepositAmount,
-      });
+      let walletBalance =
+        await this.walletBalanceService.getWalletBalanceByData({
+          walletId: wallet.id,
+          currencyId: currency.id,
+        });
+
+      if (!walletBalance) {
+        walletBalance = await this.walletBalanceService.createWalletBalance({
+          walletId: wallet.id,
+          currencyId: currency.id,
+          amount: initialDepositAmount,
+          availableAmount: initialDepositAmount,
+        });
+      }
 
       await this.transactionService.updateTransaction(transaction.id, {
         status: TransactionStatus.COMPLETED,

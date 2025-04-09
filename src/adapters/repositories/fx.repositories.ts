@@ -32,4 +32,14 @@ export class FXRateRepository extends Repository<FXRate> {
       fxRateRepository.queryRunner,
     );
   }
+
+  async createFXRate(fxRate: Partial<FXRate>) {
+    const newfxRate = this.create(fxRate);
+    return this.save(newfxRate);
+  }
+
+  async upsertFXRate(fxRateData: Partial<FXRate>) {
+    const fxRate = await this.upsert(fxRateData, ["id"]);
+    return this.findOne({ where: { id: fxRate.identifiers[0].id } });
+  }
 }

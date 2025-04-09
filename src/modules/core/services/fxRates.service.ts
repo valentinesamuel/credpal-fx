@@ -15,7 +15,7 @@ export class FXRateService {
   }
 
   async createFXRate(fxRate: Partial<FXRate>) {
-    return this.fxRatesRepository.create(fxRate);
+    return this.fxRatesRepository.createFXRate(fxRate);
   }
 
   async updateFXRate(id: string, fxRate: Partial<FXRate>) {
@@ -37,5 +37,9 @@ export class FXRateService {
     return this.fxRatesRepository.findOne({
       where: { baseCurrencyId, targetCurrencyId },
     });
+  }
+
+  async upsertFXRate(fxRate: Partial<FXRate>) {
+    return this.fxRatesRepository.upsertFXRate(fxRate);
   }
 }

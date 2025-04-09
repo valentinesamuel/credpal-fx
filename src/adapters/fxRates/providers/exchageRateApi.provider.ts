@@ -76,30 +76,43 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
         }),
       ]);
 
-      // Create FX rate
-      const fxRate = await this.fxRateService.createFXRate({
-        baseCurrencyId: sourceCurrency.id,
-        targetCurrencyId: destinationCurrency.id,
-        rate,
-        provider: FXRateProviderEnum.ALPHAVANTAGE,
-        lastUpdated,
-        nextUpdated,
-        metadata: {
-          apiResponse: response.data,
-        },
-      });
-
-      // Store the FX rate in cache
-      await this.cacheAdapter.set(
-        cacheKey,
-        response.data,
-        nextUpdated.getMilliseconds(),
+      const existingFXRate = await this.fxRateService.getFXRateByCurrencyPair(
+        sourceCurrency.id,
+        destinationCurrency.id,
       );
+
+      // If there is no fx rate or if it is stale, upsert it and store in cache
+      if (!existingFXRate || isBefore(new Date(), existingFXRate.nextUpdated)) {
+        const fxRate = await this.fxRateService.upsertFXRate({
+          baseCurrencyId: sourceCurrency.id,
+          targetCurrencyId: destinationCurrency.id,
+          rate,
+          provider: FXRateProviderEnum.EXCHANGE_RATE_API,
+          lastUpdated,
+          nextUpdated,
+          metadata: {
+            apiResponse: response.data,
+          },
+        });
+
+        // Store the FX rate in cache
+        await this.cacheAdapter.set(
+          cacheKey,
+          fxRate,
+          nextUpdated.getMilliseconds(),
+        );
+
+        return {
+          status: true,
+          message: "FX rate retrieved successfully",
+          result: fxRate,
+        };
+      }
 
       return {
         status: true,
         message: "FX rate retrieved successfully",
-        result: fxRate,
+        result: existingFXRate,
       };
     } catch (error) {
       this.logger.error("❌ Failed to get FX rate:", error.message);
