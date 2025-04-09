@@ -1,3 +1,3 @@
 export class GetFXRatesQuery {
-  constructor() {}
+  constructor(public readonly currencyCode: string) {}
 }

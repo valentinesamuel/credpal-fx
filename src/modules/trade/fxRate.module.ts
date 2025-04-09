@@ -13,6 +13,10 @@ import { ExchangeRateApiProviderAPI } from "@adapters/fxRates/providers/exchageR
 import { HttpModule } from "@nestjs/axios";
 import { CurrencyModule } from "@modules/currency/currency.module";
 import { AlphaAdvantageExchangeRateProviderAPI } from "@adapters/fxRates/providers/alphaAdvantage.provider";
+import { GetFXRatesHandler } from "./fx/queries/handlers/getFxRates.handler";
+
+const CommandHandlers = [];
+const QueryHandlers = [GetFXRatesHandler];
 
 @Module({
   imports: [
@@ -30,6 +34,10 @@ import { AlphaAdvantageExchangeRateProviderAPI } from "@adapters/fxRates/provide
     FXRateAdapter,
     ExchangeRateApiProviderAPI,
     AlphaAdvantageExchangeRateProviderAPI,
+
+    // Handlers
+    ...CommandHandlers,
+    ...QueryHandlers,
   ],
   exports: [FXRateService, FXRateAdapter],
   controllers: [FxRateController],
