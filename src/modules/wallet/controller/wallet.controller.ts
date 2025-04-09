@@ -52,6 +52,11 @@ export class WalletController {
     [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
     "ANY",
   )
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: "getWallet", summary: "get user wallet" })
   @ApiOkResponse({ description: "user wallet details" })
@@ -69,6 +74,11 @@ export class WalletController {
     [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
     "ANY",
   )
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: "fundWallet", summary: "fund user wallet" })
   @ApiOkResponse({ description: "user wallet funded" })
@@ -81,10 +91,10 @@ export class WalletController {
 
   @Post("/convert")
   @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
-  // @RequirePermissions(
-  //   [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
-  //   "ANY",
-  // )
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: "convertCurrency", summary: "convert currency" })
   @ApiOkResponse({ description: "currency converted" })
@@ -99,10 +109,17 @@ export class WalletController {
   }
 
   @Post("trade")
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: "Trade between currencies" })
-  @ApiResponse({ status: 200, description: "Trade executed successfully" })
-  @ApiResponse({ status: 400, description: "Bad request" })
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ operationId: "trade", summary: "trade between currencies" })
+  @ApiOkResponse({ description: "trade executed successfully" })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error",
+  })
   async trade(
     @Body() tradeDto: TradeDto,
     @Req() req: Request & { user: User },

@@ -12,6 +12,10 @@ import { JwtAuthGuard } from "@shared/guards/jwt.guard";
 import { PermissionsGuard } from "@shared/guards/permission.guard";
 import { RolesGuard } from "@shared/guards/role.guard";
 import { GetFXRatesQuery } from "./queries/queryHandlers";
+import { RequirePermissions } from "@shared/decorators/permission.decorator";
+import { PERMISSIONS } from "@shared/guards/enums/permission.enum";
+import { RequireRoles } from "@shared/decorators/role.decorator";
+import { ROLES } from "@shared/guards/enums/roles.enum";
 
 @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 @ApiTags("FX")
@@ -22,6 +26,11 @@ export class FxRateController {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Get("/rates")
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: "rates", summary: "get fx rates" })
   @ApiOkResponse({ description: "fx rates retrieved" })

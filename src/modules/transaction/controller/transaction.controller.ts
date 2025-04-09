@@ -13,6 +13,10 @@ import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "@shared/guards/jwt.guard";
 import { PermissionsGuard } from "@shared/guards/permission.guard";
 import { RolesGuard } from "@shared/guards/role.guard";
+import { RequireRoles } from "@shared/decorators/role.decorator";
+import { ROLES } from "@shared/guards/enums/roles.enum";
+import { RequirePermissions } from "@shared/decorators/permission.decorator";
+import { PERMISSIONS } from "@shared/guards/enums/permission.enum";
 
 @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 @ApiTags("Transaction")
@@ -23,6 +27,11 @@ export class TransactionController {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Get("")
+  @RequireRoles([ROLES.USER, ROLES.ADMIN], "ANY")
+  @RequirePermissions(
+    [PERMISSIONS.CAN_VIEW_WALLET, PERMISSIONS.CAN_CREATE_WALLET],
+    "ANY",
+  )
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: "all", summary: "get all transactions" })
   @ApiOkResponse({ description: "transactions retrieved" })
