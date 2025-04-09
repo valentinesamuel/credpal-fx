@@ -13,6 +13,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiResponse,
 } from "@nestjs/swagger";
 import { RequireRoles } from "@shared/decorators/role.decorator";
 import { JwtAuthGuard } from "@shared/guards/jwt.guard";
@@ -29,8 +30,10 @@ import { PERMISSIONS } from "@shared/guards/enums/permission.enum";
 import {
   ConvertCurrencyCommand,
   FundWalletCommand,
+  TradeCommand,
 } from "../commands/commandHandlers";
 import { ConvertCurrencyDto } from "../dto/convertCurrency.dto";
+import { TradeDto } from "../dto/trade.dto";
 
 @ApiTags("Wallet")
 @Controller("wallet")
@@ -93,5 +96,17 @@ export class WalletController {
     @Body() body: ConvertCurrencyDto,
   ) {
     return this.commandBus.execute(new ConvertCurrencyCommand(body, req.user));
+  }
+
+  @Post("trade")
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Trade between currencies" })
+  @ApiResponse({ status: 200, description: "Trade executed successfully" })
+  @ApiResponse({ status: 400, description: "Bad request" })
+  async trade(
+    @Body() tradeDto: TradeDto,
+    @Req() req: Request & { user: User },
+  ) {
+    return this.commandBus.execute(new TradeCommand(tradeDto, req.user));
   }
 }

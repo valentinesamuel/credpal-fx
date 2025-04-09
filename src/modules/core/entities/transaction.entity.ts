@@ -13,6 +13,7 @@ export enum TransactionType {
   FEE = "FEE",
   INTEREST = "INTEREST",
   CONVERSION = "CONVERSION",
+  TRADE = "TRADE",
 }
 
 export enum PaymentMethod {
@@ -36,6 +37,7 @@ export enum TransactionStatus {
 export interface TransactionMetadata {
   userId: string;
   rateSource: string;
+  tradeType?: string;
   preBalance: {
     source: number;
     destination?: number;
@@ -84,10 +86,10 @@ export class Transaction extends BaseEntity {
   @JoinColumn({ name: "destinationCurrency_id" })
   destinationCurrency: Currency;
 
-  @Column({ type: "integer" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   amount: number;
 
-  @Column({ type: "decimal" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   exchangeRate: number;
 
   @Column({ type: "varchar" })

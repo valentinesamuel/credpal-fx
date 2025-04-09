@@ -1,25 +1,24 @@
-import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 import { Injectable, OnModuleInit } from "@nestjs/common";
-import { Permission } from "@modules/core/entities/permission.entity";
-import { Role } from "@modules/core/entities/role.entity";
-import { RolePermission } from "@modules/core/entities/rolePermission.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Logger } from "@nestjs/common";
-import { CountryService } from "@modules/country/services/country.service";
-import { Country } from "../entities/country.entity";
+import { Permission } from "../entities/permission.entity";
+import { Role } from "../entities/role.entity";
+import { RolePermission } from "../entities/rolePermission.entity";
+import { AppLogger } from "@shared/observability/logger";
 import { CurrencyService } from "./currency.service";
+import { CountryService } from "@modules/country/services/country.service";
+import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 
 @Injectable()
 export class SeederService implements OnModuleInit {
-  private readonly logger = new Logger(SeederService.name);
+  private readonly logger = new AppLogger(SeederService.name);
 
   constructor(
     private unitOfWork: UnitOfWork,
     @InjectRepository(Permission)
-    private permissionRepository: Repository<Permission>,
+    private readonly permissionRepository: Repository<Permission>,
     @InjectRepository(Role)
-    private roleRepository: Repository<Role>,
+    private readonly roleRepository: Repository<Role>,
     @InjectRepository(RolePermission)
     private rolePermissionRepository: Repository<RolePermission>,
     private readonly countryService: CountryService,
@@ -40,98 +39,119 @@ export class SeederService implements OnModuleInit {
 
   async seedPermissions() {
     const permissions = [
-      { name: "wallet.create", description: "Create wallet" },
-      { name: "wallet.read", description: "Read wallet" },
-      { name: "wallet.update", description: "Update wallet" },
-      { name: "wallet.delete", description: "Delete wallet" },
-      { name: "currency.create", description: "Create currency" },
-      { name: "currency.read", description: "Read currency" },
-      { name: "currency.update", description: "Update currency" },
-      { name: "currency.delete", description: "Delete currency" },
-      { name: "transaction.create", description: "Create transaction" },
-      { name: "transaction.read", description: "Read transaction" },
-      { name: "transaction.update", description: "Update transaction" },
-      { name: "transaction.delete", description: "Delete transaction" },
+      { action: "wallet.create", description: "Create wallet" },
+      { action: "wallet.read", description: "Read wallet" },
+      { action: "wallet.update", description: "Update wallet" },
+      { action: "wallet.delete", description: "Delete wallet" },
+      { action: "currency.create", description: "Create currency" },
+      { action: "currency.read", description: "Read currency" },
+      { action: "currency.update", description: "Update currency" },
+      { action: "currency.delete", description: "Delete currency" },
+      { action: "transaction.create", description: "Create transaction" },
+      { action: "transaction.read", description: "Read transaction" },
+      { action: "transaction.update", description: "Update transaction" },
+      { action: "transaction.delete", description: "Delete transaction" },
     ];
 
-    const createdPermissions = await Promise.all(
-      permissions.map(async (permission) => {
-        const existing = await this.permissionRepository.findOne({
-          where: { action: permission.name },
-        });
-        if (!existing) {
-          return this.permissionRepository.save(
-            this.permissionRepository.create({
-              action: permission.name,
-              description: permission.description,
-            }),
-          );
-        }
-        return existing;
-      }),
-    );
+    for (const permission of permissions) {
+      const exists = await this.permissionRepository.findOne({
+        where: { action: permission.action },
+      });
 
-    return createdPermissions;
+      if (!exists) {
+        await this.permissionRepository.save(
+          this.permissionRepository.create(permission),
+        );
+        this.logger.log(`Created permission: ${permission.action}`);
+      }
+    }
   }
 
-  async seedRoles(createdPermissions: Permission[]) {
-    const roles = [
+  async seedRoles() {
+    // First, get all created permissions
+    const allPermissions = await this.permissionRepository.find();
+
+    // Define role structures with permission names (not entities)
+    const roleDefinitions = [
       {
-        name: "super_admin",
-        description: "Super Administrator with all permissions",
-        permissions: createdPermissions,
+        name: "USER",
+        description: "Regular user",
+        permissionNames: [
+          "wallet.read",
+          "wallet.create",
+          "wallet.update",
+          "currency.read",
+          "currency.create",
+          "currency.update",
+          "transaction.read",
+          "transaction.create",
+          "transaction.update",
+        ],
       },
       {
-        name: "admin",
-        description: "Administrator with most permissions",
-        permissions: createdPermissions.filter(
-          (p) => !p.action.includes(".delete"),
-        ),
-      },
-      {
-        name: "user",
-        description: "Regular user with basic permissions",
-        permissions: createdPermissions.filter((p) =>
-          p.action.includes(".read"),
-        ),
+        name: "ADMIN",
+        description: "Administrator",
+        permissionNames: [
+          "wallet.read",
+          "wallet.create",
+          "wallet.update",
+          "wallet.delete",
+          "currency.read",
+          "currency.create",
+          "currency.update",
+          "currency.delete",
+          "transaction.read",
+          "transaction.create",
+          "transaction.update",
+          "transaction.delete",
+        ],
       },
     ];
 
-    await Promise.all(
-      roles.map(async (role) => {
-        const existing = await this.roleRepository.findOne({
-          where: { name: role.name },
-          relations: ["rolePermissions"],
+    for (const roleDef of roleDefinitions) {
+      // Find existing role
+      let role = await this.roleRepository.findOne({
+        where: { name: roleDef.name },
+        relations: ["rolePermissions", "rolePermissions.permission"],
+      });
+
+      if (!role) {
+        role = this.roleRepository.create({
+          name: roleDef.name,
+          description: roleDef.description,
         });
+        await this.roleRepository.save(role);
+      } else {
+        return this.roleRepository.save(
+          this.roleRepository.create({
+            name: role.name,
+            description: role.description,
+          }),
+        );
+      }
 
-        if (!existing) {
-          return this.roleRepository.save(
-            this.roleRepository.create({
-              name: role.name,
-              description: role.description,
-            }),
-          );
-        } else {
-          if (existing.rolePermissions && existing.rolePermissions.length > 0) {
-            await this.rolePermissionRepository.remove(
-              existing.rolePermissions,
-            );
+      if (role.rolePermissions && role.rolePermissions.length > 0) {
+        await this.rolePermissionRepository.remove(role.rolePermissions);
+      }
+
+      const rolePermissions = await Promise.all(
+        roleDef.permissionNames.map(async (permissionName) => {
+          const permission = await this.permissionRepository.findOne({
+            where: { action: permissionName },
+          });
+          if (!permission) {
+            throw new Error(`Permission not found: ${permissionName}`);
           }
+          const rolePermission = this.rolePermissionRepository.create();
+          rolePermission.role = role;
+          rolePermission.permission = permission;
+          return this.rolePermissionRepository.save(rolePermission);
+        }),
+      );
 
-          const rolePermissions = await Promise.all(
-            role.permissions.map(async (permission) => {
-              const rolePermission = this.rolePermissionRepository.create();
-              rolePermission.role = existing;
-              rolePermission.permission = permission;
-              return this.rolePermissionRepository.save(rolePermission);
-            }),
-          );
-
-          existing.rolePermissions = rolePermissions;
-          return this.roleRepository.save(existing);
-        }
-      }),
-    );
+      role.rolePermissions = rolePermissions;
+      return this.roleRepository.save(role);
+    }
   }
 
   async seedCountriesAndCurrency() {
@@ -223,8 +243,7 @@ export class SeederService implements OnModuleInit {
   async onModuleInit() {
     const existingPermissions = await this.permissionRepository.find();
     if (existingPermissions.length === 0) {
-      const createdPermissions = await this.seedPermissions();
-      await this.seedRoles(createdPermissions);
+      await this.seedRoles();
     }
 
     await this.seedCountriesAndCurrency();

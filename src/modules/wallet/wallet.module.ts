@@ -21,12 +21,14 @@ import { TransactionService } from "@modules/core/services/transaction.service";
 import { TransactionRepository } from "@adapters/repositories/transaction.repository";
 import { Transaction } from "@modules/core/entities/transaction.entity";
 import { FXRateModule } from "@modules/trade/fxRate.module";
+import { TradeHandler } from "./commands/handlers/trade.command";
 
 // Define all command handlers
 const CommandHandlers = [
   FundWalletHandler,
   InitializeUserWalletHandler,
   ConvertCurrencyHandler,
+  TradeHandler,
 ];
 
 const QueryHandlers = [GetWalletHandler];

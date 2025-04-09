@@ -14,10 +14,10 @@ export class WalletBalance extends BaseEntity {
   @ManyToOne(() => Currency)
   currency: Currency;
 
-  @Column({ type: "integer" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   amount: number;
 
-  @Column({ type: "integer" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   availableAmount: number;
 
   @ManyToOne(() => Wallet)
