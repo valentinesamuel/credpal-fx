@@ -32,10 +32,13 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
     );
   }
 
-  async getFXRateForCurrencyPair(baseCurrency: string, targetCurrency: string) {
+  async getFXRateForCurrencyPair(
+    baseCurrencyCode: string,
+    targetCurrencyCode: string,
+  ) {
     try {
       // Cache key for the currency pair
-      const cacheKey = `fxRate:${baseCurrency}:${targetCurrency}`;
+      const cacheKey = `fxRate:${baseCurrencyCode}:${targetCurrencyCode}`;
 
       // Check cache for existing value
       const cachedValue = await this.cacheAdapter.get(cacheKey);
@@ -54,7 +57,7 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
       // call the API
       const response =
         await this.httpService.axiosRef.get<ExchangeRateApiCurencyPairResponse>(
-          `https://v6.exchangerate-api.com/v6/${this.API_KEY}/pair/${baseCurrency}/${targetCurrency}`,
+          `https://v6.exchangerate-api.com/v6/${this.API_KEY}/pair/${baseCurrencyCode}/${targetCurrencyCode}`,
         );
 
       const serializedResponse = mapExchangeRateAPIResponseToFXCurrencyPair(
@@ -66,10 +69,10 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
       // Get currencies
       const [sourceCurrency, destinationCurrency] = await Promise.all([
         this.currencyService.getCurrencyByDataAndFailIfNotExists({
-          code: baseCurrency,
+          code: baseCurrencyCode,
         }),
         this.currencyService.getCurrencyByDataAndFailIfNotExists({
-          code: targetCurrency,
+          code: targetCurrencyCode,
         }),
       ]);
 
@@ -108,10 +111,10 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
     }
   }
 
-  async getFXRatesForCurrency(baseCurrency: string) {
+  async getFXRatesForCurrency(baseCurrencyCode: string) {
     try {
       // Cache key for the currency pairs
-      const cacheKey = `fxRates:${baseCurrency}`;
+      const cacheKey = `fxRates:${baseCurrencyCode}`;
 
       // Check cache for existing value
       const cachedValue = await this.cacheAdapter.get(cacheKey);
@@ -129,7 +132,7 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
 
       const response =
         await this.httpService.axiosRef.get<ExchangeRateAPICurrencyPairsApiResponse>(
-          `https://open.er-api.com/v6/latest/${baseCurrency}`,
+          `https://open.er-api.com/v6/latest/${baseCurrencyCode}`,
         );
 
       const serializedResponse = mapExchangeRateAPIResponseToFXCurrencyPairs(
@@ -141,7 +144,7 @@ export class ExchangeRateApiProviderAPI implements FXRateInterface {
       // Get currency
       const currency =
         await this.currencyService.getCurrencyByDataAndFailIfNotExists({
-          code: baseCurrency,
+          code: baseCurrencyCode,
         });
 
       // Store the FX rates in cache

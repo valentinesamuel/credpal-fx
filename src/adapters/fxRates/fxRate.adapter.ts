@@ -19,14 +19,24 @@ export class FXRateAdapter implements FXRateInterface {
     private readonly exchangeRateProvider: ExchangeRateApiProviderAPI,
     private readonly alphaAdvantage: AlphaAdvantageExchangeRateProviderAPI,
   ) {}
-  async getFXRateForCurrencyPair(baseCurrency: string, targetCurrency: string) {
-    this.initializeProvider(FXRateProviderEnum.EXCHANGE_RATE_API);
-    return this.provider.getFXRateForCurrencyPair(baseCurrency, targetCurrency);
+  async getFXRateForCurrencyPair(
+    baseCurrencyCode: string,
+    targetCurrencyCode: string,
+    provider?: FXRateProviderEnum,
+  ) {
+    this.initializeProvider(provider ?? FXRateProviderEnum.EXCHANGE_RATE_API);
+    return this.provider.getFXRateForCurrencyPair(
+      baseCurrencyCode,
+      targetCurrencyCode,
+    );
   }
 
-  getFXRatesForCurrency(baseCurrency: string) {
-    this.initializeProvider(FXRateProviderEnum.EXCHANGE_RATE_API);
-    return this.provider.getFXRatesForCurrency(baseCurrency);
+  async getFXRatesForCurrency(
+    baseCurrencyCode: string,
+    provider?: FXRateProviderEnum,
+  ) {
+    this.initializeProvider(provider ?? FXRateProviderEnum.EXCHANGE_RATE_API);
+    return this.provider.getFXRatesForCurrency(baseCurrencyCode);
   }
 
   private initializeProvider(provider: FXRateProviderEnum) {

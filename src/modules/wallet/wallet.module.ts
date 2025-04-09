@@ -8,19 +8,19 @@ import { FundWalletHandler } from "./commands/handlers/fundWallet.command";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Wallet } from "@modules/core/entities/wallet.entity";
 import { CoreModule } from "@modules/core/core.module";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { CacheModule } from "@adapters/cache/cache.module";
 import { AuthModule } from "@modules/auth/auth.module";
 import { WalletBalance } from "@modules/core/entities/walletBalance.entity";
 import { CurrencyModule } from "@modules/currency/currency.module";
 import { InitializeUserWalletHandler } from "./commands/handlers/initializeUserWallet.command";
-import { TransactionModule } from "@modules/transaction/transaction.module";
 import { ConvertCurrencyHandler } from "./commands/handlers/convertCurrency.command";
 import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
 import { WalletBalanceRepository } from "@adapters/repositories/walletBalance.repository";
 import { TransactionService } from "@modules/core/services/transaction.service";
 import { TransactionRepository } from "@adapters/repositories/transaction.repository";
 import { Transaction } from "@modules/core/entities/transaction.entity";
+import { FXRateModule } from "@modules/trade/fxRate.module";
 
 // Define all command handlers
 const CommandHandlers = [
@@ -40,6 +40,7 @@ const QueryHandlers = [GetWalletHandler];
     CqrsModule,
     AuthModule,
     CurrencyModule,
+    FXRateModule,
   ],
   providers: [
     // Services

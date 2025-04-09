@@ -8,7 +8,7 @@ import { AuthController } from "./controller/auth.controller";
 import { CqrsModule } from "@nestjs/cqrs";
 import { GetUserByIdHandler } from "./queries/handlers/getUserById.handler";
 import { RegisterUserHandler } from "./commands/handlers/registerUserHandler.command";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { CacheModule } from "@adapters/cache/cache.module";
 import { OtpModule } from "@modules/otp/otp.module";
 import { CountryModule } from "@modules/country/country.module";
@@ -17,8 +17,7 @@ import { SMSModule } from "@adapters/sms/sms.module";
 import { RoleRepository } from "@adapters/repositories/role.repository";
 import { Role } from "@modules/core/entities/role.entity";
 import { UtilityService } from "@shared/utils/utility.service";
-import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
-import { JwtService } from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 
 const CommandHandlers = [RegisterUserHandler, VerifyOtpHandler];
 
@@ -26,12 +25,12 @@ const QueryHandlers = [GetUserByIdHandler];
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    CoreModule,
     CqrsModule,
     CacheModule,
     SMSModule,
     TypeOrmModule.forFeature([User, Role]),
-
+    JwtModule,
     OtpModule,
     CountryModule,
   ],
@@ -39,8 +38,6 @@ const QueryHandlers = [GetUserByIdHandler];
     // Services
     UserService,
     UtilityService,
-    UnitOfWork,
-    JwtService,
 
     // Repositories
     UserRepository,

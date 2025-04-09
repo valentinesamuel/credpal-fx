@@ -11,6 +11,8 @@ import {
   TransactionType,
 } from "@modules/core/entities/transaction.entity";
 import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
+import { FXRateAdapter } from "@adapters/fxRates/fxRate.adapter";
+import { FXRateProviderEnum } from "@adapters/fxRates/fxRate.interface";
 
 @Injectable()
 @CommandHandler(FundWalletCommand)
@@ -23,6 +25,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
     private readonly unitOfWork: UnitOfWork,
     private readonly transactionService: TransactionService,
     private readonly walletBalanceService: WalletBalanceService,
+    private readonly fxRateAdapter: FXRateAdapter,
   ) {}
 
   async execute(command: FundWalletCommand) {
@@ -39,6 +42,15 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
           code: payload.currency,
         });
 
+      // get FX rate
+      const fxRate = await this.fxRateAdapter.getFXRateForCurrencyPair(
+        currency.code,
+        currency.code,
+        FXRateProviderEnum.ALPHAVANTAGE,
+      );
+
+      const currentConversionRate = fxRate.result.rate;
+
       // create transaction
       let transaction = await this.transactionService.createTransaction({
         amount: payload.amount,
@@ -47,7 +59,7 @@ export class FundWalletHandler implements ICommandHandler<FundWalletCommand> {
         sourceWalletId: wallet.id,
         destinationWalletId: wallet.id,
         type: TransactionType.DEPOSIT,
-        exchangeRate: 1, // change this to the actual exchange rate from the API
+        exchangeRate: currentConversionRate,
         status: TransactionStatus.PENDING,
         idempotencyKey: `${user.id}-${payload.amount}-${payload.currency}-${payload.paymentMethod}`,
         paymentMethod: payload.paymentMethod,

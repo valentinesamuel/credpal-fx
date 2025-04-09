@@ -108,15 +108,19 @@ export const mapAlphaAdvantageAPIResponseToFXCurrencyPair = (
 
 export interface FXRateInterface {
   getFXRateForCurrencyPair(
-    baseCurrency: string,
-    targetCurrency: string,
+    baseCurrencyCode: string,
+    targetCurrencyCode: string,
+    provider?: FXRateProviderEnum,
   ): Promise<{
     status: boolean;
     message: string;
     result: FXRate;
   }>;
 
-  getFXRatesForCurrency?(baseCurrency: string): Promise<{
+  getFXRatesForCurrency?(
+    baseCurrencyCode: string,
+    provider?: FXRateProviderEnum,
+  ): Promise<{
     status: boolean;
     message: string;
     result: FXRateCurrencyPairs;

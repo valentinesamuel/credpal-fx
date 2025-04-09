@@ -12,6 +12,8 @@ import {
 } from "@modules/core/entities/transaction.entity";
 import { UnitOfWork } from "@adapters/repositories/transactions/unitOfWork.trx";
 import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
+import { FXRateAdapter } from "@adapters/fxRates/fxRate.adapter";
+import { FXRateProviderEnum } from "@adapters/fxRates/fxRate.interface";
 
 @Injectable()
 @CommandHandler(InitializeUserWalletCommand)
@@ -25,6 +27,7 @@ export class InitializeUserWalletHandler
     private readonly currencyService: CurrencyService,
     private readonly transactionService: TransactionService,
     private readonly walletBalanceService: WalletBalanceService,
+    private readonly fxRateAdapter: FXRateAdapter,
     private readonly unitOfWork: UnitOfWork,
   ) {}
 
@@ -39,6 +42,14 @@ export class InitializeUserWalletHandler
         countryId: user.countryId,
       });
 
+      // get FX rate
+      const fxRate = await this.fxRateAdapter.getFXRateForCurrencyPair(
+        currency.code,
+        currency.code,
+        FXRateProviderEnum.ALPHAVANTAGE,
+      );
+      const currentConversionRate = fxRate.result.rate;
+
       const wallet = await this.walletService.createWallet({
         userId: user.id,
       });
@@ -50,7 +61,7 @@ export class InitializeUserWalletHandler
         sourceCurrencyId: currency.id,
         destinationCurrencyId: currency.id,
         amount: initialDepositAmount,
-        exchangeRate: 1, // TODO: Add exchange rate from FX API
+        exchangeRate: currentConversionRate,
         status: TransactionStatus.PENDING,
         idempotencyKey: `${user.id}-${initialDepositAmount}-${currency.id}-${PaymentMethod.BONUS}`,
         paymentMethod: PaymentMethod.BONUS,

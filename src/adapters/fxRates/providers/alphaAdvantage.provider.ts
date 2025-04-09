@@ -46,10 +46,13 @@ export class AlphaAdvantageExchangeRateProviderAPI implements FXRateInterface {
     );
   }
 
-  async getFXRateForCurrencyPair(baseCurrency: string, targetCurrency: string) {
+  async getFXRateForCurrencyPair(
+    baseCurrencyCode: string,
+    targetCurrencyCode: string,
+  ) {
     try {
       // Cache key for the currency pair
-      const cacheKey = `fxRate:${baseCurrency}:${targetCurrency}`;
+      const cacheKey = `fxRate:${baseCurrencyCode}:${targetCurrencyCode}`;
 
       // Check cache for existing value
       const cachedValue = await this.cacheAdapter.get(cacheKey);
@@ -68,7 +71,7 @@ export class AlphaAdvantageExchangeRateProviderAPI implements FXRateInterface {
       // call the API
       const response =
         await this.httpService.axiosRef.get<AlphaAdvantageExchangeRateCurrencyPairApiResponse>(
-          `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${baseCurrency}&to_currency=${targetCurrency}&apikey=${this.API_KEY}`,
+          `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${baseCurrencyCode}&to_currency=${targetCurrencyCode}&apikey=${this.API_KEY}`,
         );
 
       const serializedResponse = mapAlphaAdvantageAPIResponseToFXCurrencyPair(
@@ -80,10 +83,10 @@ export class AlphaAdvantageExchangeRateProviderAPI implements FXRateInterface {
       // Get currencies
       const [sourceCurrency, destinationCurrency] = await Promise.all([
         this.currencyService.getCurrencyByDataAndFailIfNotExists({
-          code: baseCurrency,
+          code: baseCurrencyCode,
         }),
         this.currencyService.getCurrencyByDataAndFailIfNotExists({
-          code: targetCurrency,
+          code: targetCurrencyCode,
         }),
       ]);
 

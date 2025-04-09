@@ -65,7 +65,7 @@ export class VerifyOtpHandler implements ICommandHandler<VerifyOtpCommand> {
   }
 
   async generateJwtToken(user: User) {
-    const token = this.jwtService.sign({
+    const token = await this.jwtService.signAsync({
       id: user.id,
       email: user.email,
     });

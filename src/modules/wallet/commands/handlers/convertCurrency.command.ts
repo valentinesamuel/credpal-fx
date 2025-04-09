@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { ConvertCurrencyCommand } from "../commandHandlers";
 import { AppLogger } from "@shared/observability/logger";
@@ -12,6 +12,8 @@ import {
   TransactionType,
 } from "@modules/core/entities/transaction.entity";
 import { WalletBalanceService } from "@modules/core/services/walletBalance.service";
+import { FXRateAdapter } from "@adapters/fxRates/fxRate.adapter";
+import { FXRateProviderEnum } from "@adapters/fxRates/fxRate.interface";
 
 @Injectable()
 @CommandHandler(ConvertCurrencyCommand)
@@ -26,6 +28,7 @@ export class ConvertCurrencyHandler
     private readonly walletBalanceService: WalletBalanceService,
     private readonly currencyService: CurrencyService,
     private readonly unitOfWork: UnitOfWork,
+    private readonly fxRateAdapter: FXRateAdapter,
   ) {}
 
   async execute(command: ConvertCurrencyCommand) {
@@ -55,7 +58,12 @@ export class ConvertCurrencyHandler
       }
 
       // Get FX rate
-      const currentConversionRate = 1200.33; // TODO: Get the current conversion rate from FX API
+      const fxRate = await this.fxRateAdapter.getFXRateForCurrencyPair(
+        sourceCurrency.code,
+        destinationCurrency.code,
+        FXRateProviderEnum.ALPHAVANTAGE,
+      );
+      const currentConversionRate = fxRate.result.rate;
 
       // Get balances with lock , if not available, create a new balance
       let [sourceBalance, destinationBalance] = await Promise.all([
@@ -151,7 +159,12 @@ export class ConvertCurrencyHandler
         completedAt: new Date().toISOString(),
       });
 
-      return { success: true };
+      // Return transaction
+      const newTransaction = await this.transactionService.findTransaction({
+        id: transaction.id,
+      });
+
+      return { newTransaction };
     });
   }
 }

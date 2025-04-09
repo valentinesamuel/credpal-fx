@@ -13,7 +13,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 @Module({
   imports: [
     CacheModule,
-    CqrsModule,
+    ConfigModule.forRoot(),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,15 +23,10 @@ import { CqrsModule } from "@nestjs/cqrs";
         signOptions: { expiresIn: "1d" },
       }),
     }),
+    CqrsModule,
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [
-    UtilityService,
-    UnitOfWork,
-    JwtService,
-    UserService,
-    UserRepository,
-  ],
-  exports: [UtilityService, JwtModule, UnitOfWork],
+  providers: [UtilityService, UnitOfWork, UserService, UserRepository],
+  exports: [UtilityService, UnitOfWork, JwtModule],
 })
 export class CoreModule {}
