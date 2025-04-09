@@ -62,9 +62,10 @@ export class ResponseInterceptor<T>
     const startTime = Date.now();
     return next.handle().pipe(
       map((res: unknown) => this.responseHandler(res, context, startTime)),
-      catchError((err: HttpException) =>
-        throwError(() => this.errorHandler(err, context, startTime)),
-      ),
+      catchError((err: HttpException) => {
+        this.errorHandler(err, context, startTime);
+        return throwError(() => err);
+      }),
     );
   }
 

@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { User } from "./user.entity";
 import { Transaction } from "./transaction.entity";
+import { WalletBalance } from "./walletBalance.entity";
 
 export enum WalletStatus {
   ACTIVE = "ACTIVE",
@@ -27,7 +28,7 @@ export class Wallet extends BaseEntity {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: WalletStatus.ACTIVE })
   status: WalletStatus;
 
   @OneToMany(() => Transaction, (transaction) => transaction.sourceWallet)
@@ -35,4 +36,7 @@ export class Wallet extends BaseEntity {
 
   @OneToMany(() => Transaction, (transaction) => transaction.destinationWallet)
   destinationTransactions: Transaction[];
+
+  @OneToMany(() => WalletBalance, (balance) => balance.wallet)
+  balances: WalletBalance[];
 }

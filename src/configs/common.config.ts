@@ -8,11 +8,11 @@ export default registerAs("common", () => ({
   appHostName: process.env.APP_HOSTNAME,
   corsWhitelist: process.env.CORS_WHITELIST,
   nodeEnv: process.env.NODE_ENV,
-  tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY,
   isDevelopment: process.env.NODE_ENV === NODE_ENVIRONMENTS["development"],
   swaggerApiRoot: process.env.SWAGGER_API_ROOT,
   jwt: {
     authSecret: process.env.AUTH_SECRET,
+    expiryMinutes: process.env.AUTH_EXPIRY_MINUTES,
   },
   redis: {
     port: process.env.REDIS_PORT,
@@ -23,11 +23,13 @@ export default registerAs("common", () => ({
     enableFileLogging: process.env.ENABLE_FILE_LOGGING,
   },
   auth: {
+    saltRounds: process.env.SALT_ROUNDS,
+    authSecret: process.env.APP_AUTH_SECRET,
     authName: process.env.APP_AUTH_NAME,
   },
-  encryption: {
-    algorithm: process.env.ENCRYPTION_ALGORITHM,
-    ivLength: process.env.ENCRYPTION_IV_LENGTH,
-    key: process.env.ENCRYPTION_KEY,
+  otp: {
+    otpSaltRounds: process.env.OTP_SALT_ROUNDS,
+    expiryMinutes: process.env.OTP_EXPIRY_MINUTES,
+    smsFrom: process.env.OTP_SMS_FROM,
   },
 }));

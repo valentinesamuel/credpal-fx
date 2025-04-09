@@ -1,7 +1,7 @@
 import { BaseEntity } from "@shared/repositoryHelpers/base.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
-import { WalletCurrency } from "./walletBalance.entity";
 import { Wallet } from "./wallet.entity";
+import { Currency } from "./currency.entity";
 
 export enum TransactionType {
   DEPOSIT = "DEPOSIT",
@@ -12,6 +12,17 @@ export enum TransactionType {
   CHARGEBACK = "CHARGEBACK",
   FEE = "FEE",
   INTEREST = "INTEREST",
+  CONVERSION = "CONVERSION",
+  TRADE = "TRADE",
+}
+
+export enum PaymentMethod {
+  BANK_TRANSFER = "BANK_TRANSFER",
+  CREDIT_CARD = "CREDIT_CARD",
+  PAYPAL = "PAYPAL",
+  CASH = "CASH",
+  WALLET = "WALLET",
+  BONUS = "BONUS",
 }
 
 export enum TransactionStatus {
@@ -23,6 +34,20 @@ export enum TransactionStatus {
   CHARGEBACK = "CHARGEBACK",
 }
 
+export interface TransactionMetadata {
+  userId: string;
+  rateSource: string;
+  tradeType?: string;
+  preBalance: {
+    source: number;
+    destination?: number;
+  };
+  postBalance?: {
+    source: number;
+    destination?: number;
+  };
+}
+
 @Entity()
 export class Transaction extends BaseEntity {
   @Index()
@@ -30,7 +55,7 @@ export class Transaction extends BaseEntity {
   sourceWalletId: string;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.sourceTransactions)
-  @JoinColumn({ name: "sourceWalletId" })
+  @JoinColumn({ name: "sourceWallet_id" })
   sourceWallet: Wallet;
 
   @Index()
@@ -38,22 +63,33 @@ export class Transaction extends BaseEntity {
   destinationWalletId: string;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.destinationTransactions)
-  @JoinColumn({ name: "destinationWalletId" })
+  @JoinColumn({ name: "destinationWallet_id" })
   destinationWallet: Wallet;
 
   @Column({ type: "varchar" })
   type: TransactionType;
 
   @Column({ type: "varchar" })
-  sourceCurrency: WalletCurrency;
+  sourceCurrencyId: string;
+
+  @ManyToOne(() => Currency, (currency) => currency.sourceTransactions)
+  @JoinColumn({ name: "sourceCurrency_id" })
+  sourceCurrency: Currency;
 
   @Column({ type: "varchar" })
-  destinationCurrency: WalletCurrency;
+  destinationCurrencyId: string;
 
-  @Column({ type: "integer" })
+  @Column({ type: "varchar" })
+  paymentMethod: PaymentMethod;
+
+  @ManyToOne(() => Currency, (currency) => currency.destinationTransactions)
+  @JoinColumn({ name: "destinationCurrency_id" })
+  destinationCurrency: Currency;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   amount: number;
 
-  @Column({ type: "decimal" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   exchangeRate: number;
 
   @Column({ type: "varchar" })
@@ -62,12 +98,15 @@ export class Transaction extends BaseEntity {
   @Column({ type: "varchar" })
   referenceId: string;
 
-  @Column({ type: "json" })
-  metadata: Record<string, any>;
+  @Column({ type: "varchar" })
+  idempotencyKey: string;
 
-  @Column({ type: "time with time zone" })
+  @Column({ type: "json" })
+  metadata: TransactionMetadata;
+
+  @Column({ type: "timestamp with time zone" })
   initializedAt: string;
 
-  @Column({ type: "time with time zone" })
+  @Column({ type: "timestamp with time zone", nullable: true })
   completedAt: string;
 }

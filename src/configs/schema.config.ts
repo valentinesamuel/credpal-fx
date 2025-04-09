@@ -23,18 +23,31 @@ export default {
     APP_HOSTNAME: Joi.string().required(),
     CORS_WHITELIST: Joi.string().required(),
     APP_AUTH_NAME: Joi.string().required(),
+    APP_AUTH_SECRET: Joi.string().required(),
     NODE_ENV: Joi.string()
       .valid(...NODE_ENVIRONMENTS)
       .default(DEFAULT_NODE_ENV),
     IS_DEVELOPMENT: Joi.boolean().default(IS_DEVELOPMENT_DEFAULT),
 
     // jwt
+    SALT_ROUNDS: Joi.number().required(),
     AUTH_SECRET: Joi.string().required(),
+    AUTH_EXPIRY_MINUTES: Joi.number().required(),
 
-    // Encryption
-    ENCRYPTION_KEY: Joi.string().required(),
-    ENCRYPTION_IV_LENGTH: Joi.number().required(),
-    ENCRYPTION_ALGORITHM: Joi.string().required(),
+    // otp
+    OTP_SALT_ROUNDS: Joi.number().required(),
+    OTP_EXPIRY_MINUTES: Joi.number().required(),
+    OTP_SMS_FROM: Joi.string().required(),
+
+    // sms
+    TWILIO_ACCOUNT_SID: Joi.string().required(),
+    TWILIO_AUTH_TOKEN: Joi.string().required(),
+    TWILIO_FROM: Joi.string().required(),
+    TWILIO_WHATSAPP_FROM: Joi.string().required(),
+
+    // Email
+    SENDGRID_FROM: Joi.string().required(),
+    SENDGRID_MAIL_API_KEY: Joi.string().required(),
 
     // typeorm
     DATABASE_TYPE: Joi.string().required(),
@@ -53,6 +66,10 @@ export default {
       DEFAULT_DATABASE_RETRY_ATTEMPTS,
     ),
 
+    // FX API
+    FX_EXCHANGE_RATE_API_KEY: Joi.string().required(),
+    FX_ALPHA_ADVANTAGE_API_KEY: Joi.string().required(),
+
     // logging
     ENABLE_FILE_LOGGING: Joi.boolean().required(),
 
@@ -63,5 +80,7 @@ export default {
     REDIS_PORT: Joi.number().default(DEFAULT_REDIS_PORT),
     REDIS_PASSWORD: Joi.string().allow(""),
     REDIS_URL: Joi.string().required(),
+    REDIS_NAMESPACE: Joi.string().default("credpalfx"),
+    REDIS_TTL: Joi.number().default(60 * 30), // 30 minutes in seconds
   }),
 };

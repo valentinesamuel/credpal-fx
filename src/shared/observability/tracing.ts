@@ -15,6 +15,9 @@ import { logs } from "@opentelemetry/api-logs";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { Resource } from "@opentelemetry/resources";
 import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const resource: Resource = {
   attributes: {
@@ -31,7 +34,7 @@ export function setupTelemetry() {
   const sdk = new NodeSDK({
     resource: resource,
     traceExporter: new OTLPTraceExporter({
-      url: "http://localhost:4316/v1/traces", // Correct - this maps to 4318 in container
+      url: "http://localhost:4316/v1/traces",
       headers: {},
     }),
     metricReader: new PeriodicExportingMetricReader({
@@ -62,7 +65,9 @@ export function setupTelemetry() {
   logs.setGlobalLoggerProvider(loggerProvider);
 
   // Start the SDK
-  sdk.start();
+  if (process.env.ENABLE_FILE_LOGGING === "true") {
+    sdk.start();
+  }
 
   // Handle shutdown gracefully
   const shutdown = () => {
@@ -78,5 +83,3 @@ export function setupTelemetry() {
   process.on("SIGTERM", shutdown);
   process.on("SIGINT", shutdown);
 }
-
-// To use in main.ts, simply import and call setupTelemetry() before bootstrapping your app

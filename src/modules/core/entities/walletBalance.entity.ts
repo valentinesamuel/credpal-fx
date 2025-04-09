@@ -1,14 +1,7 @@
 import { BaseEntity } from "@shared/repositoryHelpers/base.entity";
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { Wallet } from "./wallet.entity";
-
-export enum WalletCurrency {
-  USD = "USD",
-  EUR = "EUR",
-  GBP = "GBP",
-  JPY = "JPY",
-  AUD = "AUD",
-}
+import { Currency } from "./currency.entity";
 
 @Entity()
 export class WalletBalance extends BaseEntity {
@@ -16,15 +9,18 @@ export class WalletBalance extends BaseEntity {
   walletId: string;
 
   @Column({ type: "varchar" })
-  currency: WalletCurrency;
+  currencyId: string;
 
-  @Column({ type: "integer" })
+  @ManyToOne(() => Currency)
+  currency: Currency;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   amount: number;
 
-  @Column({ type: "integer" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   availableAmount: number;
 
-  @OneToOne(() => Wallet)
+  @ManyToOne(() => Wallet)
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet;
 }
