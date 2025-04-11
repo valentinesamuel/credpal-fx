@@ -68,9 +68,6 @@ export class SeederService implements OnModuleInit {
   }
 
   async seedRoles() {
-    // First, get all created permissions
-    const allPermissions = await this.permissionRepository.find();
-
     // Define role structures with permission names (not entities)
     const roleDefinitions = [
       {
@@ -242,7 +239,8 @@ export class SeederService implements OnModuleInit {
 
   async onModuleInit() {
     const existingPermissions = await this.permissionRepository.find();
-    if (existingPermissions.length === 0) {
+    const existingRoles = await this.roleRepository.find();
+    if (existingPermissions.length === 0 && existingRoles.length === 0) {
       await this.seedRoles();
     }
 
