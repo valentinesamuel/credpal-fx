@@ -82,8 +82,9 @@ Credpal FX is a foreign exchange (FX) trading platform built with NestJS. The pl
 3. A user can only have one wallet and they can have different currencies(wallet balance) in their wallet
 4. SMS OTP verification is required for sensitive operations. I had to remove the email verification because it was not working as expected, however, the email adapter is implemented in the `src/adapters/email/email.adapter.ts` file.
 5. Real-time rate updates are handled through caching and the last as long as the next update is not due based on the next update time from the api call
-5. The application is deployed in a containerized environment using Docker and Docker Compose with monitoring and tracing tools
+6. The application is deployed in a containerized environment using Docker and Docker Compose with monitoring and tracing tools
 6. When users signup, they are assigned the role of `user` that comes with default permissions, the default permission are found in the `src/shared/guards/enums/permission.enum.ts` file. However, they are supposed to be assigned the role by the admin
+7. Users must have the api key to access the public and private endpoints. This would be `APP_AUTH_SECRET` in the `.env` file
 
 ## Project Structure
 
